@@ -1,9 +1,8 @@
-import { View, Text, StyleSheet } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import InputWithLabel from "../../ui/InputWithLabel";
 import PressableButton from "../../ui/PressableButton";
 import { useNavigation } from "@react-navigation/native";
-import CenterLayout from "../../ui/CenterLayout";
 
 export default function AuthForm({ mode }) {
   const navigation = useNavigation();
