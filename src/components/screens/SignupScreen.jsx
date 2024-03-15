@@ -1,4 +1,3 @@
-import { View, Text } from "react-native";
 import React from "react";
 import CenterLayout from "../ui/CenterLayout";
 import AuthForm from "../features/auth/AuthForm";

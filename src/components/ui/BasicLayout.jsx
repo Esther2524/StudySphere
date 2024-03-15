@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView } from "react-native";
 import React from "react";
 
 export default function BasicLayout({ children }) {
