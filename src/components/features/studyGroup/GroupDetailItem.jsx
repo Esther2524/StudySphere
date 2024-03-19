@@ -18,8 +18,8 @@ export default function GroupDetailItem({ name, avatar, studyTime }) {
       <LinearProgress
         value={0.8}
         color={Colors.screenBgColor}
-        height={25}
-        width={300}
+        height={15}
+        width={250}
       />
     </View>
   );
@@ -28,11 +28,12 @@ export default function GroupDetailItem({ name, avatar, studyTime }) {
 const styles = StyleSheet.create({
   container: {
     marginVertical: 10,
+    marginHorizontal: "auto",
   },
   lineOne: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    gap: 10,
     marginBottom: 5,
   },
   name: {
