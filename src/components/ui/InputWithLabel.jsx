@@ -12,20 +12,23 @@ export default function InputWithLabel({
   onPressIn,
   inputMode,
   editable = true,
+  placeholder,
+  style,
 }) {
   const optionalProps = editable
     ? { onChangeText: (newContent) => setContent(newContent) }
     : { onFocus: () => Keyboard.dismiss() };
 
   return (
-    <View style={{ ...styles.container, zIndex: zIndex }}>
-      <Text style={styles.label}>{label}</Text>
+    <View style={[{ ...styles.container, zIndex: zIndex }, style]}>
+      {label && <Text style={styles.label}>{label}</Text>}
       {inputType === "text" && (
         <TextInput
           value={content + ""}
           {...optionalProps}
           style={styles.textInput}
           onPressIn={onPressIn}
+          placeholder={placeholder}
           inputMode={inputMode}
         />
       )}
@@ -37,8 +40,9 @@ export default function InputWithLabel({
 
 const styles = StyleSheet.create({
   container: {
+    marginHorizontal: "auto",
     width: 360,
-    padding: 20,
+    padding: 10,
     height: 100,
   },
   textInput: {
@@ -46,7 +50,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 6,
     padding: 10,
-    fontSize: 20,
+    fontSize: 16,
     marginVertical: 5,
     color: Colors.mainText,
   },
