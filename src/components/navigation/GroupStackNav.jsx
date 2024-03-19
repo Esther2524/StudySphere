@@ -4,6 +4,8 @@ import StudyGroupScreen from "../screens/StudyGroupScreen";
 import { Colors } from "../../utils/Colors";
 import PressableButton from "../ui/PressableButton";
 import AddIcon from "../ui/AddIcon";
+import GroupDetailsScreen from "../screens/GroupDetailsScreen";
+import { limitStrLen } from "../../utils/helper";
 
 export default function GroupStackNav() {
   const Stack = createNativeStackNavigator();
@@ -28,6 +30,15 @@ export default function GroupStackNav() {
       }}
     >
       <Stack.Screen name="Study Group" component={StudyGroupScreen} />
+      <Stack.Screen
+        name="Group Detail"
+        component={GroupDetailsScreen}
+        options={({ route }) => ({
+          title: limitStrLen(route.params.groupName, 25),
+          headerBackTitle: "Back",
+          headerTintColor: Colors.headerTitleColor,
+        })}
+      />
     </Stack.Navigator>
   );
 }
