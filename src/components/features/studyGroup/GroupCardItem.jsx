@@ -1,23 +1,31 @@
 import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import React, { useCallback } from "react";
 import PressableButton from "../../ui/PressableButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "../../../utils/Colors";
+import { useNavigation } from "@react-navigation/native";
 
 export default function GroupCardItem({ title, numOfPeople }) {
+  const navigation = useNavigation();
+  const handlePress = useCallback(() => {
+    navigation.navigate("Group Detail", { groupName: title });
+  }, [title, navigation]);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <View style={styles.subLine}>
-        <View style={styles.infoContainer}>
-          <MaterialIcons name="group" size={20} color="black" />
-          <Text>{numOfPeople}</Text>
+    <PressableButton onPress={handlePress}>
+      <View style={styles.container}>
+        <Text style={styles.title}>{title}</Text>
+        <View style={styles.subLine}>
+          <View style={styles.infoContainer}>
+            <MaterialIcons name="group" size={20} color="black" />
+            <Text>{numOfPeople}</Text>
+          </View>
+          <PressableButton containerStyle={styles.joinBtnContainer}>
+            <Text style={styles.joinBtnText}>Join</Text>
+          </PressableButton>
         </View>
-        <PressableButton containerStyle={styles.joinBtnContainer}>
-          <Text style={styles.joinBtnText}>Join</Text>
-        </PressableButton>
       </View>
-    </View>
+    </PressableButton>
   );
 }
 
