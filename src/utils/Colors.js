@@ -12,6 +12,10 @@ export const Colors = {
   headerTitleColor: "#ffffff",
   dangerTextColor: "#ef4444",
   inputLabelColor: "#ffffff",
+  confirmBtnBg: "#01575c",
+  confirmBtnText: "#ffffff",
+  cancelBtnBg: "#a3a3a3",
+  cancelBtnText: "#fefefe",
 
   // undefined
   lighterThanBg: "#8fb5b7",
