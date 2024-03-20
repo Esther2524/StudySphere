@@ -6,14 +6,19 @@ import InputWithLabel from "../../ui/InputWithLabel";
 
 export default function AddGroupModal({ isAddingGroup, setIsAddingGroup }) {
   const [groupName, setGroupName] = useState("");
+  const [errMsg, setErrMsg] = useState("");
 
   const cancelHandler = useCallback(() => {
     setIsAddingGroup(false);
-  }, []);
+  }, [setIsAddingGroup]);
 
   const confirmHandler = useCallback(() => {
+    if (!groupName) {
+      setErrMsg("Group name can't be empty!");
+      return;
+    }
     setIsAddingGroup(false);
-  }, []);
+  }, [groupName, setErrMsg, setIsAddingGroup]);
 
   return (
     <ModalView isVisible={isAddingGroup}>
@@ -23,8 +28,9 @@ export default function AddGroupModal({ isAddingGroup, setIsAddingGroup }) {
           <InputWithLabel
             content={groupName}
             setContent={setGroupName}
-            style={styles.input}
+            containerStyle={styles.input}
             placeholder="Enter Your Group's Name"
+            errorMsg={errMsg}
           />
         </View>
         <View style={styles.btnGroup}>
@@ -55,12 +61,12 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: 15,
     fontSize: 20,
   },
   input: {
     width: 300,
     height: 80,
-    marginBottom: 10,
+    marginBottom: 20,
   },
 });
