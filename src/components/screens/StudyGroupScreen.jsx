@@ -23,12 +23,7 @@ export default function StudyGroupScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {isAddingGroup && (
-        <AddGroupModal
-          isAddingGroup={isAddingGroup}
-          setIsAddingGroup={setIsAddingGroup}
-        />
-      )}
+      {isAddingGroup && <AddGroupModal setIsAddingGroup={setIsAddingGroup} />}
       <GroupCardList />
     </View>
   );
