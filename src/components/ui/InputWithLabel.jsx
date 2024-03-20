@@ -12,33 +12,39 @@ export default function InputWithLabel({
   onPressIn,
   inputMode,
   editable = true,
+  placeholder,
+  containerStyle,
 }) {
   const optionalProps = editable
     ? { onChangeText: (newContent) => setContent(newContent) }
     : { onFocus: () => Keyboard.dismiss() };
 
   return (
-    <View style={{ ...styles.container, zIndex: zIndex }}>
-      <Text style={styles.label}>{label}</Text>
+    <View style={[{ ...styles.container, zIndex: zIndex }, containerStyle]}>
+      {label && <Text style={styles.label}>{label}</Text>}
       {inputType === "text" && (
-        <TextInput
-          value={content + ""}
-          {...optionalProps}
-          style={styles.textInput}
-          onPressIn={onPressIn}
-          inputMode={inputMode}
-        />
+        <>
+          <TextInput
+            value={content + ""}
+            {...optionalProps}
+            style={styles.textInput}
+            onPressIn={onPressIn}
+            placeholder={placeholder}
+            inputMode={inputMode}
+          />
+          <Text style={styles.error}>{errorMsg}</Text>
+        </>
       )}
       {inputType === "other" && children}
-      <Text style={styles.error}>{errorMsg}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginHorizontal: "auto",
     width: 360,
-    padding: 20,
+    padding: 10,
     height: 100,
   },
   textInput: {
@@ -46,18 +52,18 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 6,
     padding: 10,
-    fontSize: 20,
-    marginVertical: 5,
+    fontSize: 16,
+    marginTop: 5,
     color: Colors.mainText,
   },
   label: {
     fontSize: 16,
     paddingHorizontal: 5,
     fontWeight: "bold",
-    color: Colors.inputLabelColor,
+    color: Colors.mainText,
   },
   error: {
-    paddingHorizontal: 5,
+    paddingHorizontal: 2,
     fontSize: 16,
     color: Colors.dangerTextColor,
   },
