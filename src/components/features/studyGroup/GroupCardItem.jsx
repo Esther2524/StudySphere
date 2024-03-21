@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useCallback } from "react";
 import PressableButton from "../../ui/PressableButton";
-import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "../../../utils/Colors";
 import { useNavigation } from "@react-navigation/native";
+import GroupInfoBox from "./GroupInfoBox";
 
 export default function GroupCardItem({ title, numOfPeople }) {
   const navigation = useNavigation();
@@ -15,15 +15,7 @@ export default function GroupCardItem({ title, numOfPeople }) {
     <PressableButton onPress={handlePress}>
       <View style={styles.container}>
         <Text style={styles.title}>{title}</Text>
-        <View style={styles.subLine}>
-          <View style={styles.infoContainer}>
-            <MaterialIcons name="group" size={20} color="black" />
-            <Text>{numOfPeople}</Text>
-          </View>
-          <PressableButton containerStyle={styles.joinBtnContainer}>
-            <Text style={styles.joinBtnText}>Join</Text>
-          </PressableButton>
-        </View>
+        <GroupInfoBox numOfPeople={numOfPeople} />
       </View>
     </PressableButton>
   );
@@ -31,31 +23,22 @@ export default function GroupCardItem({ title, numOfPeople }) {
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 20,
-    paddingTop: 20,
-    paddingBottom: 12,
-    paddingHorizontal: 30,
+    paddingVertical: 20,
+    paddingHorizontal: 25,
     backgroundColor: Colors.cardBgColor,
-    width: 360,
+    width: 340,
     marginHorizontal: "auto",
     borderRadius: 20,
   },
-  subLine: {
-    flex: 1,
-    flexDirection: "row",
-    marginTop: 20,
-    alignItems: "center",
-  },
   title: {
     color: Colors.mainText,
-    fontSize: 20,
-  },
-  infoContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 12,
-    gap: 3,
+    fontSize: 18,
+    width: 250,
+    marginRight: 5,
   },
   joinBtnContainer: {
     paddingVertical: 8,
