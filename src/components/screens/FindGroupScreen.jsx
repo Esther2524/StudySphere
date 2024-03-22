@@ -1,13 +1,18 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { Colors } from '../../utils/Colors';
+import { StyleSheet, View } from "react-native";
+import React, { useState } from "react";
+import { Colors } from "../../utils/Colors";
+import SearchBar from "../ui/SearchBar";
+import GroupResultsList from "../features/findGroup/GroupResultsList";
 
 export default function FindGroupScreen() {
+  const [keyword, setKeyword] = useState("");
+
   return (
     <View style={styles.container}>
-      <Text>FindGroupScreen</Text>
+      <SearchBar setKeyword={setKeyword} placeholder="Search a group" />
+      <GroupResultsList keyword={keyword} />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -15,4 +20,4 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.screenBgColor,
     flex: 1,
   },
-})
+});
