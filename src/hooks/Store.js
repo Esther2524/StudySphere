@@ -13,5 +13,10 @@ export const useStore = create()(
       set((state) => {
         state.userId = id;
       }),
+    logOut: () =>
+      set((state) => {
+        state.userId = "";
+        state.isAuthed = false;
+      }),
   }))
 );
