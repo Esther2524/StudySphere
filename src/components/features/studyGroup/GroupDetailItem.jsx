@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   timeContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 3,
-    marginLeft: 65,
+    gap: 1,
+    marginLeft: 60,
   },
 });
