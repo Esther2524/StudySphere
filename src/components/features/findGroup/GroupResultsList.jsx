@@ -15,7 +15,9 @@ export default function GroupResultsList({ keyword }) {
 
   return (
     <View style={styles.container}>
-      {results.length > 0 && <Text style={styles.listTitle}>Results</Text>}
+      {results.length > 0 && keyword && (
+        <Text style={styles.listTitle}>Results</Text>
+      )}
       {keyword &&
         results.map((item) => (
           <GroupResultsItem {...item} key={item.groupId} />
