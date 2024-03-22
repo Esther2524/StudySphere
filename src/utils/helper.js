@@ -12,3 +12,8 @@ export function isValidEmail(email) {
   if (sld.length === 0 || tld.length === 0) return false;
   return true;
 }
+
+export function getDefaultUserName(email) {
+  if (!email.includes("@")) return email;
+  return email.split("@")[0];
+}
