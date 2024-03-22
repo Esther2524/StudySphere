@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import InputWithLabel from "../../ui/InputWithLabel";
 import PressableButton from "../../ui/PressableButton";
 import { useNavigation } from "@react-navigation/native";
+import { Colors } from "../../../utils/Colors";
 
 export default function AuthForm({ mode }) {
   const navigation = useNavigation();
@@ -29,13 +30,25 @@ export default function AuthForm({ mode }) {
 
   return (
     <>
-      <InputWithLabel label="Email" content={email} setContent={setEmail} />
-      <InputWithLabel label="Password" content={pwd} setContent={setPwd} />
+      <InputWithLabel
+        label="Email"
+        content={email}
+        setContent={setEmail}
+        inputTextStyle={styles.inputTextStyle}
+      />
+      <InputWithLabel
+        label="Password"
+        content={pwd}
+        setContent={setPwd}
+        secureTextEntry={true}
+        inputTextStyle={styles.inputTextStyle}
+      />
       {mode === "signup" && (
         <InputWithLabel
           label="Confirm Password"
           content={confirmPwd}
           setContent={setConfirmPwd}
+          inputTextStyle={styles.inputTextStyle}
         />
       )}
       <PressableButton
@@ -59,8 +72,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 1000,
     marginHorizontal: "auto",
-    backgroundColor: "white",
-    marginVertical: 15,
+    backgroundColor: Colors.cardBgColor,
+    marginTop: 5,
+    marginBottom: 15,
     width: 100,
   },
   loginBtnText: {
@@ -70,5 +84,8 @@ const styles = StyleSheet.create({
   pressableText: {
     color: "white",
     fontSize: 16,
+  },
+  inputTextStyle: {
+    color: Colors.shallowTextColor,
   },
 });
