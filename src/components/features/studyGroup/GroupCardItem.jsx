@@ -30,14 +30,14 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 25,
     backgroundColor: Colors.cardBgColor,
-    width: 340,
+    width: 320,
     marginHorizontal: "auto",
-    borderRadius: 20,
+    borderRadius: 10,
   },
   title: {
     color: Colors.mainText,
     fontSize: 18,
-    width: 250,
+    width: 230,
     marginRight: 5,
   },
   joinBtnContainer: {
