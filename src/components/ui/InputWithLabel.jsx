@@ -69,5 +69,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     fontSize: 16,
     color: Colors.dangerTextColor,
+    marginTop: 2,
   },
 });
