@@ -4,7 +4,7 @@ import ModalView from "../../ui/ModalView";
 import FormOperationBar from "../../ui/FormOperationBar";
 import InputWithLabel from "../../ui/InputWithLabel";
 
-export default function AddGroupModal({ isAddingGroup, setIsAddingGroup }) {
+export default function AddGroupModal({ setIsAddingGroup }) {
   const [groupName, setGroupName] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
@@ -21,7 +21,7 @@ export default function AddGroupModal({ isAddingGroup, setIsAddingGroup }) {
   }, [groupName, setErrMsg, setIsAddingGroup]);
 
   return (
-    <ModalView isVisible={isAddingGroup}>
+    <ModalView isVisible>
       <View style={styles.modalView}>
         <Text style={styles.title}>Create New Group</Text>
         <View style={{ alignItems: "center" }}>

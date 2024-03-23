@@ -14,6 +14,8 @@ export default function InputWithLabel({
   editable = true,
   placeholder,
   containerStyle,
+  secureTextEntry,
+  inputTextStyle,
 }) {
   const optionalProps = editable
     ? { onChangeText: (newContent) => setContent(newContent) }
@@ -27,10 +29,11 @@ export default function InputWithLabel({
           <TextInput
             value={content + ""}
             {...optionalProps}
-            style={styles.textInput}
+            style={[styles.textInput, inputTextStyle]}
             onPressIn={onPressIn}
             placeholder={placeholder}
             inputMode={inputMode}
+            secureTextEntry={secureTextEntry}
           />
           <Text style={styles.error}>{errorMsg}</Text>
         </>
@@ -60,11 +63,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 5,
     fontWeight: "bold",
-    color: Colors.mainText,
+    color: Colors.inputLabelColor,
   },
   error: {
     paddingHorizontal: 2,
     fontSize: 16,
     color: Colors.dangerTextColor,
+    marginTop: 2,
   },
 });

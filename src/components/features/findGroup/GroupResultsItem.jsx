@@ -1,44 +1,49 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useCallback } from "react";
+import GroupInfoBox from "../studyGroup/GroupInfoBox";
 import PressableButton from "../../ui/PressableButton";
 import { Colors } from "../../../utils/Colors";
-import { useNavigation } from "@react-navigation/native";
-import GroupInfoBox from "./GroupInfoBox";
 
-export default function GroupCardItem({ title, numOfPeople }) {
-  const navigation = useNavigation();
-  const handlePress = useCallback(() => {
-    navigation.navigate("Group Detail", { groupName: title });
-  }, [title, navigation]);
+export default function GroupResultsItem({ groupName, numOfPeople, groupId }) {
+  const joinHandler = useCallback(() => {}, []);
 
   return (
-    <PressableButton onPress={handlePress}>
-      <View style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>{groupName}</Text>
+      <View style={styles.subLine}>
         <GroupInfoBox numOfPeople={numOfPeople} />
+        <PressableButton
+          containerStyle={styles.joinBtnContainer}
+          onPress={joinHandler}
+        >
+          <Text style={styles.joinBtnText}>Join</Text>
+        </PressableButton>
       </View>
-    </PressableButton>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
     marginBottom: 20,
-    paddingVertical: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
     paddingHorizontal: 25,
     backgroundColor: Colors.cardBgColor,
     width: 320,
     marginHorizontal: "auto",
-    borderRadius: 10,
+    borderRadius: 20,
   },
   title: {
     color: Colors.mainText,
     fontSize: 18,
-    width: 230,
+    width: 250,
     marginRight: 5,
+  },
+  subLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 15,
   },
   joinBtnContainer: {
     paddingVertical: 8,

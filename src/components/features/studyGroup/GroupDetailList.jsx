@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import React from "react";
 import { Colors } from "../../../utils/Colors";
 import GroupDetailItem from "./GroupDetailItem";
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.cardBgColor,
     justifyContent: "center",
-    width: 360,
+    width: 340,
     borderRadius: 15,
     marginTop: 30,
     paddingLeft: 20,

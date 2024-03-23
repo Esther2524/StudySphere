@@ -16,7 +16,8 @@ export const Colors = {
   confirmBtnText: "#ffffff",
   cancelBtnBg: "#a3a3a3",
   cancelBtnText: "#fefefe",
-  focusText: "white",
+  likeIconColor: "#FF6B6B",
+  shallowTextColor: "#ffffff",
 
   // undefined
   lighterThanBg: "#8fb5b7",

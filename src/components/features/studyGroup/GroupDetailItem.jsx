@@ -1,9 +1,19 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import LinearProgress from "../../ui/LinearProgress";
 import { Colors } from "../../../utils/Colors";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import PressableButton from "../../ui/PressableButton";
 
 export default function GroupDetailItem({ name, avatar, studyTime }) {
+  const [isLiked, setIsLiked] = useState(false);
+
+  const progressValue = studyTime / 8.0;
+
+  const likeHandler = useCallback(() => {
+    setIsLiked((pre) => !pre);
+  }, [setIsLiked]);
+
   return (
     <View style={styles.container}>
       <View style={styles.lineOne}>
@@ -14,13 +24,29 @@ export default function GroupDetailItem({ name, avatar, studyTime }) {
           style={styles.avatar}
         />
         <Text style={styles.name}>{name}</Text>
+        <PressableButton onPress={likeHandler}>
+          {!isLiked && (
+            <AntDesign name="like2" size={24} color={Colors.likeIconColor} />
+          )}
+          {isLiked && (
+            <AntDesign name="like1" size={24} color={Colors.likeIconColor} />
+          )}
+        </PressableButton>
       </View>
-      <LinearProgress
-        value={0.8}
-        color={Colors.screenBgColor}
-        height={15}
-        width={250}
-      />
+      <View style={styles.lineTwo}>
+        <View style={{ width: 200 }}>
+          <LinearProgress
+            value={progressValue}
+            color={Colors.screenBgColor}
+            height={15}
+            width={250}
+          />
+        </View>
+        <View style={styles.timeContainer}>
+          <MaterialIcons name="access-time" size={18} color={Colors.mainText} />
+          <Text>{studyTime}h</Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -36,10 +62,20 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 5,
   },
+  lineTwo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   name: {
     fontSize: 18,
   },
   avatar: {
     borderRadius: 1000,
+  },
+  timeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 1,
+    marginLeft: 60,
   },
 });
