@@ -6,14 +6,15 @@ import { useNavigation } from "@react-navigation/native";
 import { Colors } from "../../../utils/Colors";
 import { useStore } from "../../../hooks/Store";
 import { getDefaultUserName, isValidEmail } from "../../../utils/helper";
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../../../api/FirestoreConfig";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db, auth } from "../../../api/FirestoreConfig";
 import { Spinner } from "@gluestack-ui/themed";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function AuthForm({ mode }) {
   const navigation = useNavigation();
   // For convenience of dev, use a default email here.
-  const [email, setEmail] = useState("Alex@madeup.com");
+  const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const [confirmPwd, setConfirmPwd] = useState("");
   const [errors, setErrors] = useState({
@@ -23,12 +24,11 @@ export default function AuthForm({ mode }) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const usersCollectionRef = collection(db, "users");
-
-  const setIsAuthed = useStore((state) => state.setIsAuthed);
-  const setUserId = useStore((state) => state.setCurrentUser);
-
   const isLogInMode = mode === "login";
+
+  // use isAuthed to do conditional rendering between Stack Nav and Tab Nav?
+  const setIsAuthed = useStore((state) => state.setIsAuthed);
+
 
   const isFormValid = useCallback(() => {
     let isValid = true;
@@ -49,43 +49,68 @@ export default function AuthForm({ mode }) {
     return isValid;
   }, [email, pwd, confirmPwd, isValidEmail, setErrors]);
 
+  // authenticate the user with Firebase Authentication
   const handleLogin = async () => {
     if (!isFormValid()) {
       return;
     }
     setIsSubmitting(true);
-    const userRef = doc(usersCollectionRef, email);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
-      setUserId(userSnap.id);
+
+    try {
+      // if signInWithEmailAndPassword doesn't throw, login is successful
+      await signInWithEmailAndPassword(auth, email, pwd);
+      // navigate to the Focus List screen
       setIsAuthed(true);
-      return;
+      setIsSubmitting(false);
+    } catch (error) {
+      setIsSubmitting(false);
+      // provide specific msg for wrong password?
+      if (error.code === 'auth/invalid-credential') {
+        Alert.alert("Login Failed", "No account found with this email, or wrong password. Please sign up if you don't have an account.");
+      } else {
+        Alert.alert("Login Failed", error.message); // handle other errors
+      }
     }
-    setIsSubmitting(false);
-    Alert.alert("User doesn't exist. Please Sign up first.");
   };
+
+
 
   const handleSignup = async () => {
     if (!isFormValid()) {
       return;
     }
     setIsSubmitting(true);
-    const userRef = doc(usersCollectionRef, email);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
+
+    try {
+      // create the user with Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pwd);
+      const user = userCredential.user;
+
+      // create a new document in Firestore for the user
+      const newUserData = {
+        userEmail: email,
+        userName: getDefaultUserName(email),
+        avatar: "",
+        status: "",
+        reminder: [],
+        groups: [],
+      };
+
+      await setDoc(doc(db, "users", user.uid), newUserData);
+
+      navigation.navigate("Login");
       setIsSubmitting(false);
-      Alert.alert("User already exists. Please log in.");
-      return;
+
+    } catch (error) {
+      setIsSubmitting(false);
+      if (error.code === 'auth/email-already-in-use') {
+        Alert.alert("Signup Failed", "An account with this email already exists. Please log in or use a different email.");
+      } else {
+        Alert.alert("Signup Failed", error.message);
+      }
     }
-    const newUserData = {
-      userEmail: email,
-      userName: getDefaultUserName(email),
-      groups: [],
-    };
-    await setDoc(doc(usersCollectionRef, email), newUserData);
-    setUserId(email);
-    setIsAuthed(true);
   };
+
 
   const authHandler = isLogInMode ? handleLogin : handleSignup;
 
