@@ -16,7 +16,11 @@ export default function groupCardList() {
       <FlatList
         data={tempData}
         renderItem={({ item: { title, numOfPeople, groupId } }) => (
-          <GroupCardItem title={title} numOfPeople={numOfPeople} />
+          <GroupCardItem
+            title={title}
+            numOfPeople={numOfPeople}
+            groupId={groupId}
+          />
         )}
       />
     </View>
