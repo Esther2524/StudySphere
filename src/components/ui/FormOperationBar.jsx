@@ -2,6 +2,7 @@ import { View, StyleSheet, Text } from "react-native";
 import React from "react";
 import PressableButton from "./PressableButton";
 import { Colors } from "../../utils/Colors";
+import { Spinner } from "@gluestack-ui/themed";
 
 export default function FormOperationBar({
   confirmText,
@@ -9,6 +10,7 @@ export default function FormOperationBar({
   confirmHandler,
   cancelHandler,
   confirmDisabled,
+  isSubmitting,
 }) {
   let extraConfirmBtnStyle;
   if (confirmDisabled) extraConfirmBtnStyle = styles.disabledBtn;
@@ -23,9 +25,20 @@ export default function FormOperationBar({
       </PressableButton>
       <PressableButton
         onPress={confirmHandler}
-        containerStyle={[styles.confirmBtnContainer, extraConfirmBtnStyle]}
+        containerStyle={[
+          styles.confirmBtnContainer,
+          { width: isSubmitting ? 135 : "auto" },
+          extraConfirmBtnStyle,
+        ]}
       >
-        <Text style={styles.confirmBtnText}>{confirmText}</Text>
+        {isSubmitting ? (
+          <>
+            <Text style={styles.confirmBtnText}>Loading...</Text>
+            <Spinner marginLeft={5} color={Colors.shallowTextColor} />
+          </>
+        ) : (
+          <Text style={styles.confirmBtnText}>{confirmText}</Text>
+        )}
       </PressableButton>
     </View>
   );
@@ -53,6 +66,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   confirmBtnContainer: {
+    flexDirection: "row",
     backgroundColor: Colors.confirmBtnBg,
     paddingHorizontal: 20,
     paddingVertical: 10,
