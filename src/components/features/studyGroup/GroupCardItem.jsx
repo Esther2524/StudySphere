@@ -5,11 +5,11 @@ import { Colors } from "../../../utils/Colors";
 import { useNavigation } from "@react-navigation/native";
 import GroupInfoBox from "./GroupInfoBox";
 
-export default function GroupCardItem({ title, numOfPeople }) {
+export default function GroupCardItem({ title, numOfPeople, groupId }) {
   const navigation = useNavigation();
   const handlePress = useCallback(() => {
-    navigation.navigate("Group Detail", { groupName: title });
-  }, [title, navigation]);
+    navigation.navigate("Group Detail", { groupName: title, groupId });
+  }, [title, groupId, navigation]);
 
   return (
     <PressableButton onPress={handlePress}>
