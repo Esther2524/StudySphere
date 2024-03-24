@@ -187,7 +187,7 @@ export default function AuthForm({ mode }) {
         {isSubmitting && (
           <>
             <Text style={styles.submitBtnText}>Loading...</Text>
-            <Spinner marginLeft={10} />
+            <Spinner marginLeft={10} color={Colors.shallowTextColor} />
           </>
         )}
       </PressableButton>
