@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
 import FormOperationBar from '../../ui/FormOperationBar';
@@ -23,6 +23,15 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
     );
   };
 
+  // use useEffect to reset the form when modal is closed
+  useEffect(() => {
+    if (!isAddFocusVisible) {
+      setTitle("");
+      setDuration("");
+      setLocation(null);
+    }
+  }, [isAddFocusVisible]);
+
 
   // for addFocusTask, this focus must be created for the first time. 
   // we don't need to calculate todayStudyTime here
@@ -31,7 +40,7 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
     if (user) {
       try {
         const now = new Date(); // get the current time for lastUpdate
-        const durationInt = parseInt(duration, 10) || 0; 
+        const durationInt = parseInt(duration, 10) || 0;
 
         const newTask = {
           title: title,
@@ -49,7 +58,7 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
         await addCompletion(taskRef);
 
         // close the modal upon successful addition
-        setIsAddFocusVisible(false); 
+        setIsAddFocusVisible(false);
       } catch (error) {
         console.error("Error adding focus task:", error);
       }
