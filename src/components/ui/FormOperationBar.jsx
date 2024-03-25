@@ -1,5 +1,5 @@
 import { View, StyleSheet, Text } from "react-native";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import PressableButton from "./PressableButton";
 import { Colors } from "../../utils/Colors";
 import { Spinner } from "@gluestack-ui/themed";
@@ -10,10 +10,20 @@ export default function FormOperationBar({
   confirmHandler,
   cancelHandler,
   confirmDisabled,
-  isSubmitting,
+  isSubmittingOuter,
 }) {
-  let extraConfirmBtnStyle;
-  if (confirmDisabled) extraConfirmBtnStyle = styles.disabledBtn;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onConfirm = useCallback(async () => {
+    setIsSubmitting(true);
+    await confirmHandler();
+    setIsSubmitting(false);
+  }, [confirmHandler]);
+
+  const isSubmittingForm = isSubmitting || isSubmittingOuter;
+
+  const extraConfirmBtnStyle =
+    confirmDisabled || isSubmittingForm ? styles.disabledBtn : null;
 
   return (
     <View style={styles.container}>
@@ -24,14 +34,15 @@ export default function FormOperationBar({
         <Text style={styles.cancelBtnText}>{cancelText}</Text>
       </PressableButton>
       <PressableButton
-        onPress={confirmHandler}
+        onPress={onConfirm}
+        disabled={isSubmittingForm}
         containerStyle={[
           styles.confirmBtnContainer,
-          { width: isSubmitting ? 135 : "auto" },
+          { width: isSubmittingForm ? 135 : "auto" },
           extraConfirmBtnStyle,
         ]}
       >
-        {isSubmitting ? (
+        {isSubmittingForm ? (
           <>
             <Text style={styles.confirmBtnText}>Loading...</Text>
             <Spinner marginLeft={5} color={Colors.shallowTextColor} />
@@ -56,10 +67,13 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   cancelBtnContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
     backgroundColor: Colors.cancelBtnBg,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 1000,
+    minWidth: 85,
   },
   cancelBtnText: {
     color: Colors.cancelBtnText,
@@ -67,10 +81,12 @@ const styles = StyleSheet.create({
   },
   confirmBtnContainer: {
     flexDirection: "row",
+    justifyContent: "center",
     backgroundColor: Colors.confirmBtnBg,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 1000,
+    minWidth: 85,
   },
   confirmBtnText: {
     fontSize: 16,
