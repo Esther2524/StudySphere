@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { getDocs, collection, query, where } from 'firebase/firestore';
+import { getDocs, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { Colors } from '../../utils/Colors';
 import { db, auth } from '../../api/FirestoreConfig';
 import FocusCard from '../features/focusList/FocusCard';
@@ -32,25 +32,26 @@ export default function FocusScreen() {
 
 
   useEffect(() => {
-    const fetchFocusTasks = async () => {
-      // get the current user info using `auth`
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          const q = query(collection(db, "users", user.uid, "focus"));
-          const querySnapshot = await getDocs(q);
-          const tasks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          setFocusTasks(tasks);
-        } catch (error) {
-          console.log("Error fetching focus tasks:", error);
-        }
-      } else {
-        console.log("No user is currently signed in.");
-      }
-    };
-
-    fetchFocusTasks();
+    const user = auth.currentUser;
+    if (user) {
+      const q = query(collection(db, "users", user.uid, "focus"));
+  
+      // set up the real-time listener with onSnapshot
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const tasks = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setFocusTasks(tasks);
+      }, (error) => {
+        console.log("Error fetching focus tasks:", error);
+      });
+  
+      // cleanup function to unsubscribe from the listener when the component unmounts
+      return () => unsubscribe();
+    }
   }, []);
+  
 
 
 
