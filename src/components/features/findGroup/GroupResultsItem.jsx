@@ -4,14 +4,14 @@ import GroupInfoBox from "../studyGroup/GroupInfoBox";
 import PressableButton from "../../ui/PressableButton";
 import { Colors } from "../../../utils/Colors";
 
-export default function GroupResultsItem({ groupName, numOfPeople, groupId }) {
+export default function GroupResultsItem({ groupName, groupSize, groupId }) {
   const joinHandler = useCallback(() => {}, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{groupName}</Text>
       <View style={styles.subLine}>
-        <GroupInfoBox numOfPeople={numOfPeople} />
+        <GroupInfoBox groupSize={groupSize} />
         <PressableButton
           containerStyle={styles.joinBtnContainer}
           onPress={joinHandler}
