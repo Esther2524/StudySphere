@@ -3,62 +3,40 @@ import React, { useCallback, useState } from "react";
 import ModalView from "../../ui/ModalView";
 import FormOperationBar from "../../ui/FormOperationBar";
 import InputWithLabel from "../../ui/InputWithLabel";
-import { getUserRef } from "../../../utils/helper";
-import { addDoc, collection, getDoc, updateDoc } from "firebase/firestore";
-import { createGroupData } from "./studyGroupHelper";
 import { useNavigation } from "@react-navigation/native";
-import { db } from "../../../api/FirestoreConfig";
+import useAddGroup from "./useAddGroup";
 
-export default function AddGroupModal({ setIsAddingGroup }) {
+export default function AddGroupModal({ setShowAddGroupModal }) {
   const [groupName, setGroupName] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigation = useNavigation();
 
-  const userRef = getUserRef();
-  const groupRef = collection(db, "groups");
+  const cancelHandler = () => setShowAddGroupModal(false);
 
-  const cancelHandler = useCallback(() => {
-    setIsAddingGroup(false);
-  }, [setIsAddingGroup]);
+  const onAddSuccess = useCallback(({ groupName, groupId }) => {
+    setShowAddGroupModal(false);
+    navigation.navigate("Group Detail", {
+      groupName,
+      groupId,
+    });
+  }, []);
+
+  const onAddError = useCallback((e) => {
+    Alert.alert("Failed", e.message);
+  }, []);
+
+  const { mutate: addGroup, isPending: isAddingGroup } = useAddGroup({
+    onError: onAddError,
+    onSucces: onAddSuccess,
+  });
 
   const confirmHandler = useCallback(async () => {
     if (!groupName) {
       setErrMsg("Group name can't be empty!");
       return;
     }
-    setIsSubmitting(true);
-
-    // Generate group document data
-    const newGroupData = createGroupData({
-      groupOwnerId: userRef.id,
-      groupName,
-    });
-
-    // Add the group to firebase
-    try {
-      // Add new group to group collection
-      const newGroupRef = await addDoc(groupRef, newGroupData);
-
-      // Add groupId to user's groups field
-      const userData = await getDoc(userRef);
-      const preGroups = userData.data().groups;
-      preGroups.push({ groupId: newGroupRef.id, joined: true });
-      await updateDoc(userRef, {
-        groups: preGroups,
-      });
-
-      setIsAddingGroup(false);
-      navigation.navigate("Group Detail", {
-        groupName,
-        groupId: newGroupRef.id,
-      });
-      return;
-    } catch (e) {
-      setIsSubmitting(false);
-      Alert.alert("Failed", e.message);
-    }
-  }, [groupName, createGroupData, userRef, groupRef, navigation]);
+    addGroup(groupName);
+  }, [groupName, addGroup]);
 
   const inputHandler = useCallback((newText) => {
     setErrMsg("");
@@ -84,8 +62,7 @@ export default function AddGroupModal({ setIsAddingGroup }) {
             confirmText="Confirm"
             confirmHandler={confirmHandler}
             cancelHandler={cancelHandler}
-            isSubmitting={isSubmitting}
-            confirmDisabled={isSubmitting}
+            isSubmittingOuter={isAddingGroup}
           />
         </View>
       </View>
@@ -115,6 +92,5 @@ const styles = StyleSheet.create({
     width: 300,
     height: 80,
     marginBottom: 20,
-    marginTop: -10,
   },
 });
