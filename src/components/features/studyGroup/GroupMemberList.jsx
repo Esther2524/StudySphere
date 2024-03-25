@@ -7,25 +7,16 @@ import useGetGroupDetail from "./useGetGroupDetail";
 export default function GroupMemberList({ groupId }) {
   const {
     data: groupDetailData,
-    isLoading,
+    isLoading: isLoadingGroupDetail,
     error,
   } = useGetGroupDetail(groupId);
 
-  if (isLoading) return <Text>Loading...</Text>;
-
-  const tempData = [
-    {
-      name: "Harry",
-      avatar: "https://i.pravatar.cc/48?u=118836",
-      studyTime: 3,
-    },
-    { name: "Amy", avatar: "https://i.pravatar.cc/48?u=933372", studyTime: 5 },
-  ];
+  if (isLoadingGroupDetail) return <Text>Loading...</Text>;
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={tempData}
+        data={groupDetailData}
         renderItem={({ item: { name, avatar, studyTime } }) => (
           <GroupMemberItem avatar={avatar} name={name} studyTime={studyTime} />
         )}
