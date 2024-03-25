@@ -18,10 +18,13 @@ export const Colors = {
   cancelBtnText: "#fefefe",
   likeIconColor: "#FF6B6B",
   shallowTextColor: "#ffffff",
+  focusText: "#ffffff",
+  logOutButtonBg: "#ffffff",
+  profileText: "#ffffff",
+  modalTitle: "#12162e",
 
   // undefined
   lighterThanBg: "#8fb5b7",
-  mainText: "#12162e",
   labelText: "#707f89",
   greyIconColor: "#576f70",
   colorYellow: "#ffe6c6",
