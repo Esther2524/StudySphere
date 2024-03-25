@@ -7,13 +7,13 @@ import PressableButton from "../ui/PressableButton";
 import AddIcon from "../ui/AddIcon";
 
 export default function StudyGroupScreen({ navigation }) {
-  const [isAddingGroup, setIsAddingGroup] = useState(false);
+  const [showAddGroupModal, setShowAddGroupModal] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
         return (
-          <PressableButton onPress={() => setIsAddingGroup(true)}>
+          <PressableButton onPress={() => setShowAddGroupModal(true)}>
             <AddIcon color={Colors.headerTitleColor} size={30} />
           </PressableButton>
         );
@@ -23,7 +23,9 @@ export default function StudyGroupScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {isAddingGroup && <AddGroupModal setIsAddingGroup={setIsAddingGroup} />}
+      {showAddGroupModal && (
+        <AddGroupModal setShowAddGroupModal={setShowAddGroupModal} />
+      )}
       <GroupCardList />
     </View>
   );
