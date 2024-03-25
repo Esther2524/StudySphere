@@ -3,11 +3,11 @@ import React from "react";
 import { Colors } from "../../../utils/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 
-export default function GroupInfoBox({ numOfPeople }) {
+export default function GroupInfoBox({ groupSize }) {
   return (
     <View style={styles.container}>
       <MaterialIcons name="group" size={20} color={Colors.mainText} />
-      <Text>{numOfPeople}</Text>
+      <Text>{groupSize}</Text>
     </View>
   );
 }

@@ -16,6 +16,8 @@ export default function InputWithLabel({
   containerStyle,
   secureTextEntry,
   inputTextStyle,
+  labelStyle,
+  keyboardType = "default",
 }) {
   const optionalProps = editable
     ? { onChangeText: (newContent) => setContent(newContent) }
@@ -23,7 +25,7 @@ export default function InputWithLabel({
 
   return (
     <View style={[{ ...styles.container, zIndex: zIndex }, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
       {inputType === "text" && (
         <>
           <TextInput
@@ -34,6 +36,7 @@ export default function InputWithLabel({
             placeholder={placeholder}
             inputMode={inputMode}
             secureTextEntry={secureTextEntry}
+            keyboardType={keyboardType}
           />
           <Text style={styles.error}>{errorMsg}</Text>
         </>

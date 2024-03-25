@@ -1,12 +1,14 @@
 import { View, StyleSheet } from "react-native";
 import React from "react";
 import { Colors } from "../../utils/Colors";
-import GroupDetailList from "../features/studyGroup/GroupDetailList";
+import GroupMemberList from "../features/studyGroup/GroupMemberList";
 
 export default function GroupDetailsScreen({ route, navigation }) {
+  const groupId = route.params.groupId;
+
   return (
     <View style={styles.container}>
-      <GroupDetailList />
+      <GroupMemberList groupId={groupId} />
     </View>
   );
 }

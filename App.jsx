@@ -7,9 +7,11 @@ import { config } from "@gluestack-ui/config";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./src/api/FirestoreConfig";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function App() {
   const [isAuthed, setIsAuthed] = useState(false);
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -19,12 +21,14 @@ export default function App() {
   }, []);
 
   return (
-    <GluestackUIProvider config={config}>
-      <NavigationContainer>
-        {!isAuthed && <AuthStackNav />}
-        {isAuthed && <AppTabNav />}
-        <StatusBar style="light" />
-      </NavigationContainer>
-    </GluestackUIProvider>
+    <QueryClientProvider client={queryClient}>
+      <GluestackUIProvider config={config}>
+        <NavigationContainer>
+          {!isAuthed && <AuthStackNav />}
+          {isAuthed && <AppTabNav />}
+          <StatusBar style="light" />
+        </NavigationContainer>
+      </GluestackUIProvider>
+    </QueryClientProvider>
   );
 }
