@@ -22,6 +22,8 @@ export const Colors = {
   logOutButtonBg: "#ffffff",
   profileText: "#ffffff",
   modalTitle: "#12162e",
+  addFocusButton: "#ffffff",
+  addFocusMedalLabel: "#707f89",
 
   // undefined
   lighterThanBg: "#8fb5b7",
