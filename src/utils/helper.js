@@ -1,3 +1,6 @@
+import { doc } from "firebase/firestore";
+import { auth, db } from "../api/FirestoreConfig";
+
 export function limitStrLen(str, len) {
   if (str.length <= len) return str;
   return str.slice(0, len - 3) + "...";
@@ -16,4 +19,9 @@ export function isValidEmail(email) {
 export function getDefaultUserName(email) {
   if (!email.includes("@")) return email;
   return email.split("@")[0];
+}
+
+export function getUserRef() {
+  const uid = auth.currentUser.uid;
+  return doc(db, "users", uid);
 }

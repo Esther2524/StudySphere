@@ -1,22 +1,23 @@
-import { View, FlatList, StyleSheet } from "react-native";
-import React from "react";
+import { View, FlatList, StyleSheet, Text } from "react-native";
+import React, { useEffect, useState } from "react";
 import GroupCardItem from "./GroupCardItem";
+import useGetAllGroupsByUser from "./useGetAllGroupsByUser";
 
 export default function groupCardList() {
-  const tempData = [
-    {
-      title: "Study React Native Together!",
-      numOfPeople: 12,
-      groupId: "adwad",
-    },
-    { title: "Reading Group", numOfPeople: 6, groupId: "grddves" },
-  ];
+  const { data: groupData, isLoading, error } = useGetAllGroupsByUser();
+
+  if (isLoading) return <Text>Loading...</Text>;
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={tempData}
-        renderItem={({ item: { title, numOfPeople, groupId } }) => (
-          <GroupCardItem title={title} numOfPeople={numOfPeople} />
+        data={groupData}
+        renderItem={({ item: { groupName, groupSize, groupId } }) => (
+          <GroupCardItem
+            groupName={groupName}
+            groupSize={groupSize}
+            groupId={groupId}
+          />
         )}
       />
     </View>

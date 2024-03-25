@@ -1,9 +1,18 @@
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList, Text } from "react-native";
 import React from "react";
 import { Colors } from "../../../utils/Colors";
-import GroupDetailItem from "./GroupDetailItem";
+import GroupMemberItem from "./GroupMemberItem";
+import useGetGroupDetail from "./useGetGroupDetail";
 
-export default function GroupDetailList() {
+export default function GroupMemberList({ groupId }) {
+  const {
+    data: groupDetailData,
+    isLoading,
+    error,
+  } = useGetGroupDetail(groupId);
+
+  if (isLoading) return <Text>Loading...</Text>;
+
   const tempData = [
     {
       name: "Harry",
@@ -18,7 +27,7 @@ export default function GroupDetailList() {
       <FlatList
         data={tempData}
         renderItem={({ item: { name, avatar, studyTime } }) => (
-          <GroupDetailItem avatar={avatar} name={name} studyTime={studyTime} />
+          <GroupMemberItem avatar={avatar} name={name} studyTime={studyTime} />
         )}
       />
     </View>

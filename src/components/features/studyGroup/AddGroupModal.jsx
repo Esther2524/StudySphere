@@ -1,24 +1,47 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import React, { useCallback, useState } from "react";
 import ModalView from "../../ui/ModalView";
 import FormOperationBar from "../../ui/FormOperationBar";
 import InputWithLabel from "../../ui/InputWithLabel";
+import { useNavigation } from "@react-navigation/native";
+import useAddGroup from "./useAddGroup";
 
-export default function AddGroupModal({ setIsAddingGroup }) {
+export default function AddGroupModal({ setShowAddGroupModal }) {
   const [groupName, setGroupName] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const navigation = useNavigation();
 
-  const cancelHandler = useCallback(() => {
-    setIsAddingGroup(false);
-  }, [setIsAddingGroup]);
+  const cancelHandler = () => setShowAddGroupModal(false);
 
-  const confirmHandler = useCallback(() => {
+  const onAddSuccess = useCallback(({ groupName, groupId }) => {
+    setShowAddGroupModal(false);
+    navigation.navigate("Group Detail", {
+      groupName,
+      groupId,
+    });
+  }, []);
+
+  const onAddError = useCallback((e) => {
+    Alert.alert("Failed", e.message);
+  }, []);
+
+  const { mutate: addGroup, isPending: isAddingGroup } = useAddGroup({
+    onError: onAddError,
+    onSucces: onAddSuccess,
+  });
+
+  const confirmHandler = useCallback(async () => {
     if (!groupName) {
       setErrMsg("Group name can't be empty!");
       return;
     }
-    setIsAddingGroup(false);
-  }, [groupName, setErrMsg, setIsAddingGroup]);
+    addGroup(groupName);
+  }, [groupName, addGroup]);
+
+  const inputHandler = useCallback((newText) => {
+    setErrMsg("");
+    setGroupName(newText);
+  }, []);
 
   return (
     <ModalView isVisible>
@@ -27,7 +50,7 @@ export default function AddGroupModal({ setIsAddingGroup }) {
         <View style={{ alignItems: "center" }}>
           <InputWithLabel
             content={groupName}
-            setContent={setGroupName}
+            setContent={inputHandler}
             containerStyle={styles.input}
             placeholder="Enter Your Group's Name"
             errorMsg={errMsg}
@@ -39,6 +62,7 @@ export default function AddGroupModal({ setIsAddingGroup }) {
             confirmText="Confirm"
             confirmHandler={confirmHandler}
             cancelHandler={cancelHandler}
+            isSubmittingOuter={isAddingGroup}
           />
         </View>
       </View>
