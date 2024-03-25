@@ -23,7 +23,7 @@ export default function FocusScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <PressableButton onPress={() => setIsAddFocusVisible(true)}>
+        <PressableButton onPress={() => setIsAddFocusVisible(true)} containerStyle={{ marginRight: 25 }}>
           <AntDesign name="pluscircleo" size={24} color={Colors.addFocusButton} />
         </PressableButton>
       ),
