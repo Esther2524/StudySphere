@@ -60,7 +60,7 @@ export default function FocusScreen() {
         data={focusTasks}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <FocusCard />
+          <FocusCard title={item.title} duration={item.duration} />
         )}
       />
       <AddFocus
