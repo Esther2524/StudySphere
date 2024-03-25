@@ -8,6 +8,8 @@ import PressableButton from "../../ui/PressableButton";
 export default function GroupMemberItem({ name, avatar, studyTime }) {
   const [isLiked, setIsLiked] = useState(false);
 
+  const defaultAvatar = require("../../../../assets/defaultAvatar.jpg");
+
   const progressValue = studyTime / 8.0;
 
   const likeHandler = useCallback(() => {
@@ -18,18 +20,26 @@ export default function GroupMemberItem({ name, avatar, studyTime }) {
     <View style={styles.container}>
       <View style={styles.lineOne}>
         <Image
-          source={{ uri: avatar }}
-          width={40}
-          height={40}
+          source={avatar ? { uri: avatar } : defaultAvatar}
           style={styles.avatar}
         />
         <Text style={styles.name}>{name}</Text>
         <PressableButton onPress={likeHandler}>
           {!isLiked && (
-            <AntDesign name="like2" size={24} color={Colors.likeIconColor} />
+            <AntDesign
+              name="like2"
+              size={24}
+              style={styles.likeBtn}
+              color={Colors.likeIconColor}
+            />
           )}
           {isLiked && (
-            <AntDesign name="like1" size={24} color={Colors.likeIconColor} />
+            <AntDesign
+              name="like1"
+              size={24}
+              style={styles.likeBtn}
+              color={Colors.likeIconColor}
+            />
           )}
         </PressableButton>
       </View>
@@ -71,11 +81,16 @@ const styles = StyleSheet.create({
   },
   avatar: {
     borderRadius: 1000,
+    width: 40,
+    height: 40,
   },
   timeContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 1,
     marginLeft: 60,
+  },
+  likeBtn: {
+    marginBottom: 3,
   },
 });
