@@ -12,35 +12,51 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
 
   const [title, setTitle] = useState("");
   const [duration, setDuration] = useState("");
-  const [location, setLocation] = useState([]);
+  const [location, setLocation] = useState(null);
+
+  // Checks if two dates are the same day
+  const isSameDay = (date1, date2) => {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  };
 
 
+  // for addFocusTask, this focus must be created for the first time. 
+  // we don't need to calculate todayStudyTime here
   const addFocusTask = async () => {
     const user = auth.currentUser;
     if (user) {
       try {
+        const now = new Date(); // get the current time for lastUpdate
+        const durationInt = parseInt(duration, 10) || 0; 
+
         const newTask = {
           title: title,
-          duration: parseInt(duration, 10) || 0,
-          // location is an optional field in the documents (set to null for now)
-          location: null,
+          duration: durationInt,
+          location: location, // optional field
+          lastUpdate: Timestamp.fromDate(now),
+          todayStudyTime: durationInt,
         };
 
         // add the focus task to Firestore and get the document reference
         const taskRef = await addDoc(collection(db, "users", user.uid, "focus"), newTask);
         console.log("Focus task added!");
 
-        // Optionally, immediately add a completion to this new focus task
-        await addInitialCompletion(taskRef);
+        // add the first completion
+        await addCompletion(taskRef);
 
-        setIsAddFocusVisible(false); // Close the modal upon successful addition
+        // close the modal upon successful addition
+        setIsAddFocusVisible(false); 
       } catch (error) {
         console.error("Error adding focus task:", error);
       }
     }
   };
 
-  const addInitialCompletion = async (taskRef) => {
+  const addCompletion = async (taskRef) => {
     const startTime = new Date();
     const endTime = new Date(startTime.getTime() + parseInt(duration, 10) * 60000);
 
@@ -49,12 +65,10 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
       endTime: Timestamp.fromDate(endTime),
     };
 
-    // Add the completion to the 'completions' sub-collection of the focus task
+    // add the completion to the 'completions' sub-collection of the focus task
     await addDoc(collection(db, `${taskRef.path}/completions`), completion);
     console.log("Completion added!");
   };
-
-
 
 
   return (
