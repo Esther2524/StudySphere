@@ -4,9 +4,10 @@ import ModalView from "../../ui/ModalView";
 import FormOperationBar from "../../ui/FormOperationBar";
 import InputWithLabel from "../../ui/InputWithLabel";
 import { getUserRef } from "../../../utils/helper";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDoc, updateDoc } from "firebase/firestore";
 import { createGroupData } from "./studyGroupHelper";
 import { useNavigation } from "@react-navigation/native";
+import { db } from "../../../api/FirestoreConfig";
 
 export default function AddGroupModal({ setIsAddingGroup }) {
   const [groupName, setGroupName] = useState("");
@@ -15,7 +16,7 @@ export default function AddGroupModal({ setIsAddingGroup }) {
   const navigation = useNavigation();
 
   const userRef = getUserRef();
-  const userGroupsRef = collection(userRef, "groups");
+  const groupRef = collection(db, "groups");
 
   const cancelHandler = useCallback(() => {
     setIsAddingGroup(false);
@@ -36,17 +37,28 @@ export default function AddGroupModal({ setIsAddingGroup }) {
 
     // Add the group to firebase
     try {
-      const newGroupRef = await addDoc(userGroupsRef, newGroupData);
+      // Add new group to group collection
+      const newGroupRef = await addDoc(groupRef, newGroupData);
+
+      // Add groupId to user's groups field
+      const userData = await getDoc(userRef);
+      const preGroups = userData.data().groups;
+      preGroups.push({ groupId: newGroupRef.id, joined: true });
+      await updateDoc(userRef, {
+        groups: preGroups,
+      });
+
       setIsAddingGroup(false);
       navigation.navigate("Group Detail", {
         groupName,
         groupId: newGroupRef.id,
       });
+      return;
     } catch (e) {
       setIsSubmitting(false);
       Alert.alert("Failed", e.message);
     }
-  }, [groupName, createGroupData, userRef, userGroupsRef, navigation]);
+  }, [groupName, createGroupData, userRef, groupRef, navigation]);
 
   const inputHandler = useCallback((newText) => {
     setErrMsg("");
