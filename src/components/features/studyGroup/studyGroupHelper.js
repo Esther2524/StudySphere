@@ -85,19 +85,19 @@ async function getTodayFocusTimeByUserId(userId) {
   const userFocusRef = collection(db, "users", userId, "focus");
   const focusSnapshot = await getDocs(userFocusRef);
 
-  for (const focusDoc of focusSnapshot.docs) {
-    const focusDocRef = doc(db, `users/${userId}/focus/${focusDoc.id}`);
-    const focusRes = await getDoc(focusDocRef);
-
-    const lastUpdate = focusRes.data().lastUpdate.toDate();
+  focusSnapshot.forEach((focusDoc) => {
+    const focusData = focusDoc.data();
+    const lastUpdate = focusData.lastUpdate.toDate();
     const today = new Date();
-    const isToday =
+
+    if (
       lastUpdate.getDate() === today.getDate() &&
       lastUpdate.getMonth() === today.getMonth() &&
-      lastUpdate.getFullYear() === today.getFullYear();
-
-    if (isToday) totalCompletedTime += focusRes.data().todayStudyTime;
-  }
+      lastUpdate.getFullYear() === today.getFullYear()
+    ) {
+      totalCompletedTime += focusData.todayStudyTime;
+    }
+  });
 
   return (totalCompletedTime / 60.0).toFixed(1);
 }
@@ -105,23 +105,42 @@ async function getTodayFocusTimeByUserId(userId) {
 export async function getGroupDetail(groupId) {
   const groupData = await getGroupInfo(groupId);
   const { groupMembers } = groupData;
-  const userIds = groupMembers.map((item) => item.userId);
 
-  const data = [];
+  if (groupMembers.length === 0) return [];
 
-  if (userIds.length === 0) return data;
+  // Fetch user documents in parallel
+  const userDocsPromises = groupMembers.map(({ userId }) =>
+    getDoc(doc(db, "users", userId))
+  );
+  const userDocs = await Promise.all(userDocsPromises);
 
-  for (const userId of userIds) {
-    const userRes = await getDoc(doc(db, "users", userId));
-    const userInfoItem = {
-      name: userRes.data().userName,
-      avatar: userRes.data().avatar,
-      studyTime: await getTodayFocusTimeByUserId(userId),
+  // Fetch study times in parallel and construct user data
+  const userDataPromises = userDocs.map(async (userDoc, index) => {
+    const userInfo = userDoc.data();
+    const userId = groupMembers[index].userId;
+    // The call to getTodayFocusTimeByUserId is moved outside and done in parallel later
+    return {
+      userId, // Temporarily store userId to fetch study time later
+      name: userInfo.userName,
+      avatar: userInfo.avatar,
     };
-    data.push(userInfoItem);
-  }
+  });
 
-  return data;
+  let userData = await Promise.all(userDataPromises);
+
+  // Fetch study times in parallel after collecting all userIds
+  const studyTimePromises = userData.map((user) =>
+    getTodayFocusTimeByUserId(user.userId)
+  );
+  const studyTimes = await Promise.all(studyTimePromises);
+
+  // Combine user data with study times
+  userData = userData.map((user, index) => ({
+    ...user,
+    studyTime: studyTimes[index],
+  }));
+
+  return userData;
 }
 
 export async function removeGroupFromUserGroups({ groupId, userId }) {
