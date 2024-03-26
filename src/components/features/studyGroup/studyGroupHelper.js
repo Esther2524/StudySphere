@@ -20,12 +20,18 @@ function createGroupData({ groupOwnerId, groupName }) {
   };
 }
 
+export async function getCurUserGroups() {
+  const userRef = getUserRef();
+  const userRes = await getDoc(userRef);
+  const curUserGroups = userRes.data().groups;
+  return curUserGroups;
+}
+
 export async function getAllGroupsByUser() {
   const data = [];
-  const userRef = getUserRef();
   const groupsRef = collection(db, "groups");
-  const userRes = await getDoc(userRef);
-  const userGroupIds = userRes.data().groups.map((item) => item.groupId);
+  const curUserGroups = await getCurUserGroups();
+  const userGroupIds = curUserGroups.map((item) => item.groupId);
 
   if (userGroupIds.length === 0) return data;
 

@@ -9,7 +9,11 @@ export default function FindGroupScreen() {
 
   return (
     <View style={styles.container}>
-      <SearchBar setKeyword={setKeyword} placeholder="Search a group" />
+      <SearchBar
+        keyword={keyword}
+        setKeyword={setKeyword}
+        placeholder="Search a group"
+      />
       <GroupResultsList keyword={keyword} />
     </View>
   );

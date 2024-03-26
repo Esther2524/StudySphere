@@ -1,22 +1,57 @@
 import { View, Text, StyleSheet } from "react-native";
-import React, { useCallback } from "react";
+import React from "react";
 import GroupInfoBox from "../studyGroup/GroupInfoBox";
 import PressableButton from "../../ui/PressableButton";
 import { Colors } from "../../../utils/Colors";
+import { AntDesign } from "@expo/vector-icons";
+import useJoinGroup from "./useJoinGroup";
+import { Spinner } from "@gluestack-ui/themed";
 
-export default function GroupResultsItem({ groupName, numOfPeople, groupId }) {
-  const joinHandler = useCallback(() => {}, []);
+export default function GroupResultsItem({
+  groupName,
+  groupSize,
+  groupId,
+  joined,
+}) {
+  const { mutate: joinGroupHandler, isPending: isJoining } =
+    useJoinGroup(groupId);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{groupName}</Text>
       <View style={styles.subLine}>
-        <GroupInfoBox numOfPeople={numOfPeople} />
+        <GroupInfoBox groupSize={groupSize} />
         <PressableButton
-          containerStyle={styles.joinBtnContainer}
-          onPress={joinHandler}
+          containerStyle={[
+            styles.joinBtnContainer,
+            { width: joined ? 110 : "auto", opacity: joined ? 0.5 : 1 },
+          ]}
+          onPress={() => {
+            joinGroupHandler(groupId);
+          }}
+          disabled={joined || isJoining}
         >
-          <Text style={styles.joinBtnText}>Join</Text>
+          {isJoining && (
+            <>
+              <Text style={styles.joinBtnText}>Joining...</Text>
+              <Spinner marginLeft={5} size={20} color={Colors.screenBgColor} />
+            </>
+          )}
+          {!isJoining && !joined && (
+            <Text style={styles.joinBtnText}>Join</Text>
+          )}
+          {!isJoining && joined && (
+            <>
+              <Text style={[styles.joinBtnText, { marginRight: 5 }]}>
+                Joined
+              </Text>
+              <AntDesign
+                name="checkcircleo"
+                size={20}
+                color={Colors.screenBgColor}
+              />
+            </>
+          )}
         </PressableButton>
       </View>
     </View>
@@ -46,6 +81,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   joinBtnContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 8,
     paddingHorizontal: 16,
     backgroundColor: Colors.colorYellow,

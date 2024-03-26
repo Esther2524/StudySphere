@@ -1,27 +1,30 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import GroupResultsItem from "./GroupResultsItem";
 import { Colors } from "../../../utils/Colors";
-
-const tempData = [
-  { groupName: "Study React Native Together!", numOfPeople: 30, groupId: 1 },
-  { groupName: "We love reading :)", numOfPeople: 12, groupId: 2 },
-];
+import useSearchGroup from "./useSearchGroup";
 
 export default function GroupResultsList({ keyword }) {
-  const results = tempData.filter((item) =>
-    item.groupName.toLowerCase().includes(keyword.toLowerCase())
-  );
+  const { data: groupData, isPending: isSearching } = useSearchGroup(keyword);
+
+  if (isSearching) return <Text>Searching...</Text>;
 
   return (
     <View style={styles.container}>
-      {results.length > 0 && keyword && (
-        <Text style={styles.listTitle}>Results</Text>
+      {groupData.length > 0 && <Text style={styles.listTitle}>Results</Text>}
+      {groupData.length > 0 && (
+        <FlatList
+          data={groupData}
+          renderItem={({ item }) => (
+            <GroupResultsItem
+              groupId={item.groupId}
+              groupName={item.groupName}
+              groupSize={item.groupSize}
+              joined={item.joined}
+            />
+          )}
+          style={{ marginBottom: 150 }}
+        />
       )}
-      {keyword &&
-        results.map((item) => (
-          <GroupResultsItem {...item} key={item.groupId} />
-        ))}
     </View>
   );
 }
