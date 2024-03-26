@@ -4,6 +4,7 @@ import StudyGroupScreen from "../screens/StudyGroupScreen";
 import { Colors } from "../../utils/Colors";
 import GroupDetailsScreen from "../screens/GroupDetailsScreen";
 import { limitStrLen } from "../../utils/helper";
+import GroupDetailHeaderMenu from "../features/studyGroup/GroupDetailHeaderMenu";
 
 export default function GroupStackNav() {
   const Stack = createNativeStackNavigator();
@@ -30,6 +31,12 @@ export default function GroupStackNav() {
           title: limitStrLen(route.params.groupName, 25),
           headerBackTitle: "Back",
           headerTintColor: Colors.headerTitleColor,
+          headerRight: () => (
+            <GroupDetailHeaderMenu
+              groupId={route.params.groupId}
+              groupOwnerId={route.params.groupOwnerId}
+            />
+          ),
         })}
       />
     </Stack.Navigator>
