@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 1,
-    marginLeft: 60,
+    marginLeft: 57,
   },
   likeBtn: {
     marginBottom: 3,
