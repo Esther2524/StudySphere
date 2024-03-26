@@ -10,10 +10,20 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../api/FirestoreConfig";
+import { getCurUserGroups } from "../studyGroup/studyGroupHelper";
+import { getUserRef } from "../../../utils/helper";
 
-export async function searchGroup(keyword) {
+export async function searchGroup(keyword, abortSignal) {
   const data = [];
   if (!keyword) return data;
+
+  if (abortSignal && abortSignal.aborted) {
+    throw new Error("The search was aborted.");
+  }
+
+  const curUserGroups = await getCurUserGroups();
+  const joinedGroupsIds = curUserGroups.map((item) => item.groupId);
+
   const groupsRef = collection(db, "groups");
   const q = query(groupsRef, where("groupName", ">=", keyword));
   const snapshot = await getDocs(q);
@@ -22,7 +32,24 @@ export async function searchGroup(keyword) {
       groupName: doc.data().groupName,
       groupSize: doc.data().groupMembers.length,
       groupId: doc.id,
+      joined: joinedGroupsIds.includes(doc.id),
     })
   );
   return data;
+}
+
+export async function joinGroupById(groupId) {
+  const userRef = getUserRef();
+  const targetGroupRef = doc(db, "groups", groupId);
+
+  const curUserGroups = await getCurUserGroups();
+  curUserGroups.push({ groupId, joined: true });
+  await updateDoc(userRef, { groups: curUserGroups });
+
+  const targetGroupSnapshot = await getDoc(targetGroupRef);
+  const targetGroupMembers = targetGroupSnapshot.data().groupMembers;
+  targetGroupMembers.push({ userId: userRef.id, approved: true });
+  await updateDoc(targetGroupRef, { groupMembers: targetGroupMembers });
+
+  return;
 }
