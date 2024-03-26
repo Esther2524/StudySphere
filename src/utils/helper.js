@@ -25,3 +25,49 @@ export function getUserRef() {
   const uid = auth.currentUser.uid;
   return doc(db, "users", uid);
 }
+
+export function getDayOfWeek(firebaseTimestamp) {
+  const date = firebaseTimestamp.toDate();
+
+  let dayOfWeek = date.getDay();
+
+  dayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+  return dayOfWeek;
+}
+
+export function getMonth(firebaseTimestamp) {
+  const date = firebaseTimestamp.toDate();
+
+  const month = date.getMonth();
+
+  return month;
+}
+
+export function isSameDay(firebaseTimestamp) {
+  const date = firebaseTimestamp.toDate();
+  const today = new Date();
+
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+}
+
+export function isSameMonth(firebaseTimestamp) {
+  const date = firebaseTimestamp.toDate();
+  const today = new Date();
+
+  return (
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+}
+
+export function isSameYear(firebaseTimestamp) {
+  const date = firebaseTimestamp.toDate();
+  const today = new Date();
+
+  return date.getFullYear() === today.getFullYear();
+}
