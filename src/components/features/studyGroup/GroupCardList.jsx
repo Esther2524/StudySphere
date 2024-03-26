@@ -12,11 +12,14 @@ export default function groupCardList() {
     <View style={styles.container}>
       <FlatList
         data={groupData}
-        renderItem={({ item: { groupName, groupSize, groupId } }) => (
+        renderItem={({
+          item: { groupName, groupSize, groupId, groupOwnerId },
+        }) => (
           <GroupCardItem
             groupName={groupName}
             groupSize={groupSize}
             groupId={groupId}
+            groupOwnerId={groupOwnerId}
           />
         )}
       />
