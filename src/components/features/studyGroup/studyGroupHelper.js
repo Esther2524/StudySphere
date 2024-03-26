@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   documentId,
   getDoc,
@@ -121,4 +122,41 @@ export async function getGroupDetail(groupId) {
   }
 
   return data;
+}
+
+export async function removeGroupFromUserGroups({ groupId, userId }) {
+  const userRef = doc(db, "users", userId);
+  const userSnapshot = await getDoc(userRef);
+  const userGroups = userSnapshot.data().groups;
+  const newGroupsArr = userGroups.filter((item) => item.groupId !== groupId);
+  await updateDoc(userRef, { groups: newGroupsArr });
+  return;
+}
+
+export async function removeUserFromGroupMembers({ groupId, userId }) {
+  const groupRef = doc(db, "groups", groupId);
+  const snapshot = await getDoc(groupRef);
+  const groupMembers = snapshot.data().groupMembers;
+  const newMembersArr = groupMembers.filter((item) => item.userId !== userId);
+  await updateDoc(groupRef, { groupMembers: newMembersArr });
+  return;
+}
+
+export async function deleteGroup(groupId) {
+  const groupRef = doc(db, "groups", groupId);
+  const snapshot = await getDoc(groupRef);
+  const groupMembers = snapshot.data().groupMembers;
+  const userIds = groupMembers.map((item) => item.userId);
+  for (const userId of userIds) {
+    await removeGroupFromUserGroups({ groupId, userId });
+  }
+  await deleteDoc(groupRef);
+  return;
+}
+
+export async function quitGroup(groupId) {
+  const userRef = getUserRef();
+  const userId = userRef.id;
+  await removeGroupFromUserGroups({ groupId, userId });
+  await removeUserFromGroupMembers({ groupId, userId });
 }
