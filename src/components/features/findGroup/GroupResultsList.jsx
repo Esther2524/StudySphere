@@ -1,20 +1,12 @@
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import GroupResultsItem from "./GroupResultsItem";
 import { Colors } from "../../../utils/Colors";
-import { useEffect, useState } from "react";
-import { searchGroup } from "./findGroupHelper";
+import useSearchGroup from "./useSearchGroup";
 
 export default function GroupResultsList({ keyword }) {
-  const [groupData, setGroupData] = useState([]);
+  const { data: groupData, isPending: isSearching } = useSearchGroup(keyword);
 
-  useEffect(() => {
-    const handlerSearch = async () => {
-      const data = await searchGroup(keyword);
-      setGroupData(data);
-    };
-    if (keyword) handlerSearch();
-    else setGroupData([]);
-  }, [keyword, searchGroup]);
+  if (isSearching) return <Text>Searching...</Text>;
 
   return (
     <View style={styles.container}>
@@ -27,6 +19,7 @@ export default function GroupResultsList({ keyword }) {
               groupId={item.groupId}
               groupName={item.groupName}
               groupSize={item.groupSize}
+              joined={item.joined}
             />
           )}
           style={{ marginBottom: 150 }}
