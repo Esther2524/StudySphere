@@ -5,10 +5,15 @@ import { Colors } from "../../../utils/Colors";
 import { useNavigation } from "@react-navigation/native";
 import GroupInfoBox from "./GroupInfoBox";
 
-export default function GroupCardItem({ groupName, groupSize, groupId }) {
+export default function GroupCardItem({
+  groupName,
+  groupSize,
+  groupId,
+  groupOwnerId,
+}) {
   const navigation = useNavigation();
   const handlePress = useCallback(() => {
-    navigation.navigate("Group Detail", { groupName, groupId });
+    navigation.navigate("Group Detail", { groupName, groupId, groupOwnerId });
   }, [groupName, groupId, navigation]);
 
   return (
