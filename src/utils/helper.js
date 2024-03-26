@@ -27,18 +27,23 @@ export function getUserRef() {
 }
 
 export function getDayOfWeek(firebaseTimestamp) {
+  // Convert the Firebase Timestamp to a JavaScript Date object
   const date = firebaseTimestamp.toDate();
 
+  // Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
   let dayOfWeek = date.getDay();
 
+  // Adjust the day of the week to match the desired format (0 for Monday, ..., 6 for Sunday)
   dayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
   return dayOfWeek;
 }
 
 export function getMonth(firebaseTimestamp) {
+  // Convert the Firebase Timestamp to a JavaScript Date object
   const date = firebaseTimestamp.toDate();
 
+  // Get the month (0 for January, 1 for February, ..., 11 for December)
   const month = date.getMonth();
 
   return month;
