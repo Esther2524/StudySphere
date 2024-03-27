@@ -25,7 +25,7 @@ export default function EditFocus({ isEditFocusVisible, setIsEditFocusVisible, f
         if (docSnap.exists()) {
           const focusData = docSnap.data();
           setTitle(focusData.title || "");
-          setDuration(focusData.duration.toString() || ""); 
+          setDuration(parseInt(focusData.duration, 10) || ""); 
           setLocation(focusData.location || null);
         } else {
           console.log("No such document!");
@@ -72,7 +72,7 @@ export default function EditFocus({ isEditFocusVisible, setIsEditFocusVisible, f
     try {
       await updateDoc(focusRef, {
         title: title,
-        duration: duration,
+        duration: parseInt(duration, 10),
       })
       console.log("Focus task updated!");
       setIsEditFocusVisible(false);
