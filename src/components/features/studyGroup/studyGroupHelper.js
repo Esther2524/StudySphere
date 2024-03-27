@@ -11,7 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../api/FirestoreConfig";
-import { getDayOfWeek, getUserRef, isSameDay } from "../../../utils/helper";
+import { getDayOfWeek, getUserRef, isSameWeek } from "../../../utils/helper";
 
 function createGroupData({ groupOwnerId, groupName }) {
   return {
@@ -89,7 +89,7 @@ export async function getTodayFocusTimeByUserId(userId) {
     const focusData = focusDoc.data();
     const lastUpdate = focusData.lastUpdate;
 
-    if (isSameDay(lastUpdate)) {
+    if (isSameWeek(lastUpdate)) {
       totalCompletedTime += focusData.weeklyStudyTime[getDayOfWeek(lastUpdate)];
     }
   });
@@ -113,9 +113,9 @@ export async function getGroupDetail(groupId) {
   const userDataPromises = userDocs.map(async (userDoc, index) => {
     const userInfo = userDoc.data();
     const userId = groupMembers[index].userId;
-    // The call to getTodayFocusTimeByUserId is moved outside and done in parallel later
+
     return {
-      userId, // Temporarily store userId to fetch study time later
+      userId,
       name: userInfo.userName,
       avatar: userInfo.avatar,
     };
