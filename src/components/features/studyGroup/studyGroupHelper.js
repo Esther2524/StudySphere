@@ -11,7 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../api/FirestoreConfig";
-import { getUserRef } from "../../../utils/helper";
+import { getDayOfWeek, getUserRef, isSameWeek } from "../../../utils/helper";
 
 function createGroupData({ groupOwnerId, groupName }) {
   return {
@@ -79,7 +79,7 @@ export async function addGroupApi(groupName) {
   return { ...newGroupData, groupId: newGroupRef.id };
 }
 
-async function getTodayFocusTimeByUserId(userId) {
+export async function getTodayFocusTimeByUserId(userId) {
   let totalCompletedTime = 0;
 
   const userFocusRef = collection(db, "users", userId, "focus");
@@ -87,15 +87,10 @@ async function getTodayFocusTimeByUserId(userId) {
 
   focusSnapshot.forEach((focusDoc) => {
     const focusData = focusDoc.data();
-    const lastUpdate = focusData.lastUpdate.toDate();
-    const today = new Date();
+    const lastUpdate = focusData.lastUpdate;
 
-    if (
-      lastUpdate.getDate() === today.getDate() &&
-      lastUpdate.getMonth() === today.getMonth() &&
-      lastUpdate.getFullYear() === today.getFullYear()
-    ) {
-      totalCompletedTime += focusData.todayStudyTime;
+    if (isSameWeek(lastUpdate)) {
+      totalCompletedTime += focusData.weeklyStudyTime[getDayOfWeek(lastUpdate)];
     }
   });
 
@@ -118,9 +113,9 @@ export async function getGroupDetail(groupId) {
   const userDataPromises = userDocs.map(async (userDoc, index) => {
     const userInfo = userDoc.data();
     const userId = groupMembers[index].userId;
-    // The call to getTodayFocusTimeByUserId is moved outside and done in parallel later
+
     return {
-      userId, // Temporarily store userId to fetch study time later
+      userId,
       name: userInfo.userName,
       avatar: userInfo.avatar,
     };
