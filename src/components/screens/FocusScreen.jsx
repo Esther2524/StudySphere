@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { getDocs, collection, query, where, onSnapshot } from 'firebase/firestore';
+import {collection, query, onSnapshot } from 'firebase/firestore';
 import { Colors } from '../../utils/Colors';
 import { db, auth } from '../../api/FirestoreConfig';
 import FocusCard from '../features/focusList/FocusCard';
@@ -60,10 +60,8 @@ export default function FocusScreen() {
   }, []);
 
   const onStartPress = () => {
-    console.log("start button is pressed!")
+    navigation.navigate("Standby");
   }
-
-
 
   return (
     <View style={styles.container}>
