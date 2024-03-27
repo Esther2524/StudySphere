@@ -7,21 +7,11 @@ import { Colors } from '../../../utils/Colors';
 import { auth, db } from '../../../api/FirestoreConfig';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 
-
 export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
 
   const [title, setTitle] = useState("");
   const [duration, setDuration] = useState("");
   const [location, setLocation] = useState(null);
-
-  // Checks if two dates are the same day
-  const isSameDay = (date1, date2) => {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
-  };
 
   // use useEffect to reset the form when modal is closed
   useEffect(() => {
@@ -32,35 +22,55 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
     }
   }, [isAddFocusVisible]);
 
+  // check the title and the durarion are valid
+  const validateInput = () => {
+    if (!title.trim()) {
+      alert("Focus's title cannot be empty!");
+      return false;
+    }
+
+    const durationNum = parseInt(duration, 10);
+    if (isNaN(durationNum) || durationNum <= 0) {
+      alert("Duration must be a positive number!");
+      return false;
+    }
+
+    return true;
+  }
+
 
   // for addFocusTask, this focus must be created for the first time. 
   // we don't need to calculate todayStudyTime here
   const addFocusTask = async () => {
     const user = auth.currentUser;
-    if (user) {
-      try {
-        const now = new Date(); // get the current time for lastUpdate
-        const durationInt = parseInt(duration, 10) || 0;
+    if (user && validateInput()) {
+      if (user) {
+        try {
+          const now = new Date(); // get the current time for lastUpdate
+          const durationInt = parseInt(duration, 10) || 0;
 
-        const newTask = {
-          title: title,
-          duration: durationInt,
-          location: location, // optional field
-          lastUpdate: Timestamp.fromDate(now),
-          todayStudyTime: durationInt,
-        };
+          const newTask = {
+            title: title,
+            duration: durationInt,
+            location: location, // optional field
+            lastUpdate: Timestamp.fromDate(now),
+            break: 0,
+            weeklyStudyTime: 0,
+            monthlyStudyTime: 0,
+          };
 
-        // add the focus task to Firestore and get the document reference
-        const taskRef = await addDoc(collection(db, "users", user.uid, "focus"), newTask);
-        console.log("Focus task added!");
+          // add the focus task to Firestore and get the document reference
+          const taskRef = await addDoc(collection(db, "users", user.uid, "focus"), newTask);
+          console.log("Focus task added!");
 
-        // add the first completion
-        await addCompletion(taskRef);
+          // add the first completion
+          // await addCompletion(taskRef);
 
-        // close the modal upon successful addition
-        setIsAddFocusVisible(false);
-      } catch (error) {
-        console.error("Error adding focus task:", error);
+          // close the modal upon successful addition
+          setIsAddFocusVisible(false);
+        } catch (error) {
+          console.error("Error adding focus task:", error);
+        }
       }
     }
   };

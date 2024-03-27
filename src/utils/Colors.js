@@ -24,6 +24,7 @@ export const Colors = {
   modalTitle: "#12162e",
   addFocusButton: "#ffffff",
   addFocusMedalLabel: "#707f89",
+  deleteButton: "#576f70",
 
   // undefined
   lighterThanBg: "#8fb5b7",
