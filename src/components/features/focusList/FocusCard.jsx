@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     marginVertical: 8,
-    marginHorizontal: 50,
+    marginHorizontal: 40,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cardText: {
-    marginLeft: 10,
+    marginRight: 20,
   },
   startText: {
     fontSize: 18,
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     marginLeft: 100,
     justifyContent: 'center', // Centers children along the flex direction (default is column, so this centers vertically)
     alignItems: 'center', // Centers children perpendicular to the flex direction (so this centers horizontally)
-    marginRight: 10,
+    marginLeft: 20,
   },
   title: {
     fontSize: 18,
