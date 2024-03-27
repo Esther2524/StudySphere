@@ -60,6 +60,28 @@ export function isSameDay(firebaseTimestamp) {
   );
 }
 
+function getStartOfWeek(date) {
+  const dayOfWeek = date.getUTCDay();
+  const diff = (dayOfWeek + 6) % 7;
+  return new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate() - diff
+  );
+}
+
+export function isSameWeek(firebaseTimestamp) {
+  const date = firebaseTimestamp.toDate();
+  const today = new Date();
+
+  // Get the start of the week (Monday) for both dates
+  const startOfWeekForDate = getStartOfWeek(date);
+  const startOfWeekForToday = getStartOfWeek(today);
+
+  // Compare the start of the week dates
+  return startOfWeekForDate.getTime() === startOfWeekForToday.getTime();
+}
+
 export function isSameMonth(firebaseTimestamp) {
   const date = firebaseTimestamp.toDate();
   const today = new Date();
