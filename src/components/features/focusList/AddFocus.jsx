@@ -54,7 +54,8 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
             duration: durationInt,
             location: location, // optional field
             lastUpdate: Timestamp.fromDate(now),
-            break: 0,
+            todayBreaks: 0,
+            todayTimes: 0,
             weeklyStudyTime: new Array(7).fill(0), // 7 days in a week
             monthlyStudyTime: new Array(12).fill(0), // 12 months in a year
           };

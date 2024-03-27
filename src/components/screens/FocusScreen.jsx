@@ -59,9 +59,10 @@ export default function FocusScreen() {
     }
   }, []);
 
-  const onStartPress = (duration) => {
-    navigation.navigate('Standby', { duration});
-  }
+  const onStartPress = (focusID, duration) => {
+    navigation.navigate('Standby', { focusID, duration });
+  };
+ 
 
   return (
     <View style={styles.container}>
@@ -72,7 +73,7 @@ export default function FocusScreen() {
           <FocusCard
             title={item.title}
             duration={item.duration}
-            onStartPress={() => onStartPress(item.duration)} // Pass the duration to onStartPress
+            onStartPress={() => onStartPress(item.id, item.duration)} // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
               setSelectedFocusID(item.id); // pass the focus item id to the EditFocus Modal
