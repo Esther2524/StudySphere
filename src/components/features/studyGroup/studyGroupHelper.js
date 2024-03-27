@@ -11,7 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../api/FirestoreConfig";
-import { getUserRef } from "../../../utils/helper";
+import { getUserRef, isSameDay } from "../../../utils/helper";
 
 function createGroupData({ groupOwnerId, groupName }) {
   return {
@@ -87,14 +87,9 @@ async function getTodayFocusTimeByUserId(userId) {
 
   focusSnapshot.forEach((focusDoc) => {
     const focusData = focusDoc.data();
-    const lastUpdate = focusData.lastUpdate.toDate();
-    const today = new Date();
+    const lastUpdate = focusData.lastUpdate;
 
-    if (
-      lastUpdate.getDate() === today.getDate() &&
-      lastUpdate.getMonth() === today.getMonth() &&
-      lastUpdate.getFullYear() === today.getFullYear()
-    ) {
+    if (isSameDay(lastUpdate)) {
       totalCompletedTime += focusData.todayStudyTime;
     }
   });
