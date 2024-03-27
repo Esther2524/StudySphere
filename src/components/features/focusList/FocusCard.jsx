@@ -1,37 +1,70 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { Colors } from '../../../utils/Colors';
+import PressableButton from '../../ui/PressableButton';
 
-export default function FocusCard({ title, duration }) {
+export default function FocusCard({ title, duration, onStartPress, onEditPress }) {
+
+
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.duration}>{duration} min</Text>
-    </View>
+    <PressableButton
+      onPress={onEditPress}
+    >
+      <View style={styles.card}>
+        <View style={styles.cardText}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.duration}>{duration} min</Text>
+        </View>
+        <View style={styles.startButton}>
+          <PressableButton onPress={onStartPress}>
+            <Text style={styles.startText}>Start</Text>
+          </PressableButton>
+        </View>
+      </View>
+    </PressableButton>
+
   )
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "white", // Define this color in your Colors.js or adjust as needed
-    borderRadius: 8,
+    backgroundColor: "white",
+    borderRadius: 10,
     padding: 16,
     marginVertical: 8,
-    marginHorizontal: 16,
+    marginHorizontal: 50,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
     elevation: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cardText: {
+    marginLeft: 10,
+  },
+  startText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  startButton: {
+    marginLeft: 100,
+    justifyContent: 'center', // Centers children along the flex direction (default is column, so this centers vertically)
+    alignItems: 'center', // Centers children perpendicular to the flex direction (so this centers horizontally)
+    marginRight: 10,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.title, // Define this color in your Colors.js or adjust as needed
+    color: Colors.title,
   },
   duration: {
     fontSize: 16,
-    color: Colors.text, // Define this color in your Colors.js or adjust as needed
+    color: Colors.text,
     marginTop: 8,
+  },
+  pressed: {
+    opacity: 0.5,
   },
 })
