@@ -15,11 +15,9 @@ export default function FocusCard({ title, duration, onStartPress, onEditPress }
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.duration}>{duration} min</Text>
         </View>
-        <View style={styles.startButton}>
-          <PressableButton onPress={onStartPress}>
+          <PressableButton onPress={onStartPress} containerStyle={styles.startButton}>
             <Text style={styles.startText}>Start</Text>
           </PressableButton>
-        </View>
       </View>
     </PressableButton>
 
@@ -53,6 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Centers children along the flex direction (default is column, so this centers vertically)
     alignItems: 'center', // Centers children perpendicular to the flex direction (so this centers horizontally)
     marginLeft: 20,
+    padding: 10, // Add padding to increase the touchable area
   },
   title: {
     fontSize: 18,
