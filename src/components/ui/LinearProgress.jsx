@@ -2,7 +2,7 @@ import { View, StyleSheet } from "react-native";
 import React from "react";
 
 export default function LinearProgress({ value, width, height, color }) {
-  const activeWidth = value * width;
+  const activeWidth = Number(value) * Number(width);
   return (
     <View
       style={[
