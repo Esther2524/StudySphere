@@ -5,7 +5,7 @@ import InputWithLabel from '../../ui/InputWithLabel';
 import FormOperationBar from '../../ui/FormOperationBar';
 import { Colors } from '../../../utils/Colors';
 import { auth, db } from '../../../api/FirestoreConfig';
-import { updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
+import { updateDoc, deleteDoc, doc, Timestamp, getDoc } from 'firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function EditFocus({ isEditFocusVisible, setIsEditFocusVisible, focusID }) {
@@ -14,15 +14,29 @@ export default function EditFocus({ isEditFocusVisible, setIsEditFocusVisible, f
   const [location, setLocation] = useState(null);
   const user = auth.currentUser;
 
-
-  // use useEffect to reset the form when modal is closed
+  // when isEditFocusVisible becomes true and when focusID changes,
+  // useEffect will fetch the current data of the focus task and populates the state variables
   useEffect(() => {
-    if (!isEditFocusVisible) {
-      setTitle("");
-      setDuration("");
-      setLocation(null);
-    }
-  }, [isEditFocusVisible]);
+    const fetchFocusData = async () => {
+      if (focusID && isEditFocusVisible) {
+        const focusRef = doc(db, "users", auth.currentUser.uid, "focus", focusID);
+        const docSnap = await getDoc(focusRef);
+
+        if (docSnap.exists()) {
+          const focusData = docSnap.data();
+          setTitle(focusData.title || "");
+          setDuration(focusData.duration.toString() || ""); 
+          setLocation(focusData.location || null);
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchFocusData();
+  }, [isEditFocusVisible, focusID]);
+
+  
 
   // check the title and the durarion are valid
   const validateInput = () => {
