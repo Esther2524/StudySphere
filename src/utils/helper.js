@@ -31,10 +31,7 @@ export function getDayOfWeek(firebaseTimestamp) {
   const date = firebaseTimestamp.toDate();
 
   // Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
-  let dayOfWeek = date.getDay();
-
-  // Adjust the day of the week to match the desired format (0 for Monday, ..., 6 for Sunday)
-  dayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  const dayOfWeek = date.getDay() - 1;
 
   return dayOfWeek;
 }
