@@ -8,12 +8,16 @@ import FocusCard from '../features/focusList/FocusCard';
 import AddFocus from '../features/focusList/AddFocus';
 import { AntDesign } from '@expo/vector-icons';
 import PressableButton from '../ui/PressableButton';
+import EditFocus from '../features/focusList/EditFocus';
 
 
 export default function FocusScreen() {
 
   const [focusTasks, setFocusTasks] = useState([]);
   const [isAddFocusVisible, setIsAddFocusVisible] = useState(false);
+  // for EditFocus Modal to keep track of which focus task is selected for editing or deletion
+  const [selectedFocusID, setSelectedFocusID] = useState(null);
+  const [isEditFocusVisible, setIsEditFocusVisible] = useState(false);
 
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
@@ -23,7 +27,10 @@ export default function FocusScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <PressableButton onPress={() => setIsAddFocusVisible(true)} containerStyle={{ marginRight: 25 }}>
+        <PressableButton
+          onPress={() => setIsAddFocusVisible(true)}
+          containerStyle={{ marginRight: 25 }}
+        >
           <AntDesign name="pluscircleo" size={24} color={Colors.addFocusButton} />
         </PressableButton>
       ),
@@ -35,7 +42,7 @@ export default function FocusScreen() {
     const user = auth.currentUser;
     if (user) {
       const q = query(collection(db, "users", user.uid, "focus"));
-  
+
       // set up the real-time listener with onSnapshot
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const tasks = querySnapshot.docs.map(doc => ({
@@ -46,12 +53,15 @@ export default function FocusScreen() {
       }, (error) => {
         console.log("Error fetching focus tasks:", error);
       });
-  
+
       // cleanup function to unsubscribe from the listener when the component unmounts
       return () => unsubscribe();
     }
   }, []);
-  
+
+  const onStartPress = () => {
+    console.log("start button is pressed!")
+  }
 
 
 
@@ -61,12 +71,25 @@ export default function FocusScreen() {
         data={focusTasks}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <FocusCard title={item.title} duration={item.duration} />
+          <FocusCard
+            title={item.title}
+            duration={item.duration}
+            onStartPress={onStartPress}
+            onEditPress={() => {
+              setIsEditFocusVisible(true);
+              setSelectedFocusID(item.id); // pass the focus item id to the EditFocus Modal
+            }}
+          />
         )}
       />
       <AddFocus
         isAddFocusVisible={isAddFocusVisible}
         setIsAddFocusVisible={setIsAddFocusVisible}
+      />
+      <EditFocus
+        isEditFocusVisible={isEditFocusVisible}
+        setIsEditFocusVisible={setIsEditFocusVisible}
+        focusID={selectedFocusID}
       />
     </View>
   )
