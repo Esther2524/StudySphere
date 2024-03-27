@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import {collection, query, onSnapshot } from 'firebase/firestore';
+import { collection, query, onSnapshot } from 'firebase/firestore';
 import { Colors } from '../../utils/Colors';
 import { db, auth } from '../../api/FirestoreConfig';
 import FocusCard from '../features/focusList/FocusCard';
@@ -59,8 +59,8 @@ export default function FocusScreen() {
     }
   }, []);
 
-  const onStartPress = () => {
-    navigation.navigate("Standby");
+  const onStartPress = (duration) => {
+    navigation.navigate('Standby', { duration});
   }
 
   return (
@@ -72,7 +72,7 @@ export default function FocusScreen() {
           <FocusCard
             title={item.title}
             duration={item.duration}
-            onStartPress={onStartPress}
+            onStartPress={() => onStartPress(item.duration)} // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
               setSelectedFocusID(item.id); // pass the focus item id to the EditFocus Modal
