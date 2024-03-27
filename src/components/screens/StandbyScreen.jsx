@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, View, Text, StyleSheet, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
@@ -13,6 +13,7 @@ export default function StandbyScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { focusID, duration } = route.params;
+  const [isPlaying, setIsPlaying] = useState(true);
 
   const handleEndCountdown = () => {
     Alert.alert(
@@ -27,6 +28,7 @@ export default function StandbyScreen() {
   };
 
   const incrementBreak = async () => {
+    setIsPlaying(false);
     if (focusID) {
       const now = new Date();
 
@@ -109,9 +111,11 @@ export default function StandbyScreen() {
       <View style={styles.container}>
         <Text style={styles.header}>Stay Focus</Text>
         <CountdownCircleTimer
-          isPlaying
+          isPlaying={isPlaying}
+          size={200}
+          strokeWidth={20}
           duration={duration * 60}
-          colors={[Colors.primary, Colors.secondary]}
+          colors={[Colors.timerPrimary]}
           onComplete={onComplete}
         >
           {({ remainingTime }) => {
@@ -148,23 +152,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    fontSize: 20,
+    fontSize: 25,
+    fontWeight: '700',
+    color: Colors.timerLabelText,
     marginVertical: 50,
   },
   timerText: {
     fontSize: 40,
     color: Colors.timerText,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: Colors.buttonText,
+    color: 'white',
   },
   buttonContainer: {
     marginTop: 30,
-    backgroundColor: "lightblue",
-    padding: 10,
+    backgroundColor: Colors.timerText,
+    padding: 12,
     borderRadius: 10,
   },
 });
