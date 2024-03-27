@@ -94,7 +94,7 @@ export async function getTodayFocusTimeByUserId(userId) {
     }
   });
 
-  return (totalCompletedTime / 60.0).toFixed(1);
+  return Number((totalCompletedTime / 60.0).toFixed(1));
 }
 
 export async function getGroupDetail(groupId) {
