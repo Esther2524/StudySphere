@@ -17,26 +17,36 @@ export default function EditFocus({
   const [location, setLocation] = useState(null);
   const user = auth.currentUser;
 
+  const [titleErrMsg, setTitleErrMsg] = useState("");
+  const [DurationErrMsg, setDurationErrMsg] = useState("");
+
   // ensure input fields are always populated with the most current data passed to the EditFocus component
   useEffect(() => {
     setTitle(focusTitle);
     setDuration(focusDuration.toString());
+    setDurationErrMsg("");
+    setTitleErrMsg("");
   }, [focusTitle, focusDuration]);
 
 
   // check the title and the durarion are valid
   const validateInput = () => {
+    let isValid = true;
+    setTitleErrMsg('');
+    setDurationErrMsg('');
+
     if (!title.trim()) {
-      alert("Focus's title cannot be empty!");
-      return false;
+      setTitleErrMsg("Focus's title cannot be empty");
+      isValid = false;
     }
     const durationNum = parseInt(duration, 10);
     if (isNaN(durationNum) || durationNum <= 0) {
-      alert("Duration must be a positive number!");
-      return false;
+      setDurationErrMsg("Duration must be a positive number");
+      isValid = false;
     }
-    return true;
+    return isValid;
   }
+
 
   const handleEditFocus = () => {
     if (!validateInput()) return;
@@ -62,6 +72,8 @@ export default function EditFocus({
       })
       console.log("Focus task updated!");
       setIsEditFocusVisible(false);
+      setDurationErrMsg("");
+      setTitleErrMsg("");
     } catch (error) {
       console.error("Error updating focus task:", error);
     }
@@ -84,6 +96,8 @@ export default function EditFocus({
       await deleteDoc(focusRef);
       console.log("Focus task deleted!");
       setIsEditFocusVisible(false);
+      setDurationErrMsg("");
+      setTitleErrMsg("");
     } catch (error) {
       console.error("Error updating focus task:", error);
     }
@@ -110,14 +124,16 @@ export default function EditFocus({
           content={title}
           setContent={setTitle}
           containerStyle={{ width: '100%' }}
+          errorMsg={titleErrMsg}
         />
         <InputWithLabel
           label="Duration(min) *"
           labelStyle={{ color: Colors.addFocusMedalLabel }}
           content={duration}
           setContent={setDuration}
-          containerStyle={{ width: '100%' }}
+          containerStyle={{ width: '100%', marginBottom: 20 }}
           keyboardType='numeric'
+          errorMsg={DurationErrMsg}
         />
         <FormOperationBar
           confirmText="Edit"
