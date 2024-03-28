@@ -57,7 +57,7 @@ export function isSameDay(firebaseTimestamp) {
   );
 }
 
-function getStartOfWeek(date) {
+export function getStartOfWeek(date) {
   const dayOfWeek = date.getUTCDay();
   const diff = (dayOfWeek + 6) % 7;
   return new Date(
@@ -94,4 +94,8 @@ export function isSameYear(firebaseTimestamp) {
   const today = new Date();
 
   return date.getFullYear() === today.getFullYear();
+}
+
+export function generateRandomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

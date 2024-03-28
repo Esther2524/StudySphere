@@ -3,6 +3,7 @@ import React from "react";
 import StatsCardContainer from "./StatsCardContainer";
 import useGetTodayData from "./useGetTodayData";
 import { getDailyOverview } from "./dashboardHelper";
+import { Skeleton } from "@rneui/themed";
 
 export default function DailyOverview() {
   const { data, isLoading } = useGetTodayData();
@@ -19,17 +20,28 @@ export default function DailyOverview() {
       <View style={styles.infoContainer}>
         <View style={styles.infoColumn}>
           <Text style={styles.infoTitle}>Achieved</Text>
-          <Text style={styles.infoText}>{numOfCompletions}</Text>
+          {!isLoading && (
+            <Text style={styles.infoText}>{numOfCompletions}</Text>
+          )}
+          {isLoading && (
+            <Skeleton width={25} height={15} style={styles.infoSkeleton} />
+          )}
         </View>
         <View style={styles.infoColumn}>
           <Text style={styles.infoTitle}>Total Hours</Text>
-          <Text style={styles.infoText}>
-            {Number((focusTime / 60.0).toFixed(1))}
-          </Text>
+          {!isLoading && (
+            <Text style={styles.infoText}>{Number(focusTime.toFixed(1))}</Text>
+          )}
+          {isLoading && (
+            <Skeleton width={25} height={15} style={styles.infoSkeleton} />
+          )}
         </View>
         <View style={styles.infoColumn}>
           <Text style={styles.infoTitle}>Breaks</Text>
-          <Text style={styles.infoText}>{numOfBreaks}</Text>
+          {!isLoading && <Text style={styles.infoText}>{numOfBreaks}</Text>}
+          {isLoading && (
+            <Skeleton width={25} height={15} style={styles.infoSkeleton} />
+          )}
         </View>
       </View>
     </StatsCardContainer>
@@ -50,5 +62,8 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 16,
+  },
+  infoSkeleton: {
+    marginTop: 2,
   },
 });

@@ -6,12 +6,16 @@ import useSearchGroup from "./useSearchGroup";
 export default function GroupResultsList({ keyword }) {
   const { data: groupData, isPending: isSearching } = useSearchGroup(keyword);
 
-  if (isSearching) return <Text>Searching...</Text>;
-
   return (
     <View style={styles.container}>
-      {groupData.length > 0 && <Text style={styles.listTitle}>Results</Text>}
-      {groupData.length > 0 && (
+      {((groupData && groupData.length > 0) || isSearching) && (
+        <Text style={styles.listTitle}>Results</Text>
+      )}
+      {isSearching &&
+        Array.from({ length: 4 }).map((_, index) => (
+          <GroupResultsItem key={index} isLoading={true} />
+        ))}
+      {groupData && groupData.length > 0 && (
         <FlatList
           data={groupData}
           renderItem={({ item }) => (

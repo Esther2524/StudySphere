@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Modal } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Colors } from "../../utils/Colors";
 import GroupCardList from "../features/studyGroup/GroupCardList";
