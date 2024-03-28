@@ -4,12 +4,14 @@ import PressableButton from "../../ui/PressableButton";
 import { Colors } from "../../../utils/Colors";
 import { useNavigation } from "@react-navigation/native";
 import GroupInfoBox from "./GroupInfoBox";
+import GroupCardItemSkeleton from "./GroupCardItemSkeleton";
 
 export default function GroupCardItem({
   groupName,
   groupSize,
   groupId,
   groupOwnerId,
+  isLoading,
 }) {
   const navigation = useNavigation();
   const handlePress = useCallback(() => {
@@ -19,8 +21,13 @@ export default function GroupCardItem({
   return (
     <PressableButton onPress={handlePress}>
       <View style={styles.container}>
-        <Text style={styles.title}>{groupName}</Text>
-        <GroupInfoBox groupSize={groupSize} />
+        {isLoading && <GroupCardItemSkeleton />}
+        {!isLoading && (
+          <>
+            <Text style={styles.title}>{groupName}</Text>
+            <GroupInfoBox groupSize={groupSize} />
+          </>
+        )}
       </View>
     </PressableButton>
   );
