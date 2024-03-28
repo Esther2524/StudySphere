@@ -1,24 +1,29 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Colors } from "../../utils/Colors";
 import DailyOverview from "../features/dashboard/DailyOverview";
 import TaskBreakdown from "../features/dashboard/TaskBreakdown";
+import FocusTrend from "../features/dashboard/FocusTrend";
 
 export default function DashboardScreen() {
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainerStyle}
+    >
       <DailyOverview />
       <TaskBreakdown />
-    </View>
+      <FocusTrend />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: { backgroundColor: Colors.screenBgColor },
+  contentContainerStyle: {
     backgroundColor: Colors.screenBgColor,
-    flex: 1,
     alignItems: "center",
-    paddingTop: 20,
+    paddingVertical: 20,
     gap: 20,
   },
 });
