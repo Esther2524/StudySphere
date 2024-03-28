@@ -10,7 +10,7 @@ import { AntDesign } from '@expo/vector-icons';
 import PressableButton from '../../ui/PressableButton';
 
 export default function EditFocus({
-  isEditFocusVisible, setIsEditFocusVisible, focusTitle, focusDuration
+  isEditFocusVisible, setIsEditFocusVisible, focusTitle, focusDuration, focusID
 }) {
   const [title, setTitle] = useState(focusTitle);
   const [duration, setDuration] = useState(focusDuration.toString());

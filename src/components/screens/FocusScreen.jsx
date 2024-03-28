@@ -97,6 +97,7 @@ export default function FocusScreen() {
                // pass the focus data to the EditFocus Modal
               setFocusTitle(item.title);
               setFocusDurarion(item.duration);
+              setSelectedFocusID(item.id);
             }}
           />
         )}
@@ -110,6 +111,7 @@ export default function FocusScreen() {
         setIsEditFocusVisible={setIsEditFocusVisible}
         focusTitle={focusTitle}
         focusDuration={focusDuration}
+        focusID={selectedFocusID}
       />
 
       <AddReminder
