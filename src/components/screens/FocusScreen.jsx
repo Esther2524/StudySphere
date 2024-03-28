@@ -21,6 +21,8 @@ export default function FocusScreen() {
   // for EditFocus Modal to keep track of which focus task is selected for editing or deletion
   const [selectedFocusID, setSelectedFocusID] = useState(null);
   const [isEditFocusVisible, setIsEditFocusVisible] = useState(false);
+  const [focusTitle, setFocusTitle] = useState("");
+  const [focusDuration, setFocusDurarion] = useState("");
 
 
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
@@ -92,7 +94,9 @@ export default function FocusScreen() {
             onStartPress={() => onStartPress(item.id, item.duration)} // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
-              setSelectedFocusID(item.id); // pass the focus item id to the EditFocus Modal
+               // pass the focus data to the EditFocus Modal
+              setFocusTitle(item.title);
+              setFocusDurarion(item.duration);
             }}
           />
         )}
@@ -104,7 +108,8 @@ export default function FocusScreen() {
       <EditFocus
         isEditFocusVisible={isEditFocusVisible}
         setIsEditFocusVisible={setIsEditFocusVisible}
-        focusID={selectedFocusID}
+        focusTitle={focusTitle}
+        focusDuration={focusDuration}
       />
 
       <AddReminder

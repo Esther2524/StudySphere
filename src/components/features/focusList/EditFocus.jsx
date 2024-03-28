@@ -9,35 +9,20 @@ import { updateDoc, deleteDoc, doc, Timestamp, getDoc } from 'firebase/firestore
 import { AntDesign } from '@expo/vector-icons';
 import PressableButton from '../../ui/PressableButton';
 
-export default function EditFocus({ isEditFocusVisible, setIsEditFocusVisible, focusID }) {
-  const [title, setTitle] = useState("");
-  const [duration, setDuration] = useState("");
+export default function EditFocus({
+  isEditFocusVisible, setIsEditFocusVisible, focusTitle, focusDuration
+}) {
+  const [title, setTitle] = useState(focusTitle);
+  const [duration, setDuration] = useState(focusDuration.toString());
   const [location, setLocation] = useState(null);
   const user = auth.currentUser;
 
-  // when isEditFocusVisible becomes true and when focusID changes,
-  // useEffect will fetch the current data of the focus task and populates the state variables
+  // ensure input fields are always populated with the most current data passed to the EditFocus component
   useEffect(() => {
-    const fetchFocusData = async () => {
-      if (focusID && isEditFocusVisible) {
-        const focusRef = doc(db, "users", auth.currentUser.uid, "focus", focusID);
-        const docSnap = await getDoc(focusRef);
+    setTitle(focusTitle);
+    setDuration(focusDuration.toString());
+  }, [focusTitle, focusDuration]);
 
-        if (docSnap.exists()) {
-          const focusData = docSnap.data();
-          setTitle(focusData.title || "");
-          setDuration(parseInt(focusData.duration, 10) || ""); 
-          setLocation(focusData.location || null);
-        } else {
-          console.log("No such document!");
-        }
-      }
-    };
-
-    fetchFocusData();
-  }, [isEditFocusVisible, focusID]);
-
-  
 
   // check the title and the durarion are valid
   const validateInput = () => {
@@ -60,7 +45,7 @@ export default function EditFocus({ isEditFocusVisible, setIsEditFocusVisible, f
       "Are you sure you want to edit this focus?",
       [
         { text: "No" },
-        { text: "Yes", onPress: () => editFocusTask() } 
+        { text: "Yes", onPress: () => editFocusTask() }
       ]
     );
   }
