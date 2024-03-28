@@ -6,7 +6,7 @@ import { Colors } from '../../utils/Colors';
 import { db, auth } from '../../api/FirestoreConfig';
 import FocusCard from '../features/focusList/FocusCard';
 import AddFocus from '../features/focusList/AddFocus';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Octicons } from '@expo/vector-icons';
 import PressableButton from '../ui/PressableButton';
 import EditFocus from '../features/focusList/EditFocus';
 import AddReminder from '../features/focusList/AddReminder';
@@ -38,7 +38,7 @@ export default function FocusScreen() {
             onPress={() => setIsReminderVisible(true)}
             containerStyle={{ marginRight: 15 }}
           >
-            <AntDesign name="calendar" size={24} color={Colors.addFocusButton} />
+            <Octicons name="bell" size={24} color={Colors.addFocusButton} />
           </PressableButton>
 
           <PressableButton
