@@ -88,6 +88,7 @@ export default function FocusScreen() {
           <FocusCard
             title={item.title}
             duration={item.duration}
+            todayTimes={item.todayTimes}
             onStartPress={() => onStartPress(item.id, item.duration)} // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
