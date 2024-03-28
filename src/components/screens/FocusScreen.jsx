@@ -9,6 +9,7 @@ import AddFocus from '../features/focusList/AddFocus';
 import { AntDesign } from '@expo/vector-icons';
 import PressableButton from '../ui/PressableButton';
 import EditFocus from '../features/focusList/EditFocus';
+import AddReminder from '../features/focusList/AddReminder';
 
 
 export default function FocusScreen() {
@@ -33,7 +34,7 @@ export default function FocusScreen() {
         <View style={styles.buttonContainer}>
           <PressableButton
             onPress={() => setIsReminderVisible(true)}
-            containerStyle={{ marginRight: 10 }}
+            containerStyle={{ marginRight: 15 }}
           >
             <AntDesign name="calendar" size={24} color={Colors.addFocusButton} />
           </PressableButton>
@@ -103,6 +104,11 @@ export default function FocusScreen() {
         isEditFocusVisible={isEditFocusVisible}
         setIsEditFocusVisible={setIsEditFocusVisible}
         focusID={selectedFocusID}
+      />
+
+      <AddReminder
+        isReminderVisible={isReminderVisible}
+        setIsReminderVisible={setIsReminderVisible}
       />
     </View>
   )
