@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, Alert } from 'react-native';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
@@ -7,6 +7,7 @@ import { Colors } from '../../../utils/Colors';
 import { auth, db } from '../../../api/FirestoreConfig';
 import { updateDoc, deleteDoc, doc, Timestamp, getDoc } from 'firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
+import PressableButton from '../../ui/PressableButton';
 
 export default function EditFocus({ isEditFocusVisible, setIsEditFocusVisible, focusID }) {
   const [title, setTitle] = useState("");
@@ -113,9 +114,9 @@ export default function EditFocus({ isEditFocusVisible, setIsEditFocusVisible, f
             {/* Invisible placeholder to balance the delete button and center the title */}
           </View>
           <Text style={styles.title}>Edit a Focus</Text>
-          <Pressable onPress={handleDeleteFocus}>
+          <PressableButton onPress={handleDeleteFocus}>
             <AntDesign name="delete" size={24} color={Colors.deleteButton} />
-          </Pressable>
+          </PressableButton>
         </View>
 
         <InputWithLabel
