@@ -1,10 +1,15 @@
 import { Timestamp, collection, getDocs } from "firebase/firestore";
-import { getDayOfWeek, getUserRef, isSameWeek } from "../../../utils/helper";
+import {
+  getDayOfWeek,
+  getStartOfWeek,
+  getUserRef,
+  isSameWeek,
+} from "../../../utils/helper";
 import { db } from "../../../api/FirestoreConfig";
 
 const pieColors = ["#F66D44", "#FEAE65", "#AADEA7", "#64C2A6", "#2D87BB"];
 
-export async function getDailyFocusInfo() {
+export async function getDailyFocusInfo(dateObj) {
   const userRef = getUserRef();
   const userId = userRef.id;
   const focusSnapshot = await getDocs(collection(db, "users", userId, "focus"));
@@ -12,11 +17,11 @@ export async function getDailyFocusInfo() {
     const focusData = doc.data();
     const lastUpdate = focusData.lastUpdate;
     const focusTime = isSameWeek(lastUpdate)
-      ? focusData.weeklyStudyTime[getDayOfWeek(Timestamp.fromDate(new Date()))]
+      ? focusData.weeklyStudyTime[getDayOfWeek(Timestamp.fromDate(dateObj))]
       : 0;
     return {
       title: focusData.title,
-      focusTime,
+      focusTime: Number((focusTime / 60.0).toFixed(1)),
       numOfCompletions: focusData.todayTimes,
       numOfBreaks: focusData.todayBreaks,
     };
@@ -70,4 +75,39 @@ export function parsePieData(rawData) {
 
   newData.forEach((item, ind) => (item.color = pieColors[ind]));
   return newData;
+}
+
+export async function getWeeklyFocusInfo() {
+  const startOfWeek = getStartOfWeek(new Date());
+  let currentDate = new Date(startOfWeek);
+  const today = new Date();
+  const focusPromises = [];
+
+  const dailyFocusInfo = [
+    { value: 0, label: "Mon" },
+    { value: 0, label: "Tue" },
+    { value: 0, label: "Wed" },
+    { value: 0, label: "Thu" },
+    { value: 0, label: "Fri" },
+    { value: 0, label: "Sat" },
+    { value: 0, label: "Sun" },
+  ];
+
+  while (currentDate <= today) {
+    const dayOfWeek = (currentDate.getDay() + 6) % 7;
+    focusPromises.push(
+      getDailyFocusInfo(new Date(currentDate)).then((dailyInfo) => {
+        const totalFocusTimeForDay = dailyInfo.reduce(
+          (pre, cur) => pre + cur.focusTime,
+          0
+        );
+        dailyFocusInfo[dayOfWeek].value += totalFocusTimeForDay;
+      })
+    );
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  await Promise.all(focusPromises);
+
+  return dailyFocusInfo;
 }
