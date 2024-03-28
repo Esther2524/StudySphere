@@ -15,9 +15,12 @@ export default function FocusScreen() {
 
   const [focusTasks, setFocusTasks] = useState([]);
   const [isAddFocusVisible, setIsAddFocusVisible] = useState(false);
+  const [isReminderVisible, setIsReminderVisible] = useState(false);
+
   // for EditFocus Modal to keep track of which focus task is selected for editing or deletion
   const [selectedFocusID, setSelectedFocusID] = useState(null);
   const [isEditFocusVisible, setIsEditFocusVisible] = useState(false);
+
 
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
@@ -27,12 +30,23 @@ export default function FocusScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <PressableButton
-          onPress={() => setIsAddFocusVisible(true)}
-          containerStyle={{ marginRight: 25 }}
-        >
-          <AntDesign name="pluscircleo" size={24} color={Colors.addFocusButton} />
-        </PressableButton>
+        <View style={styles.buttonContainer}>
+          <PressableButton
+            onPress={() => setIsReminderVisible(true)}
+            containerStyle={{ marginRight: 10 }}
+          >
+            <AntDesign name="calendar" size={24} color={Colors.addFocusButton} />
+          </PressableButton>
+
+          <PressableButton
+            onPress={() => setIsAddFocusVisible(true)}
+            containerStyle={{ marginRight: 20 }}
+          >
+            <AntDesign name="pluscircleo" size={24} color={Colors.addFocusButton} />
+          </PressableButton>
+
+        </View>
+
       ),
     });
   }, [navigation]);
@@ -62,7 +76,7 @@ export default function FocusScreen() {
   const onStartPress = (focusID, duration) => {
     navigation.navigate('Standby', { focusID, duration });
   };
- 
+
 
   return (
     <View style={styles.container}>
@@ -102,5 +116,9 @@ const styles = StyleSheet.create({
   focusLabel: {
     color: Colors.focusText,
     fontSize: 16,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 })
