@@ -31,6 +31,8 @@ export const Colors = {
   selectedRepeat: "#8fb5b7",
   unselectedRepeat: "#efeff0",
   selectTime: "#ffe6c6",
+  tabFilledColor: "#8fb5b7",
+  tabFocusColor: "#01575c",
 
   // undefined
   lighterThanBg: "#8fb5b7",
