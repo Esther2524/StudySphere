@@ -23,9 +23,7 @@ export default function DailyOverview() {
         </View>
         <View style={styles.infoColumn}>
           <Text style={styles.infoTitle}>Total Hours</Text>
-          <Text style={styles.infoText}>
-            {Number((focusTime / 60.0).toFixed(1))}
-          </Text>
+          <Text style={styles.infoText}>{Number(focusTime.toFixed(1))}</Text>
         </View>
         <View style={styles.infoColumn}>
           <Text style={styles.infoTitle}>Breaks</Text>
