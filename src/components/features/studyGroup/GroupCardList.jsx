@@ -1,28 +1,46 @@
-import { View, FlatList, StyleSheet, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, FlatList, StyleSheet, RefreshControl } from "react-native";
+import React from "react";
 import GroupCardItem from "./GroupCardItem";
 import useGetAllGroupsByUser from "./useGetAllGroupsByUser";
+import { useQueryClient } from "@tanstack/react-query";
+import { Colors } from "../../../utils/Colors";
 
 export default function groupCardList() {
+  const queryClient = useQueryClient();
   const { data: groupData, isLoading, error } = useGetAllGroupsByUser();
 
-  if (isLoading) return <Text>Loading...</Text>;
+  const onRefresh = () => {
+    queryClient.invalidateQueries(["groups"]);
+  };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={groupData}
-        renderItem={({
-          item: { groupName, groupSize, groupId, groupOwnerId },
-        }) => (
-          <GroupCardItem
-            groupName={groupName}
-            groupSize={groupSize}
-            groupId={groupId}
-            groupOwnerId={groupOwnerId}
-          />
-        )}
-      />
+      {isLoading &&
+        Array.from({ length: 3 }).map((_, index) => (
+          <GroupCardItem key={index} isLoading={true} />
+        ))}
+      {!isLoading && (
+        <FlatList
+          data={groupData}
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={onRefresh}
+              tintColor={Colors.headerTitleColor}
+            />
+          }
+          renderItem={({
+            item: { groupName, groupSize, groupId, groupOwnerId },
+          }) => (
+            <GroupCardItem
+              groupName={groupName}
+              groupSize={groupSize}
+              groupId={groupId}
+              groupOwnerId={groupOwnerId}
+            />
+          )}
+        />
+      )}
     </View>
   );
 }
