@@ -25,6 +25,12 @@ export const Colors = {
   addFocusButton: "#ffffff",
   addFocusMedalLabel: "#707f89",
   deleteButton: "#576f70",
+  timerPrimary: "#8fb5b7",
+  timerText: "#5d8182",
+  timerLabelText: "#01575c",
+  selectedRepeat: "#8fb5b7",
+  unselectedRepeat: "#efeff0",
+  selectTime: "#ffe6c6",
 
   // undefined
   lighterThanBg: "#8fb5b7",

@@ -13,29 +13,38 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
   const [duration, setDuration] = useState("");
   const [location, setLocation] = useState(null);
 
+  const [titleErrMsg, setTitleErrMsg] = useState("");
+  const [DurationErrMsg, setDurationErrMsg] = useState("");
+
   // use useEffect to reset the form when modal is closed
   useEffect(() => {
     if (!isAddFocusVisible) {
       setTitle("");
       setDuration("");
       setLocation(null);
+      setDurationErrMsg("");
+      setTitleErrMsg("");
     }
   }, [isAddFocusVisible]);
 
+
+
   // check the title and the durarion are valid
   const validateInput = () => {
-    if (!title.trim()) {
-      alert("Focus's title cannot be empty!");
-      return false;
-    }
+    let isValid = true;
+    setTitleErrMsg('');
+    setDurationErrMsg('');
 
+    if (!title.trim()) {
+      setTitleErrMsg("Focus's title cannot be empty");
+      isValid = false;
+    }
     const durationNum = parseInt(duration, 10);
     if (isNaN(durationNum) || durationNum <= 0) {
-      alert("Duration must be a positive number!");
-      return false;
+      setDurationErrMsg("Duration must be a positive number");
+      isValid = false;
     }
-
-    return true;
+    return isValid;
   }
 
 
@@ -65,6 +74,8 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
 
           // close the modal upon successful addition
           setIsAddFocusVisible(false);
+          setDurationErrMsg("");
+          setTitleErrMsg("");
         } catch (error) {
           console.error("Error adding focus task:", error);
         }
@@ -77,7 +88,7 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
   return (
     <ModalView isVisible={isAddFocusVisible}>
       <View style={styles.modalView}>
-        <Text style={styles.title}>Add a New Focus!</Text>
+        <Text style={styles.title}>Add a New Focus</Text>
         <InputWithLabel
           label="Title *"
           labelStyle={{ color: Colors.addFocusMedalLabel }}
@@ -85,6 +96,7 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
           setContent={setTitle}
           placeholder="e.g. Study Python"
           containerStyle={{ width: '100%' }}
+          errorMsg={titleErrMsg}
         />
         <InputWithLabel
           label="Duration(min) *"
@@ -92,8 +104,9 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
           content={duration}
           setContent={setDuration}
           placeholder="e.g. 25"
-          containerStyle={{ width: '100%' }}
+          containerStyle={{ width: '100%', marginBottom: 20 }}
           keyboardType='numeric'
+          errorMsg={DurationErrMsg}
         />
         <FormOperationBar
           confirmText="Add"
@@ -113,7 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 20,
-    width: '80%',
+    width: '90%',
   },
   title: {
     fontSize: 18,

@@ -9,15 +9,21 @@ import AddFocus from '../features/focusList/AddFocus';
 import { AntDesign } from '@expo/vector-icons';
 import PressableButton from '../ui/PressableButton';
 import EditFocus from '../features/focusList/EditFocus';
+import AddReminder from '../features/focusList/AddReminder';
 
 
 export default function FocusScreen() {
 
   const [focusTasks, setFocusTasks] = useState([]);
   const [isAddFocusVisible, setIsAddFocusVisible] = useState(false);
+  const [isReminderVisible, setIsReminderVisible] = useState(false);
+
   // for EditFocus Modal to keep track of which focus task is selected for editing or deletion
   const [selectedFocusID, setSelectedFocusID] = useState(null);
   const [isEditFocusVisible, setIsEditFocusVisible] = useState(false);
+  const [focusTitle, setFocusTitle] = useState("");
+  const [focusDuration, setFocusDurarion] = useState("");
+
 
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
@@ -27,12 +33,23 @@ export default function FocusScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <PressableButton
-          onPress={() => setIsAddFocusVisible(true)}
-          containerStyle={{ marginRight: 25 }}
-        >
-          <AntDesign name="pluscircleo" size={24} color={Colors.addFocusButton} />
-        </PressableButton>
+        <View style={styles.buttonContainer}>
+          <PressableButton
+            onPress={() => setIsReminderVisible(true)}
+            containerStyle={{ marginRight: 15 }}
+          >
+            <AntDesign name="calendar" size={24} color={Colors.addFocusButton} />
+          </PressableButton>
+
+          <PressableButton
+            onPress={() => setIsAddFocusVisible(true)}
+            containerStyle={{ marginRight: 20 }}
+          >
+            <AntDesign name="pluscircleo" size={24} color={Colors.addFocusButton} />
+          </PressableButton>
+
+        </View>
+
       ),
     });
   }, [navigation]);
@@ -62,7 +79,7 @@ export default function FocusScreen() {
   const onStartPress = (focusID, duration) => {
     navigation.navigate('Standby', { focusID, duration });
   };
- 
+
 
   return (
     <View style={styles.container}>
@@ -73,10 +90,14 @@ export default function FocusScreen() {
           <FocusCard
             title={item.title}
             duration={item.duration}
+            todayTimes={item.todayTimes}
             onStartPress={() => onStartPress(item.id, item.duration)} // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
-              setSelectedFocusID(item.id); // pass the focus item id to the EditFocus Modal
+               // pass the focus data to the EditFocus Modal
+              setFocusTitle(item.title);
+              setFocusDurarion(item.duration);
+              setSelectedFocusID(item.id);
             }}
           />
         )}
@@ -88,7 +109,14 @@ export default function FocusScreen() {
       <EditFocus
         isEditFocusVisible={isEditFocusVisible}
         setIsEditFocusVisible={setIsEditFocusVisible}
+        focusTitle={focusTitle}
+        focusDuration={focusDuration}
         focusID={selectedFocusID}
+      />
+
+      <AddReminder
+        isReminderVisible={isReminderVisible}
+        setIsReminderVisible={setIsReminderVisible}
       />
     </View>
   )
@@ -102,5 +130,9 @@ const styles = StyleSheet.create({
   focusLabel: {
     color: Colors.focusText,
     fontSize: 16,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 })
