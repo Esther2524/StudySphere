@@ -102,10 +102,10 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
 
   <img src="assets/screenshots/add-focus.PNG" width="300" alt="Add a New Focus">
 
-*  By tapping the left part of each focus task card, users can edit or delete the task as needed.
+* By tapping the left part of each focus task card, users can edit or delete the task as needed.
   
   <img src="assets/screenshots/edit-focus.PNG" width="300" alt="Edit a Focus">
-  
+
   <img src="assets/screenshots/delete-focus.PNG" width="300" alt="Delete a Focus">
 
 * The "Start" button on the right initiates a distraction-free study session (Pomodoro) with a countdown timer
