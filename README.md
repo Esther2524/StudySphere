@@ -45,24 +45,28 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
    * Group Stack Navigator
      * Nested within the App Tab Navigator, the Group Stack Navigator manages study groups. It begins with the StudyGroupScreen, allowing users to explore and manage their study groups. The GroupDetailsScreen provides detailed information about a specific study group. This navigator illustrates the application's group management features, including joining, creating, and interacting with study groups.
    * Firestore CRUD Operations
+     * **Authentication Data**: Manage user accounts, including sign-up and login。
+     * **Focus Tasks and Study Sessions**: Users can create, read, update, and delete focus tasks. Each completion or interruption of a study session is tracked and stored in Firestore, allowing for performance analysis and display on the Dashboard.
+     * **Study Groups**: The application supports creating new study groups, joining existing ones, and managing group memberships. All group-related data, including member study times, is handled through Firestore。
+     * **User Profile and Preferences**: User-specific information, such as usernames and preferences, are managed through Firestore. Users can update their profile information。
 
 3. Data Model (Collections)
   * **Users Collection**
     * userEmail: String (user's email)
     * userName: String (user's name)
-    * status(Optional): String (can be used to indicate user's current status, e.g., "online", "offline", or null if not applicable)
+    * status(Optional): String
     * avatar(Optional): String (URL to the user's avatar image)
     * reminder(Optional): An array of objects or strings indicating reminder times and their repeat patterns
     * groups(Optional): An array of objects where each object represents a group the user has interacted with (either by joining or requesting to join).
   * **Focus Collection** (A Sub-collection of User collection)
-    * title: String (Focus title, e.g., "Study Python")
+    * title: String
     * duration: Integer (Expected duration to complete the task, in minutes)
     * location(Optional): An array of objects
     * lastUpdate: Timestamp(when the focus was completed last time)
     * todayBreaks: Integer (Number of breaks today)
     * todayTimes: Integer (Number of completion times today)
     * weeklyStudyTime: An array of length 7
-    * monthlyStudyTime: An array of length 7
+    * monthlyStudyTime: An array of length 12
   * **Progress Collection** (A Sub-collection of User collection)
     * date: Timestamp (the specific day of the progress entry)
     * focusTasksCompleted: Integer (number of focus tasks completed)
