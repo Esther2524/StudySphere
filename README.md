@@ -10,6 +10,14 @@ In today's fast-paced world, finding the right balance between **productivity** 
 
 StudySphere: Focus & Friends is mainly designed for students aged above 14 who are seeking to improve their study habits and eager to use technology for a more organized, efficient, and interactive study experience.
 
+## Table of Contents
+- [StudySphere: Focus \& Friends](#studysphere-focus--friends)
+  - [App Description](#app-description)
+  - [Table of Contents](#table-of-contents)
+  - [Current State](#current-state)
+    - [Iteration 1 (March 28, 2024)](#iteration-1-march-28-2024)
+  - [Member Contribution](#member-contribution)
+  - [User Guide](#user-guide)
 
 ## Current State
 ### Iteration 1 (March 28, 2024)
