@@ -66,14 +66,16 @@ export default function StandbyScreen() {
         const sameYear = isSameYear(focusData.lastUpdate);
 
         // Determine the indexes for updating weekly and monthly study time
-        const dayIndex = completionTime.getDay(); // 0 (Sunday) to 6 (Saturday)
+        // const dayIndex = completionTime.getDay(); // 0 (Sunday) to 6 (Saturday)
+        const dayOfWeek = completionTime.getDay();
+        const dayIndex = (dayOfWeek + 6) % 7;
         const monthIndex = completionTime.getMonth(); // 0 (January) to 11 (December)
 
         // Update weeklyStudyTime and monthlyStudyTime
         let updatedWeeklyStudyTime = [...focusData.weeklyStudyTime];
         let updatedMonthlyStudyTime = [...focusData.monthlyStudyTime];
 
-        
+
         if (!sameYear) {
           updatedMonthlyStudyTime = new Array(12).fill(0);
         }
