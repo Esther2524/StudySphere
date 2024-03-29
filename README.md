@@ -12,7 +12,7 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
 
 ## Current State
 ### Iteration 1 (March 28, 2024)
-1. Functionality Implementation
+* Functionality Implementation
   * **Focus Tasks**: 
      * **Addition**: Users can add a new personalized focus task. All focus tasks are displayed on the main screen for easy access.
      * **Modification**: By tapping the left part of each focus task card, users can edit or delete the task as needed.
@@ -35,7 +35,7 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
     * **Username Modification**: Users can  edit their username for personalization.
 
 
-2. Navigation Implementation and CRUD operations to Firestore
+* Navigation Implementation and CRUD operations to Firestore
    * Auth Stack Navigator
      * This navigator is the entry point for unauthenticated users, directing them to either log in or sign up. It incorporates two screens, LoginScreen and SignupScreen, ensuring users can securely access their accounts or create new ones. The Auth Stack Navigator is conditionally rendered based on the authentication state managed through Firebase Authentication. If a user is not authenticated, this navigator is displayed, guiding the user through the authentication process.
    * App Tab Navigator
@@ -48,9 +48,9 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
      * **Authentication Data**: Manage user accounts, including sign-up and login。
      * **Focus Tasks and Study Sessions**: Users can create, read, update, and delete focus tasks. Each completion or interruption of a study session is tracked and stored in Firestore, allowing for performance analysis and display on the Dashboard.
      * **Study Groups**: The application supports creating new study groups, joining existing ones, and managing group memberships. All group-related data, including member study times, is handled through Firestore。
-     * **User Profile and Preferences**: User-specific information, such as usernames and preferences, are managed through Firestore. Users can update their profile information。
+     * **User Profile and Preferences**: User-specific information are managed through Firestore. Users can update their profile usernames.
 
-3. Data Model (Collections)
+* Data Model (Collections)
   * **Users Collection**
     * userEmail: String (user's email)
     * userName: String (user's name)
@@ -67,21 +67,58 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
     * todayTimes: Integer (Number of completion times today)
     * weeklyStudyTime: An array of length 7
     * monthlyStudyTime: An array of length 12
-  * **Progress Collection** (A Sub-collection of User collection)
-    * date: Timestamp (the specific day of the progress entry)
-    * focusTasksCompleted: Integer (number of focus tasks completed)
-    * studyHours: Float (total hours spent studying)
-    * breaks: Integer (number of breaks)
   * **Groups Collection**
     * groupName: String (name of the study group)
     * groupMembers: Array of Objects (each object contains user details and join status)
     * groupOwnerId: String (Document ID of the group owner, referencing a User document)
 
-4. CRUD Operations on Collections
-  For the current of our app, we do
-
+* CRUD Operations on Collections
+   * User Collection
+     * **Create**: When a new user signs up, their user details (including userEmail, userName, optional status, optional avatar, and any reminder settings) are created and stored in the Users collection.
+     * **Read**: User-specific information is read for profile displays, including their email, name, avatar. The user's group memberships are also read to display the groups they are a part of.
+     * **Update**: Users can edit their username, which updates the userName field in the Users collection. If a user sets or modifies reminders, this would update the reminder field. Joining or leaving groups would update the groups field.
+     * **Delete**: Deleting a reminder would remove that specific entry from the reminder field in the Users collection. If a user decides to leave a group, that group's information would be removed from the groups field.
+   *  Focus Collection (A Sub-collection of the User collection)
+      * **Create**: When a user adds a new focus task, a new document is created in the Focus sub-collection with details such as title, duration, optional location, lastUpdate, todayBreaks, todayTimes, weeklyStudyTime, and monthlyStudyTime.
+      * **Read**: The app reads the Focus sub-collection to display all focus tasks on the main screen, including details like title and duration, and to show completion tracking such as breaks and completions.
+      * **Update**: Editing a focus task (title or duration) updates the respective document in the Focus sub-collection. Starting a focus session and either completing it or taking a break updates lastUpdate, todayBreaks, todayTimes, and potentially weeklyStudyTime and monthlyStudyTime fields.
+      * **Delete**: When a user deletes a focus task, that specific document is removed from the Focus sub-collection.
+    * Groups Collection
+      * **Create**: Creating a new study group involves creating a new document in the Groups collection with details like groupName, groupMembers, and groupOwnerId.
+      * **Read**: The app reads from the Groups collection to display available study groups for users to join, to show the user's study time alongside other group members, and to allow users to see the details of groups they have joined or are exploring.
+      * **Update**: Joining a study group would add a user's details to the groupMembers array of a specific group document. Leaving a group would involve updating the groupMembers field to remove the user.
+      * **Delete**: When the owner of a group decides to leave the group, the entire group document is deleted from the Groups collection.
 ## Member Contribution
-* Haoning:
-* Zhixiao: 
+* Haoning: mainly handled the code related to **study groups** and **dashboard**, including implementing Signup Screen, Login Screen, Study Groups Screen, Group Details Screen, Find Group Screen, Dashboard Screen and so on. Also wrote some common functions and components that could be reused by other team members.
+* Zhixiao: mainly handled the code related to **focus tasks** and **user profile**, including implementing Focus Tasks Screen, Standby Screen, Profile Screen and so on. Also wrote some documents like README file, and made the drafts of the app's design.
 
 ## User Guide
+* The home screen (Focus Tasks Screen) displays all the focus tasks. Note: the number next to the tick icon represents how many times this focus task has been completed.
+  ![home screen with focus tasks](assets/screenshots/home-screen.PNG)
+* Users can add a new focus task by tapping the add button in the top right.
+  ![add a new focus](assets/screenshots/add-focus.PNG)
+*  By tapping the left part of each focus task card, users can edit or delete the task as needed.
+  ![edit a focus](assets/screenshots/edit-focus.PNG)
+  ![delete a focus](assets/screenshots/delete-focus.PNG)
+* The "Start" button on the right initiates a distraction-free study session (Pomodoro) with a countdown timer
+  ![standby](assets/screenshots/standby.PNG)
+  ![end standby](assets/screenshots/end-standby.PNG)
+* The Study Groups Screen will display all the groups you createded or joined. Users can quit a group by tapping the button in the top right.
+  ![study groups screen](assets/screenshots/study-group-screen.PNG)
+  ![quit a study group](assets/screenshots/quit-group.PNG)
+
+* Search a Group and join it.
+  ![search a group](assets/screenshots/search-group.PNG)
+  ![join a group](assets/screenshots/join-group.PNG)
+  ![display the newly joined group](assets/screenshots/display-new-joined-group.PNG)
+
+* In each group, users can see their own and each member's study time.
+  ![display all group members](assets/screenshots/group-members.PNG)
+
+* Display data analysis on the dashboard.
+  ![dashboard](assets/screenshots/dashboard.PNG)
+  ![dashboard-2](assets/screenshots/dashboard-2.PNG)
+  
+* Display user information on the Profile Screen. Users can edit their usernames.
+  ![edit username](assets/screenshots/edit-username.PNG)
+  
