@@ -1,5 +1,6 @@
 # StudySphere: Focus & Friends
 NEU CS5520 Spring 2024
+
 Group Members: Haoning Wang, Zhixiao Wang
 
 ## App Description
@@ -102,6 +103,7 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
   <img src="assets/screenshots/add-focus.PNG" width="300" alt="Add a New Focus">
 
 *  By tapping the left part of each focus task card, users can edit or delete the task as needed.
+  
   <img src="assets/screenshots/edit-focus.PNG" width="300" alt="Edit a Focus">
   <img src="assets/screenshots/delete-focus.PNG" width="300" alt="Delete a Focus">
 
