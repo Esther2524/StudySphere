@@ -130,7 +130,7 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
 
 * Search a Group and join it.
 
-  <img src="assets/screenshots/search-group.PNG" width="300" alt='Search a Group>
+  <img src="assets/screenshots/search-group.PNG" width="300" alt='Search a Group'>
 
   <img src="assets/screenshots/join-group.PNG" width="300" alt="Join a Group">
 
