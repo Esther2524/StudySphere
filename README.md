@@ -94,31 +94,50 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
 
 ## User Guide
 * The home screen (Focus Tasks Screen) displays all the focus tasks. Note: the number next to the tick icon represents how many times this focus task has been completed.
+  
   <img src="assets/screenshots/home-screen.PNG" width="300" alt="Home Screen with Focus Tasks">
+
 * Users can add a new focus task by tapping the add button in the top right.
+
   <img src="assets/screenshots/add-focus.PNG" width="300" alt="Add a New Focus">
+
 *  By tapping the left part of each focus task card, users can edit or delete the task as needed.
+  
   <img src="assets/screenshots/edit-focus.PNG" width="300" alt="Edit a Focus">
+
   <img src="assets/screenshots/delete-focus.PNG" width="300" alt="Delete a Focus">
+
 * The "Start" button on the right initiates a distraction-free study session (Pomodoro) with a countdown timer
+
   <img src="assets/screenshots/standby.PNG" width="300" alt="Standby Screen">
+
   <img src="assets/screenshots/end-standby.PNG" width="300" alt="End Standby Screen">
+
 * The Study Groups Screen will display all the groups you createded or joined. Users can quit a group by tapping the button in the top right.
+
   <img src="assets/screenshots/study-group-screen.PNG" width="300" alt="Study Groups Screen">
+
   <img src="assets/screenshots/quit-group.PNG" width="300" alt="Quit a Study Group">
 
 * Search a Group and join it.
+
   <img src="assets/screenshots/search-group.PNG" width="300" alt='Search a Group>
+
   <img src="assets/screenshots/join-group.PNG" width="300" alt="Join a Group">
+
   <img src="assets/screenshots/display-new-joined-group.PNG" width="300" alt="Display the Newly Joined Group">
 
 * In each group, users can see their own and each member's study time.
+
   <img src="assets/screenshots/group-members.PNG" width="300" alt="Display All Group Members">
 
 * Display data analysis on the dashboard.
+
   <img src="assets/screenshots/dashboard.PNG" width="300" alt="Dashboard">
+
   <img src="assets/screenshots/dashboard-2.PNG" width="300" alt="Dashboard-2">
   
 * Display user information on the Profile Screen. Users can edit their usernames.
+
   <img src="assets/screenshots/edit-username.PNG" width="300" alt="Edit Username">
   
