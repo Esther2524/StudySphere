@@ -1,8 +1,13 @@
 import { View, StyleSheet, Text } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PressableButton from "./PressableButton";
 import { Colors } from "../../utils/Colors";
 import { Spinner } from "@gluestack-ui/themed";
+import Animated, {
+  ReduceMotion,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
 export default function FormOperationBar({
   confirmText,
@@ -13,6 +18,7 @@ export default function FormOperationBar({
   isSubmittingOuter,
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const confirmBtnWidth = useSharedValue(110);
 
   const onConfirm = useCallback(async () => {
     setIsSubmitting(true);
@@ -21,6 +27,24 @@ export default function FormOperationBar({
   }, [confirmHandler]);
 
   const isSubmittingForm = isSubmitting || isSubmittingOuter;
+
+  useEffect(() => {
+    const springConfig = {
+      mass: 1,
+      damping: 15,
+      stiffness: 100,
+      overshootClamping: false,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 2,
+      reduceMotion: ReduceMotion.System,
+    };
+    if (isSubmittingForm)
+      confirmBtnWidth.value = withSpring(
+        confirmBtnWidth.value + 45,
+        springConfig
+      );
+    else confirmBtnWidth.value = withSpring(100, springConfig);
+  }, [isSubmittingForm]);
 
   const extraConfirmBtnStyle =
     confirmDisabled || isSubmittingForm ? styles.disabledBtn : null;
@@ -36,20 +60,22 @@ export default function FormOperationBar({
       <PressableButton
         onPress={onConfirm}
         disabled={isSubmittingForm}
-        containerStyle={[
-          styles.confirmBtnContainer,
-          { width: isSubmittingForm ? 135 : "auto" },
-          extraConfirmBtnStyle,
-        ]}
+        containerStyle={[extraConfirmBtnStyle]}
       >
-        {isSubmittingForm ? (
-          <>
-            <Text style={styles.confirmBtnText}>Loading...</Text>
-            <Spinner marginLeft={5} color={Colors.shallowTextColor} />
-          </>
-        ) : (
-          <Text style={styles.confirmBtnText}>{confirmText}</Text>
-        )}
+        <Animated.View
+          style={[styles.confirmBtnContainer, { width: confirmBtnWidth }]}
+        >
+          {isSubmittingForm ? (
+            <>
+              <Text numberOfLines={1} style={styles.confirmBtnText}>
+                Loading...
+              </Text>
+              <Spinner marginLeft={5} color={Colors.shallowTextColor} />
+            </>
+          ) : (
+            <Text style={styles.confirmBtnText}>{confirmText}</Text>
+          )}
+        </Animated.View>
       </PressableButton>
     </View>
   );
@@ -86,10 +112,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 1000,
-    minWidth: 85,
+    minWidth: 100,
+    flexWrap: "nowrap",
   },
   confirmBtnText: {
     fontSize: 16,
     color: Colors.confirmBtnText,
+    overflow: "hidden",
   },
 });
