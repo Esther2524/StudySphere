@@ -19,7 +19,7 @@ export default function GroupCardItem({
   }, [groupName, groupId, navigation]);
 
   return (
-    <PressableButton onPress={handlePress}>
+    <PressableButton onPress={handlePress} disabled={isLoading}>
       <View style={styles.container}>
         {isLoading && <GroupCardItemSkeleton />}
         {!isLoading && (

@@ -22,6 +22,7 @@
     "@rneui/themed": "^4.0.0-rc.8",
     "@tanstack/react-query": "^5.28.6",
     "expo": "~50.0.13",
+    "expo-blur": "~12.9.2",
     "expo-status-bar": "~1.11.1",
     "firebase": "^10.9.0",
     "react": "18.2.0",

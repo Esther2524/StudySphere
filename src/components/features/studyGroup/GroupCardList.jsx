@@ -21,6 +21,7 @@ export default function groupCardList() {
         ))}
       {!isLoading && (
         <FlatList
+          contentContainerStyle={{ paddingBottom: 100 }}
           data={groupData}
           refreshControl={
             <RefreshControl

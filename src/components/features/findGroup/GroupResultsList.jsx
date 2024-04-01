@@ -18,6 +18,7 @@ export default function GroupResultsList({ keyword }) {
       {groupData && groupData.length > 0 && (
         <FlatList
           data={groupData}
+          contentContainerStyle={{ paddingBottom: 100 }}
           renderItem={({ item }) => (
             <GroupResultsItem
               groupId={item.groupId}
@@ -26,7 +27,7 @@ export default function GroupResultsList({ keyword }) {
               joined={item.joined}
             />
           )}
-          style={{ marginBottom: 150 }}
+          style={{ marginBottom: 100 }}
         />
       )}
     </View>

@@ -3,6 +3,7 @@ import React from "react";
 import { Colors } from "../../../utils/Colors";
 import GroupMemberItem from "./GroupMemberItem";
 import useGetGroupDetail from "./useGetGroupDetail";
+import GroupMemberItemSkeleton from "./GroupMemberItemSkeleton";
 
 export default function GroupMemberList({ groupId }) {
   const {
@@ -11,16 +12,24 @@ export default function GroupMemberList({ groupId }) {
     error,
   } = useGetGroupDetail(groupId);
 
-  if (isLoadingGroupDetail) return <Text>Loading...</Text>;
-
   return (
     <View style={styles.container}>
-      <FlatList
-        data={groupDetailData}
-        renderItem={({ item: { name, avatar, studyTime } }) => (
-          <GroupMemberItem avatar={avatar} name={name} studyTime={studyTime} />
-        )}
-      />
+      {isLoadingGroupDetail &&
+        Array.from({ length: 3 }).map((_, ind) => (
+          <GroupMemberItemSkeleton key={ind} />
+        ))}
+      {!isLoadingGroupDetail && (
+        <FlatList
+          data={groupDetailData}
+          renderItem={({ item: { name, avatar, studyTime } }) => (
+            <GroupMemberItem
+              avatar={avatar}
+              name={name}
+              studyTime={studyTime}
+            />
+          )}
+        />
+      )}
     </View>
   );
 }

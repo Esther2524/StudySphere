@@ -1,19 +1,17 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
-import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { collection, query, onSnapshot } from 'firebase/firestore';
-import { Colors } from '../../utils/Colors';
-import { db, auth } from '../../api/FirestoreConfig';
-import FocusCard from '../features/focusList/FocusCard';
-import AddFocus from '../features/focusList/AddFocus';
-import { AntDesign, Octicons } from '@expo/vector-icons';
-import PressableButton from '../ui/PressableButton';
-import EditFocus from '../features/focusList/EditFocus';
-import AddReminder from '../features/focusList/AddReminder';
-
+import { StyleSheet, Text, View, FlatList } from "react-native";
+import React, { useEffect, useState, useLayoutEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { collection, query, onSnapshot } from "firebase/firestore";
+import { Colors } from "../../utils/Colors";
+import { db, auth } from "../../api/FirestoreConfig";
+import FocusCard from "../features/focusList/FocusCard";
+import AddFocus from "../features/focusList/AddFocus";
+import { AntDesign, Octicons } from "@expo/vector-icons";
+import PressableButton from "../ui/PressableButton";
+import EditFocus from "../features/focusList/EditFocus";
+import AddReminder from "../features/focusList/AddReminder";
 
 export default function FocusScreen() {
-
   const [focusTasks, setFocusTasks] = useState([]);
   const [isAddFocusVisible, setIsAddFocusVisible] = useState(false);
   const [isReminderVisible, setIsReminderVisible] = useState(false);
@@ -24,10 +22,8 @@ export default function FocusScreen() {
   const [focusTitle, setFocusTitle] = useState("");
   const [focusDuration, setFocusDurarion] = useState("");
 
-
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
-
 
   // use useLayoutEffect to set the navigation options and include the button in the header
   useLayoutEffect(() => {
@@ -45,15 +41,16 @@ export default function FocusScreen() {
             onPress={() => setIsAddFocusVisible(true)}
             containerStyle={{ marginRight: 20 }}
           >
-            <AntDesign name="pluscircleo" size={24} color={Colors.addFocusButton} />
+            <AntDesign
+              name="pluscircleo"
+              size={24}
+              color={Colors.addFocusButton}
+            />
           </PressableButton>
-
         </View>
-
       ),
     });
   }, [navigation]);
-
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -61,15 +58,19 @@ export default function FocusScreen() {
       const q = query(collection(db, "users", user.uid, "focus"));
 
       // set up the real-time listener with onSnapshot
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const tasks = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setFocusTasks(tasks);
-      }, (error) => {
-        console.log("Error fetching focus tasks:", error);
-      });
+      const unsubscribe = onSnapshot(
+        q,
+        (querySnapshot) => {
+          const tasks = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setFocusTasks(tasks);
+        },
+        (error) => {
+          console.log("Error fetching focus tasks:", error);
+        }
+      );
 
       // cleanup function to unsubscribe from the listener when the component unmounts
       return () => unsubscribe();
@@ -77,15 +78,15 @@ export default function FocusScreen() {
   }, []);
 
   const onStartPress = (focusID, duration) => {
-    navigation.navigate('Standby', { focusID, duration });
+    navigation.navigate("Standby", { focusID, duration });
   };
-
 
   return (
     <View style={styles.container}>
       <FlatList
         data={focusTasks}
-        keyExtractor={item => item.id}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <FocusCard
             title={item.title}
@@ -94,7 +95,7 @@ export default function FocusScreen() {
             onStartPress={() => onStartPress(item.id, item.duration)} // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
-               // pass the focus data to the EditFocus Modal
+              // pass the focus data to the EditFocus Modal
               setFocusTitle(item.title);
               setFocusDurarion(item.duration);
               setSelectedFocusID(item.id);
@@ -119,7 +120,7 @@ export default function FocusScreen() {
         setIsReminderVisible={setIsReminderVisible}
       />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
-})
+});

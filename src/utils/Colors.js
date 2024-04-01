@@ -5,7 +5,7 @@ export const Colors = {
   groupBgColor: "#dcefea",
   gradientStart: "#ffffff",
   gradientEnd: "#cbdada",
-  tabIconColor: "#01575c",
+  tabIconColor: "#f1f5f9",
   toggleBgColor: "#001b2c",
   toggleColor: "#ffffff",
   returnButtonBgColor: "#348085",
