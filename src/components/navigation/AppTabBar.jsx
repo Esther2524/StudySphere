@@ -46,13 +46,6 @@ export default function AppTabBar({ state, descriptors, navigation }) {
           }
         };
 
-        const onLongPress = () => {
-          navigation.emit({
-            type: "tabLongPress",
-            target: route.key,
-          });
-        };
-
         return (
           <PressableButton
             accessibilityRole="button"
@@ -60,11 +53,9 @@ export default function AppTabBar({ state, descriptors, navigation }) {
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
             onPress={onPress}
-            onLongPress={onLongPress}
-            style={{ flex: 1 }}
             key={index}
           >
-            <Ionicons name={iconName} size={28} color={Colors.tabIconColor} />
+            <Ionicons name={iconName} size={24} color={Colors.tabIconColor} />
           </PressableButton>
         );
       })}
@@ -78,7 +69,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     bottom: 0,
-    paddingVertical: 30,
+    paddingTop: 20,
+    paddingBottom: 30,
     paddingHorizontal: 15,
     borderRadius: 100,
     justifyContent: "space-evenly",
