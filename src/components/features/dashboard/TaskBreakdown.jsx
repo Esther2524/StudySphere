@@ -40,7 +40,7 @@ export default function TaskBreakdown() {
     let focusedInd = 0;
     if (obj.id) focusedInd = pieData.findIndex((item) => item.id === obj.id);
     else focusedInd = -1;
-    console.log(obj, focusedInd);
+
     setPieData(
       pieData.map((item, ind) => ({
         ...item,
