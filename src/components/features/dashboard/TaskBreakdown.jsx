@@ -1,18 +1,49 @@
-import { View, StyleSheet } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
 import StatsCardContainer from "./StatsCardContainer";
 import { PieChart } from "react-native-gifted-charts";
 import { parsePieData } from "./dashboardHelper";
 import useGetTodayData from "./useGetTodayData";
 import PieChartMarker from "./PieChartMarker";
 import { Skeleton } from "@rneui/base";
-import { generateRandomInteger } from "../../../utils/helper";
+import { generateRandomInteger, limitStrLen } from "../../../utils/helper";
+
+function PieCenter({ title, value, total, color }) {
+  if (!title) return <></>;
+  return (
+    <View style={styles.centerContainer}>
+      <Text style={[styles.centerValue, { color }]}>
+        {Math.round((value / total) * 100)}%
+      </Text>
+      <Text style={[styles.centerTitle, { color }]}>
+        {limitStrLen(title, 15)}
+      </Text>
+    </View>
+  );
+}
 
 export default function TaskBreakdown() {
   const { data, isLoading } = useGetTodayData();
+  const [focusedItem, setFocusedItem] = useState(null);
+  const [pieData, setPieData] = useState([]);
 
-  let pieData = [];
-  if (!isLoading) pieData = parsePieData(data);
+  useEffect(() => {
+    if (!isLoading) setPieData(parsePieData(data));
+  }, [isLoading]);
+
+  let total = 0;
+  if (data)
+    total = data.reduce((pre, cur) => pre + cur.focusTime, 0).toFixed(1);
+
+  const focusHandler = (obj, objInd) => {
+    setFocusedItem({ total, ...obj });
+    setPieData(
+      pieData.map((item, ind) => ({
+        ...item,
+        focused: ind === objInd,
+      }))
+    );
+  };
 
   return (
     <StatsCardContainer title="Task Breakdown">
@@ -29,9 +60,11 @@ export default function TaskBreakdown() {
           <PieChart
             data={pieData}
             donut
-            focusOnPress
             radius={90}
             innerRadius={60}
+            sectionAutoFocus
+            onPress={focusHandler}
+            centerLabelComponent={() => <PieCenter {...focusedItem} />}
           />
         )}
       </View>
@@ -68,5 +101,14 @@ const styles = StyleSheet.create({
   },
   pieSkeleton: {
     borderRadius: 90,
+  },
+  centerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  centerTitle: {},
+  centerValue: {
+    fontSize: 24,
+    fontWeight: "bold",
   },
 });
