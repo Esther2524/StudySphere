@@ -35,12 +35,16 @@ export default function TaskBreakdown() {
   if (data)
     total = data.reduce((pre, cur) => pre + cur.focusTime, 0).toFixed(1);
 
-  const focusHandler = (obj, objInd) => {
+  const focusHandler = (obj, curInd) => {
     setFocusedItem({ total, ...obj });
+    let focusedInd = 0;
+    if (obj.id) focusedInd = pieData.findIndex((item) => item.id === obj.id);
+    else focusedInd = -1;
+    console.log(obj, focusedInd);
     setPieData(
       pieData.map((item, ind) => ({
         ...item,
-        focused: ind === objInd,
+        focused: focusedInd === ind,
       }))
     );
   };
