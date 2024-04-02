@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Alert } from "react-native";
+import { Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import React, { useCallback, useState } from "react";
 import InputWithLabel from "../../ui/InputWithLabel";
 import PressableButton from "../../ui/PressableButton";
@@ -7,7 +7,6 @@ import { Colors } from "../../../utils/Colors";
 import { getDefaultUserName, isValidEmail } from "../../../utils/helper";
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from "../../../api/FirestoreConfig";
-import { Spinner } from "@gluestack-ui/themed";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -187,7 +186,10 @@ export default function AuthForm({ mode }) {
         {isSubmitting && (
           <>
             <Text style={styles.submitBtnText}>Loading...</Text>
-            <Spinner marginLeft={10} color={Colors.lighterThanBg} />
+            <ActivityIndicator
+              style={{ marginLeft: 10 }}
+              color={Colors.lighterThanBg}
+            />
           </>
         )}
       </PressableButton>

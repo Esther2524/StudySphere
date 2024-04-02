@@ -1,11 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import React from "react";
 import GroupInfoBox from "../studyGroup/GroupInfoBox";
 import PressableButton from "../../ui/PressableButton";
 import { Colors } from "../../../utils/Colors";
 import { AntDesign } from "@expo/vector-icons";
 import useJoinGroup from "./useJoinGroup";
-import { Spinner } from "@gluestack-ui/themed";
 import GroupResultsItemSkeleton from "./GroupResultsItemSkeleton";
 
 export default function GroupResultsItem({
@@ -39,8 +38,8 @@ export default function GroupResultsItem({
               {isJoining && (
                 <>
                   <Text style={styles.joinBtnText}>Joining...</Text>
-                  <Spinner
-                    marginLeft={5}
+                  <ActivityIndicator
+                    style={{ marginLeft: 5 }}
                     size={20}
                     color={Colors.screenBgColor}
                   />

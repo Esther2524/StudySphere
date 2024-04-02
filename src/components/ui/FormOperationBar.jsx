@@ -1,8 +1,7 @@
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import PressableButton from "./PressableButton";
 import { Colors } from "../../utils/Colors";
-import { Spinner } from "@gluestack-ui/themed";
 import Animated, {
   ReduceMotion,
   useSharedValue,
@@ -70,7 +69,10 @@ export default function FormOperationBar({
               <Text numberOfLines={1} style={styles.confirmBtnText}>
                 Loading...
               </Text>
-              <Spinner marginLeft={5} color={Colors.shallowTextColor} />
+              <ActivityIndicator
+                style={{ marginLeft: 5 }}
+                color={Colors.shallowTextColor}
+              />
             </>
           ) : (
             <Text style={styles.confirmBtnText}>{confirmText}</Text>
