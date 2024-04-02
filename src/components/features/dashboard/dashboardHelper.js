@@ -20,6 +20,7 @@ export async function getDailyFocusInfo(dateObj) {
       ? focusData.weeklyStudyTime[getDayOfWeek(Timestamp.fromDate(dateObj))]
       : 0;
     return {
+      id: doc.id,
       title: focusData.title,
       focusTime: Number((focusTime / 60.0).toFixed(1)),
       numOfCompletions: focusData.todayTimes,
@@ -50,7 +51,7 @@ export function getDailyOverview(dailyFocusInfo) {
 export function parsePieData(rawData) {
   // First, sort the array without modifying the original one
   const sortedData = rawData
-    .map((item) => ({ title: item.title, value: item.focusTime }))
+    .map((item) => ({ title: item.title, value: item.focusTime, id: item.id }))
     .sort((a, b) => b.value - a.value);
   const maxSize = pieColors.length;
 
@@ -65,6 +66,7 @@ export function parsePieData(rawData) {
 
     // Create an 'Others' entry with the accumulated `value`
     const othersEntry = {
+      id: "other",
       title: "Others",
       value: othersTime,
     };

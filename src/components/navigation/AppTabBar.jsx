@@ -23,7 +23,11 @@ const routeToInactiveIcon = {
 
 export default function AppTabBar({ state, descriptors, navigation }) {
   return (
-    <BlurView style={styles.container} tint="systemMaterialDark">
+    <BlurView
+      style={styles.container}
+      tint="systemMaterialDark"
+      experimentalBlurMethod="dimezisBlurView"
+    >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label = route.name;
