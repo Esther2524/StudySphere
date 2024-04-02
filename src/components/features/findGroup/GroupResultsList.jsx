@@ -21,7 +21,7 @@ export default function GroupResultsList({ keyword }) {
             loop={false}
           />
           <Text style={styles.placeholderText}>
-            Input a keyword above to start search
+            Input group's name to find groups
           </Text>
         </View>
       )}
