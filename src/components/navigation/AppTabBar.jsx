@@ -4,21 +4,28 @@ import { BlurView } from "expo-blur";
 import PressableButton from "../ui/PressableButton";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../utils/Colors";
+import {
+  DASHBOARD_SCREEN_TITLE,
+  FIND_SCREEN_TITLE,
+  FOCUS_STACK_NAME,
+  GROUP_STACK_NAME,
+  PROFILE_SCREEN_TITLE,
+} from "../../utils/constants";
 
 const routeToActiveIcon = {
-  "Group Nav": "people",
-  "Find Group": "search",
-  "Focus List": "duplicate",
-  Dashboard: "bar-chart",
-  Profile: "person",
+  [GROUP_STACK_NAME]: "people",
+  [FIND_SCREEN_TITLE]: "search",
+  [FOCUS_STACK_NAME]: "duplicate",
+  [DASHBOARD_SCREEN_TITLE]: "bar-chart",
+  [PROFILE_SCREEN_TITLE]: "person",
 };
 
 const routeToInactiveIcon = {
-  "Group Nav": "people-outline",
-  "Find Group": "search-outline",
-  "Focus List": "duplicate-outline",
-  Dashboard: "bar-chart-outline",
-  Profile: "person-outline",
+  [GROUP_STACK_NAME]: "people-outline",
+  [FIND_SCREEN_TITLE]: "search-outline",
+  [FOCUS_STACK_NAME]: "duplicate-outline",
+  [DASHBOARD_SCREEN_TITLE]: "bar-chart-outline",
+  [PROFILE_SCREEN_TITLE]: "person-outline",
 };
 
 export default function AppTabBar({ state, descriptors, navigation }) {

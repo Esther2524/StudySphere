@@ -10,6 +10,7 @@ import { AntDesign, Octicons } from "@expo/vector-icons";
 import PressableButton from "../ui/PressableButton";
 import EditFocus from "../features/focusList/EditFocus";
 import AddReminder from "../features/focusList/AddReminder";
+import { STANDBY_SCREEN_NAME } from "../../utils/constants";
 
 export default function FocusScreen() {
   const [focusTasks, setFocusTasks] = useState([]);
@@ -78,7 +79,7 @@ export default function FocusScreen() {
   }, []);
 
   const onStartPress = (focusID, duration) => {
-    navigation.navigate("Standby", { focusID, duration });
+    navigation.navigate(STANDBY_SCREEN_NAME, { focusID, duration });
   };
 
   return (

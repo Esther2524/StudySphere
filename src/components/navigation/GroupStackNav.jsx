@@ -5,13 +5,17 @@ import { Colors } from "../../utils/Colors";
 import GroupDetailsScreen from "../screens/GroupDetailsScreen";
 import { limitStrLen } from "../../utils/helper";
 import GroupDetailHeaderMenu from "../features/studyGroup/GroupDetailHeaderMenu";
+import {
+  GROUP_DETAIL_SCREEN_TITLE,
+  GROUP_SCREEN_TITLE,
+} from "../../utils/constants";
 
 export default function GroupStackNav() {
   const Stack = createNativeStackNavigator();
 
   return (
     <Stack.Navigator
-      initialRouteName="Study Group"
+      initialRouteName={GROUP_SCREEN_TITLE}
       screenOptions={{
         headerTitleAlign: "center",
         headerTitleStyle: {
@@ -23,9 +27,9 @@ export default function GroupStackNav() {
         headerShadowVisible: false,
       }}
     >
-      <Stack.Screen name="Study Group" component={StudyGroupScreen} />
+      <Stack.Screen name={GROUP_SCREEN_TITLE} component={StudyGroupScreen} />
       <Stack.Screen
-        name="Group Detail"
+        name={GROUP_DETAIL_SCREEN_TITLE}
         component={GroupDetailsScreen}
         options={({ route }) => ({
           title: limitStrLen(route.params.groupName, 25),
