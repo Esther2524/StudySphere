@@ -26,6 +26,7 @@ export default function GroupResultsList({ keyword }) {
         </View>
       )}
       {isSearching &&
+        keyword &&
         Array.from({ length: 4 }).map((_, index) => (
           <GroupResultsItem key={index} isLoading={true} />
         ))}
