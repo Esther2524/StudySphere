@@ -11,7 +11,7 @@ export default function useJoinGroup() {
       queryClient.setQueriesData(
         { queryKey: ["group-search-results"] },
         (old) =>
-          old.map((group) =>
+          old?.map((group) =>
             group.groupId === groupId
               ? {
                   ...group,
