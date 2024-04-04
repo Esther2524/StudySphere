@@ -5,6 +5,7 @@ import { Colors } from "../../../utils/Colors";
 import { useNavigation } from "@react-navigation/native";
 import GroupInfoBox from "./GroupInfoBox";
 import GroupCardItemSkeleton from "./GroupCardItemSkeleton";
+import { GROUP_DETAIL_SCREEN_TITLE } from "../../../utils/constants";
 
 export default function GroupCardItem({
   groupName,
@@ -15,7 +16,11 @@ export default function GroupCardItem({
 }) {
   const navigation = useNavigation();
   const handlePress = useCallback(() => {
-    navigation.navigate("Group Detail", { groupName, groupId, groupOwnerId });
+    navigation.navigate(GROUP_DETAIL_SCREEN_TITLE, {
+      groupName,
+      groupId,
+      groupOwnerId,
+    });
   }, [groupName, groupId, navigation]);
 
   return (
