@@ -90,18 +90,22 @@ export default function EditFocus({
     );
   }
 
+
   const deleteFocusTask = async () => {
     const focusRef = doc(db, "users", user.uid, "focus", focusID);
+    // update UI first to reflect the outcome of the deletion quickly
+    setIsEditFocusVisible(false);
+    setDurationErrMsg("");
+    setTitleErrMsg("");
     try {
       await deleteDoc(focusRef);
       console.log("Focus task deleted!");
-      setIsEditFocusVisible(false);
-      setDurationErrMsg("");
-      setTitleErrMsg("");
     } catch (error) {
-      console.error("Error updating focus task:", error);
+      console.error("Error deleting focus task:", error);
+      setIsEditFocusVisible(true);
     }
   }
+  
 
 
 
