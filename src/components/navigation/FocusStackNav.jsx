@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import StandbyScreen from '../screens/StandbyScreen';
 import FocusScreen from '../screens/FocusScreen';
 import { Colors } from '../../utils/Colors';
+import Map from '../screens/Map';
 
 export default function FocusStackNav() {
   const Stack = createNativeStackNavigator();
@@ -30,6 +31,7 @@ export default function FocusStackNav() {
           headerShown: false, 
         }} 
       />
+      <Stack.Screen name="Map" component={Map}/>
     </Stack.Navigator>
   )
 }
