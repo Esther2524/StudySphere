@@ -28,7 +28,7 @@ export default function AddGroupModal({ setShowAddGroupModal }) {
 
   const { mutate: addGroup, isPending: isAddingGroup } = useAddGroup({
     onError: onAddError,
-    onSucces: onAddSuccess,
+    onSuccess: onAddSuccess,
   });
 
   const confirmHandler = useCallback(async () => {

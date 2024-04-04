@@ -1,33 +1,22 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
-import React, { useCallback, useState } from "react";
+import { Alert, StyleSheet } from "react-native";
+import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { Colors } from "../../../utils/Colors";
 import { AntDesign } from "@expo/vector-icons";
 import { getUserRef } from "../../../utils/helper";
 import useQuitGroup from "./useQuitGroup";
 import { useNavigation } from "@react-navigation/native";
-import { Overlay } from "@rneui/themed";
 import PressableButton from "../../ui/PressableButton";
+import HeaderMenu from "../../ui/HeaderMenu";
 
-function Menu({ toggleMenu, triggerAlert }) {
-  const quitOption = "Quit Group";
+function QuitIcon() {
   return (
-    <Overlay
-      backdropStyle={styles.menuBackdrop}
-      fullScreen={false}
-      overlayStyle={styles.menu}
-      onBackdropPress={toggleMenu}
-    >
-      <PressableButton containerStyle={styles.menuLine} onPress={triggerAlert}>
-        <AntDesign
-          name="closecircleo"
-          size={24}
-          color="black"
-          style={styles.menuIcon}
-        />
-        <Text style={styles.menuText}>{quitOption}</Text>
-      </PressableButton>
-    </Overlay>
+    <AntDesign
+      name="closecircleo"
+      size={24}
+      color="black"
+      style={styles.menuIcon}
+    />
   );
 }
 
@@ -44,20 +33,24 @@ export default function GroupDetailHeaderMenu({ groupId, groupOwnerId }) {
     navigation.goBack();
   };
 
-  const alertMsg = isOwner
+  const quitAlertMsg = isOwner
     ? "You are the owner of the group. Once quit, the group will be deleted. Are you sure to quit?"
     : "Are you sure to quit?";
 
-  const triggerAlert = () => {
-    Alert.alert("Confirm", alertMsg, [
+  const onQuit = () => {
+    Alert.alert("Confirm", quitAlertMsg, [
       { text: "Cancel", style: "cancel" },
       { text: "Quit", style: "destructive", onPress: quitHandler },
     ]);
   };
 
-  const toggleMenu = useCallback(() => {
+  const toggleMenu = () => {
     setShowMenu((show) => !show);
-  }, []);
+  };
+
+  const menuOptions = [
+    { label: "Quit Group", onPress: onQuit, icon: QuitIcon() },
+  ];
 
   return (
     <>
@@ -68,7 +61,9 @@ export default function GroupDetailHeaderMenu({ groupId, groupOwnerId }) {
           color={Colors.headerTitleColor}
         />
       </PressableButton>
-      {showMenu && <Menu toggleMenu={toggleMenu} triggerAlert={triggerAlert} />}
+      {showMenu && (
+        <HeaderMenu menuOptions={menuOptions} toggleMenu={toggleMenu} />
+      )}
     </>
   );
 }
