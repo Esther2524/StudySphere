@@ -60,6 +60,12 @@ export default function TaskBreakdown() {
             style={styles.pieSkeleton}
           />
         )}
+        {!isLoading && Number(total) === 0 && (
+          <Text style={styles.defaultText}>
+            Looks like you haven't focused yet today. 🤔 Complete a session and
+            your progress will show up here!
+          </Text>
+        )}
         {!isLoading && (
           <PieChart
             data={pieData}
@@ -82,6 +88,7 @@ export default function TaskBreakdown() {
             />
           ))}
         {!isLoading &&
+          Number(total) !== 0 &&
           pieData.map((item, ind) => (
             <PieChartMarker key={ind} color={item.color} title={item.title} />
           ))}
@@ -114,5 +121,9 @@ const styles = StyleSheet.create({
   centerValue: {
     fontSize: 24,
     fontWeight: "bold",
+  },
+  defaultText: {
+    fontSize: 16,
+    lineHeight: 22,
   },
 });
