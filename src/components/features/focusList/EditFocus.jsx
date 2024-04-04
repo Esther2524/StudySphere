@@ -47,22 +47,7 @@ export default function EditFocus({
     return isValid;
   }
 
-
-  const handleEditFocus = () => {
-    if (!validateInput()) return;
-    Alert.alert(
-      "Important",
-      "Are you sure you want to edit this focus?",
-      [
-        { text: "No" },
-        { text: "Yes", onPress: () => editFocusTask() }
-      ]
-    );
-  }
-
-
-
-
+  
   const editFocusTask = async () => {
     const focusRef = doc(db, "users", user.uid, "focus", focusID);
     try {
@@ -142,7 +127,7 @@ export default function EditFocus({
         <FormOperationBar
           confirmText="Edit"
           cancelText="Cancel"
-          confirmHandler={handleEditFocus}
+          confirmHandler={editFocusTask}
           cancelHandler={() => { setIsEditFocusVisible(false) }}
         />
       </View>
