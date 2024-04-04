@@ -7,7 +7,7 @@ export default function useQuitGroup(isOwner) {
   const { mutate, isPending } = useMutation({
     mutationFn: (groupId) =>
       isOwner ? deleteGroup(groupId) : quitGroup(groupId),
-    onMutate: (groupId) => {
+    onSuccess: (groupId) => {
       queryClient.setQueryData(["groups"], (old) =>
         old.filter((item) => item.groupId !== groupId)
       );
