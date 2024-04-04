@@ -33,6 +33,8 @@ export const Colors = {
   selectTime: "#ffe6c6",
   tabFilledColor: "#8fb5b7",
   tabFocusColor: "#01575c",
+  areaChartStart: "#8fb5b7",
+  areaChartEnd: "#ffffff",
 
   // undefined
   lighterThanBg: "#8fb5b7",
