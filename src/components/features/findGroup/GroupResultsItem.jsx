@@ -14,8 +14,7 @@ export default function GroupResultsItem({
   joined,
   isLoading,
 }) {
-  const { mutate: joinGroupHandler, isPending: isJoining } =
-    useJoinGroup(groupId);
+  const { mutate: joinGroupHandler, isPending: isJoining } = useJoinGroup();
 
   return (
     <View style={styles.container}>
