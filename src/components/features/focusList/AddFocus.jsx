@@ -3,29 +3,45 @@ import React, { useState, useEffect } from 'react';
 import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
 import FormOperationBar from '../../ui/FormOperationBar';
+import PressableButton from '../../ui/PressableButton';
 import { Colors } from '../../../utils/Colors';
 import { auth, db } from '../../../api/FirestoreConfig';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 
-export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
+export default function AddFocus({ 
+  isAddFocusVisible, setIsAddFocusVisible, setIsMapVisible, closingForMap, setClosingForMap
+}) {
 
   const [title, setTitle] = useState("");
   const [duration, setDuration] = useState("");
-  const [location, setLocation] = useState(null);
+  // location is an object
+  const [location, setLocation] = useState(
+    {
+      latitude: null,
+      longitude: null,
+    }
+  );
 
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
 
-  // use useEffect to reset the form when modal is closed
+  /* 
+   * use useEffect to reset the form when modal is closed:
+   * 1. clear the form if the users intend to create a new focus task
+   * 2. don't clear the form if users go to the Map modal
+   * thats why we need closingForMap here
+   */
   useEffect(() => {
-    if (!isAddFocusVisible) {
+    // only reset these states when the modal is closed for reasons other than opening the map
+    if (!isAddFocusVisible && !closingForMap) {
       setTitle("");
       setDuration("");
-      setLocation(null);
+      setLocation({ latitude: null, longitude: null });
       setDurationErrMsg("");
       setTitleErrMsg("");
     }
-  }, [isAddFocusVisible]);
+
+  }, [isAddFocusVisible, closingForMap]);
 
 
 
@@ -84,6 +100,17 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
   };
 
 
+  const openMapModal = () => {
+    // set closingForMap to true to indicate 
+    // that this time the AddFocus modal is being closed due to opening the Map Modal
+    // then useEffect will not work (data will not be cleared), even if isAddFocusVisible is false
+    setClosingForMap(true);
+
+    setIsAddFocusVisible(false);
+    setIsMapVisible(true); 
+  };
+
+
 
   return (
     <ModalView isVisible={isAddFocusVisible}>
@@ -108,6 +135,11 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
           keyboardType='numeric'
           errorMsg={DurationErrMsg}
         />
+
+        <PressableButton onPress={openMapModal}>
+          <Text>Choose Location</Text>
+        </PressableButton>
+
         <FormOperationBar
           confirmText="Add"
           cancelText="Cancel"

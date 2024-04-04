@@ -10,6 +10,7 @@ import { AntDesign, Octicons } from "@expo/vector-icons";
 import PressableButton from "../ui/PressableButton";
 import EditFocus from "../features/focusList/EditFocus";
 import AddReminder from "../features/focusList/AddReminder";
+import MapModal from "../features/focusList/MapModal";
 
 export default function FocusScreen() {
   const [focusTasks, setFocusTasks] = useState([]);
@@ -21,6 +22,13 @@ export default function FocusScreen() {
   const [isEditFocusVisible, setIsEditFocusVisible] = useState(false);
   const [focusTitle, setFocusTitle] = useState("");
   const [focusDuration, setFocusDurarion] = useState("");
+
+  // for Map Modal
+  const [isMapVisible, setIsMapVisible] = useState(false);
+  // closingForMap is used to track whether the modal is being closed to navigate to the Map modal 
+  // or if it's being closed after adding a task or cancelling the operation
+  const [closingForMap, setClosingForMap] = useState(false);
+
 
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
@@ -77,9 +85,14 @@ export default function FocusScreen() {
     }
   }, []);
 
+
+
   const onStartPress = (focusID, duration) => {
     navigation.navigate("Standby", { focusID, duration });
   };
+
+
+
 
   return (
     <View style={styles.container}>
@@ -106,6 +119,9 @@ export default function FocusScreen() {
       <AddFocus
         isAddFocusVisible={isAddFocusVisible}
         setIsAddFocusVisible={setIsAddFocusVisible}
+        setIsMapVisible={setIsMapVisible}
+        closingForMap={closingForMap}
+        setClosingForMap={setClosingForMap}
       />
       <EditFocus
         isEditFocusVisible={isEditFocusVisible}
@@ -113,6 +129,12 @@ export default function FocusScreen() {
         focusTitle={focusTitle}
         focusDuration={focusDuration}
         focusID={selectedFocusID}
+      />
+      <MapModal
+        isMapVisible={isMapVisible}
+        setIsMapVisible={setIsMapVisible}
+        setIsAddFocusVisible={setIsAddFocusVisible}
+        setClosingForMap={setClosingForMap}
       />
 
       <AddReminder
