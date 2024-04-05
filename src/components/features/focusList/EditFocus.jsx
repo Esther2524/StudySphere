@@ -14,7 +14,7 @@ import locateFocusHandler from './LocationHelper';
 
 export default function EditFocus({
   isEditFocusVisible, setIsEditFocusVisible, setIsFromEdit,
-  focusTitle, focusDuration, focusLocation, focusID,
+  focusTitle, focusDuration, focusLocation, focusID, setFocusLocation,
   setIsMapVisible, currentLocation, setCurrentLocation
 }) {
 
@@ -24,6 +24,7 @@ export default function EditFocus({
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
 
+
   // ensure input fields are always populated with the most current data passed to the EditFocus component
   useEffect(() => {
     setTitle(focusTitle);
@@ -32,6 +33,9 @@ export default function EditFocus({
     setDurationErrMsg("");
     setTitleErrMsg("");
   }, [focusTitle, focusDuration, focusLocation]);
+
+  // console.log("currentLocation", currentLocation);
+  // console.log("focus location", focusLocation);
 
 
 
@@ -123,6 +127,7 @@ export default function EditFocus({
 
   const clearLocation = () => {
     setCurrentLocation(null);
+    setFocusLocation(null);
   }
 
 
@@ -162,7 +167,7 @@ export default function EditFocus({
           errorMsg={DurationErrMsg}
         />
         <DisplayLocation
-          currentLocation={currentLocation}
+          currentLocation={currentLocation || focusLocation}
           openMapModal={openMapModal}
           clearLocation={clearLocation}
         />

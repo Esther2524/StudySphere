@@ -147,6 +147,7 @@ export default function FocusScreen() {
         focusDuration={focusDuration}
         focusLocation={focusLocation}
         focusID={selectedFocusID}
+        setFocusLocation={setFocusLocation}
         setIsMapVisible={setIsMapVisible}
         currentLocation={currentLocation}
         setCurrentLocation={setCurrentLocation}
