@@ -116,10 +116,12 @@ export default function FocusScreen() {
         focusID={selectedFocusID}
       />
 
-      <AddReminder
-        isReminderVisible={isReminderVisible}
-        setIsReminderVisible={setIsReminderVisible}
-      />
+      {isReminderVisible && (
+        <AddReminder
+          isReminderVisible={isReminderVisible}
+          setIsReminderVisible={setIsReminderVisible}
+        />
+      )}
     </View>
   );
 }
