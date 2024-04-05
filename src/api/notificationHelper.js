@@ -89,5 +89,5 @@ export function scheduleReminder({ title, message, time, reminderType }) {
 export const reminderLengthToType = {
   2: REMINDER_TYPE_WEEKEND,
   5: REMINDER_TYPE_WEEKDAY,
-  7: REMINDER_TYPE_DAILY,
+  1: REMINDER_TYPE_DAILY,
 };
