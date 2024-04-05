@@ -5,6 +5,7 @@ import FormOperationBar from "../../ui/FormOperationBar";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import PressableButton from "../../ui/PressableButton";
 import { Colors } from "../../../utils/Colors";
+import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { scheduleReminder } from "../../../api/notificationHelper";
 import * as Notifications from "expo-notifications";
@@ -25,8 +26,6 @@ export default function AddReminder({
   const [showPicker, setShowPicker] = useState(false);
 
   const confirmReminder = () => {
-    // TODO
-    // console.log(reminderRepeat, reminderTime);
     scheduleReminder({
       title: REMINDER_TITLE,
       message: REMINDER_MSG,
@@ -64,7 +63,7 @@ export default function AddReminder({
   const buttonStyles = (mode) => ({
     backgroundColor:
       mode === reminderRepeat ? Colors.selectedRepeat : Colors.unselectedRepeat,
-    margin: 4,
+    marginRight: 10,
     padding: 10,
     borderRadius: 10,
   });
@@ -78,7 +77,11 @@ export default function AddReminder({
           </View>
           <Text style={styles.header}>Focus Reminder</Text>
           <PressableButton onPress={handleDeleteReminder}>
-            <AntDesign name="delete" size={24} color={Colors.deleteButton} />
+            <Ionicons
+              name="trash-outline"
+              size={24}
+              color={Colors.deleteButton}
+            />
           </PressableButton>
         </View>
 
@@ -111,7 +114,7 @@ export default function AddReminder({
             onPress={showTimepicker}
             containerStyle={styles.timeButton}
           >
-            <Text style={styles.timeText}>Choose Reminder Time</Text>
+            <Text style={styles.timeText}>Reminder Time</Text>
           </PressableButton>
           {showPicker && (
             <DateTimePicker
@@ -159,10 +162,11 @@ const styles = StyleSheet.create({
   selectRepeatArea: {
     marginTop: 20,
     marginBottom: 10,
+    marginLeft: 10,
   },
   repeatLabel: {
     marginBottom: 10,
-    fontSize: 15,
+    fontSize: 16,
   },
   button: {
     marginRight: 5,
@@ -173,18 +177,21 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
   },
   selectTimeArea: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 30,
+    marginLeft: 10,
   },
   timeButton: {
     backgroundColor: Colors.selectTime,
-    padding: 7,
+    padding: 10,
     borderRadius: 10,
   },
   timeText: {},
+  placeholder: {
+    width: 24,
+  },
 });
