@@ -79,17 +79,22 @@ export default function AddReminder({
       }
       const currentNotif =
         await Notifications.getAllScheduledNotificationsAsync();
-      const { dateComponents } = currentNotif[0].trigger;
+      const dateComponents = currentNotif[0]?.trigger?.dateComponents;
       const currentNotifTime = new Date();
-      currentNotifTime.setHours(
-        dateComponents.hour,
-        dateComponents.minute,
-        0,
-        0
-      );
-      setReminderTime(currentNotifTime);
-      showTimepicker();
-      setReminderRepeat(reminderLengthToType[currentNotif.length]);
+
+      // This means we do have a reminder set by user
+      // So we need to display it
+      if (dateComponents) {
+        currentNotifTime.setHours(
+          dateComponents.hour,
+          dateComponents.minute,
+          0,
+          0
+        );
+        setReminderTime(currentNotifTime);
+        showTimepicker();
+        setReminderRepeat(reminderLengthToType[currentNotif.length]);
+      }
     }
     showLocalNotif();
   }, []);
