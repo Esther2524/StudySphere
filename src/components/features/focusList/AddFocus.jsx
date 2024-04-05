@@ -9,6 +9,7 @@ import { auth, db } from '../../../api/FirestoreConfig';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import locateFocusHandler from './LocationHelper';
 import { mapsApiKey } from "@env";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function AddFocus({
   isAddFocusVisible, setIsAddFocusVisible, setIsMapVisible, closingForMap, setClosingForMap,
@@ -121,6 +122,10 @@ export default function AddFocus({
     }
   };
 
+  const clearLocation = () => {
+    setCurrentLocation(null);
+  }
+
 
 
 
@@ -147,12 +152,19 @@ export default function AddFocus({
           keyboardType='numeric'
           errorMsg={DurationErrMsg}
         />
+
         <View style={styles.locationArea}>
           <PressableButton
             onPress={openMapModal}
             containerStyle={styles.buttonContainer}
           >
             <Text style={styles.buttonTitle}>Select Location</Text>
+            <AntDesign name="arrowright" size={20} color={Colors.addFocusButton} />
+            {currentLocation
+              && <PressableButton onPress={clearLocation}>
+                <AntDesign name="closecircleo" size={20} color={Colors.addFocusButton} />
+              </PressableButton>
+            }
           </PressableButton>
           {currentLocation &&
             <Image
@@ -162,7 +174,10 @@ export default function AddFocus({
               }}
             />
           }
+
         </View>
+
+
         <FormOperationBar
           confirmText="Add"
           cancelText="Cancel"
@@ -197,13 +212,14 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   buttonContainer: {
+    flexDirection: 'row',
     backgroundColor: Colors.timerText,
     padding: 10,
     borderRadius: 10,
-    width: '50%',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginLeft: 10,
-    marginBottom: 5,
+    marginHorizontal: 10,
+    marginBottom: 10,
   },
   image: {
     height: 100,
