@@ -25,10 +25,41 @@ export default function AddReminder({
   setIsReminderVisible,
 }) {
   const [reminderRepeat, setReminderRepeat] = useState("");
-  const [reminderTime, setReminderTime] = useState(new Date());
+  const [reminderTime, setReminderTime] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
+  const [err, setErr] = useState({
+    repeatModeErr: "",
+    reminderTimeErr: "",
+  });
+
+  function clearRepeatModeErr() {
+    setErr((pre) => ({
+      ...pre,
+      repeatModeErr: "",
+    }));
+  }
 
   const confirmReminder = async () => {
+    let isValid = true;
+    if (!reminderRepeat) {
+      setErr((pre) => ({
+        ...pre,
+        repeatModeErr: "Please choose repeat mode!",
+      }));
+      isValid = false;
+    }
+    if (!reminderTime) {
+      setErr((pre) => ({
+        ...pre,
+        reminderTimeErr: "Please choose reminder time!",
+      }));
+      isValid = false;
+    }
+    if (!isValid) return;
+    if (!Device.isDevice) {
+      Alert.alert("Reminder can only be set on physical device!");
+      return;
+    }
     await Notifications.cancelAllScheduledNotificationsAsync();
     scheduleReminder({
       title: REMINDER_TITLE,
@@ -41,9 +72,6 @@ export default function AddReminder({
 
   const deleteReminder = () => {
     Notifications.cancelAllScheduledNotificationsAsync();
-    setReminderRepeat("");
-    setShowPicker(false);
-    setReminderTime(new Date());
     setIsReminderVisible(false);
   };
 
@@ -55,11 +83,16 @@ export default function AddReminder({
   };
 
   const showTimepicker = () => {
+    if (!reminderTime) setReminderTime(new Date());
     setShowPicker(true);
   };
 
-  const onChange = (event, selectedDate) => {
+  const onChangeReminderTime = (event, selectedDate) => {
     const currentDate = selectedDate || date;
+    setErr((pre) => ({
+      ...pre,
+      reminderTimeErr: "",
+    }));
     setShowPicker(Platform.OS === "ios");
     setReminderTime(currentDate);
   };
@@ -91,8 +124,8 @@ export default function AddReminder({
           0,
           0
         );
-        setReminderTime(currentNotifTime);
         showTimepicker();
+        setReminderTime(currentNotifTime);
         setReminderRepeat(reminderLengthToType[currentNotif.length]);
       }
     }
@@ -120,43 +153,58 @@ export default function AddReminder({
           <Text style={styles.repeatLabel}>Repeat Mode</Text>
           <View style={styles.buttonContainer}>
             <PressableButton
-              onPress={() => setReminderRepeat(REMINDER_TYPE_DAILY)}
+              onPress={() => {
+                setReminderRepeat(REMINDER_TYPE_DAILY);
+                clearRepeatModeErr();
+              }}
               containerStyle={buttonStyles(REMINDER_TYPE_DAILY)}
             >
               <Text>{REMINDER_TYPE_DAILY}</Text>
             </PressableButton>
             <PressableButton
-              onPress={() => setReminderRepeat(REMINDER_TYPE_WEEKDAY)}
+              onPress={() => {
+                setReminderRepeat(REMINDER_TYPE_WEEKDAY);
+                clearRepeatModeErr();
+              }}
               containerStyle={buttonStyles(REMINDER_TYPE_WEEKDAY)}
             >
               <Text>{REMINDER_TYPE_WEEKDAY}</Text>
             </PressableButton>
             <PressableButton
-              onPress={() => setReminderRepeat(REMINDER_TYPE_WEEKEND)}
+              onPress={() => {
+                setReminderRepeat(REMINDER_TYPE_WEEKEND);
+                clearRepeatModeErr();
+              }}
               containerStyle={buttonStyles(REMINDER_TYPE_WEEKEND)}
             >
               <Text>{REMINDER_TYPE_WEEKEND}</Text>
             </PressableButton>
           </View>
+          <Text style={styles.errMsg}>{err.repeatModeErr}</Text>
         </View>
 
         <View style={styles.selectTimeArea}>
-          <PressableButton
-            onPress={showTimepicker}
-            containerStyle={styles.timeButton}
-          >
-            <Text style={styles.timeText}>Reminder Time</Text>
-          </PressableButton>
-          {showPicker && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={reminderTime}
-              mode={"time"}
-              is24Hour={true}
-              display="default"
-              onChange={onChange}
-            />
-          )}
+          <View style={styles.selectTimeLineOne}>
+            <PressableButton
+              onPress={showTimepicker}
+              containerStyle={styles.timeButton}
+            >
+              <Text style={styles.timeText}>Reminder Time</Text>
+            </PressableButton>
+            {showPicker && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={reminderTime}
+                mode={"time"}
+                is24Hour={true}
+                display="default"
+                onChange={onChangeReminderTime}
+              />
+            )}
+          </View>
+          <View>
+            <Text style={styles.errMsg}>{err.reminderTimeErr}</Text>
+          </View>
         </View>
 
         <FormOperationBar
@@ -194,6 +242,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     marginLeft: 10,
+    height: 90,
   },
   repeatLabel: {
     marginBottom: 10,
@@ -210,11 +259,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectTimeArea: {
+    marginBottom: 10,
+    marginLeft: 10,
+    height: 60,
+  },
+  selectTimeLineOne: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 30,
-    marginLeft: 10,
   },
   timeButton: {
     backgroundColor: Colors.selectTime,
@@ -224,5 +275,9 @@ const styles = StyleSheet.create({
   timeText: {},
   placeholder: {
     width: 24,
+  },
+  errMsg: {
+    color: Colors.dangerTextColor,
+    marginTop: 5,
   },
 });
