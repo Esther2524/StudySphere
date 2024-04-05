@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addGroupApi } from "./studyGroupHelper";
 
-export default function useAddGroup({ onSucces, onError }) {
+export default function useAddGroup({ onSuccess, onError }) {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: (groupName) => addGroupApi(groupName),
@@ -10,7 +10,7 @@ export default function useAddGroup({ onSucces, onError }) {
       queryClient.setQueryData(["groups"], (cache) => {
         cache.push({ groupName, groupId, groupOwnerId, groupSize: 1 });
       });
-      onSucces({ groupName, groupId });
+      onSuccess({ groupName, groupId });
     },
     onError: onError,
   });

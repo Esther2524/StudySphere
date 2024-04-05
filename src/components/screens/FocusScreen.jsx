@@ -99,7 +99,7 @@ export default function FocusScreen() {
 
 
   const onStartPress = (focusID, duration) => {
-    navigation.navigate("Standby", { focusID, duration });
+    navigation.navigate(STANDBY_SCREEN_NAME, { focusID, duration });
   };
 
 

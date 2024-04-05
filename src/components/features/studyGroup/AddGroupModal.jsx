@@ -5,6 +5,7 @@ import FormOperationBar from "../../ui/FormOperationBar";
 import InputWithLabel from "../../ui/InputWithLabel";
 import { useNavigation } from "@react-navigation/native";
 import useAddGroup from "./useAddGroup";
+import { GROUP_DETAIL_SCREEN_TITLE } from "../../../utils/constants";
 
 export default function AddGroupModal({ setShowAddGroupModal }) {
   const [groupName, setGroupName] = useState("");
@@ -15,7 +16,7 @@ export default function AddGroupModal({ setShowAddGroupModal }) {
 
   const onAddSuccess = useCallback(({ groupName, groupId }) => {
     setShowAddGroupModal(false);
-    navigation.navigate("Group Detail", {
+    navigation.navigate(GROUP_DETAIL_SCREEN_TITLE, {
       groupName,
       groupId,
     });
@@ -27,7 +28,7 @@ export default function AddGroupModal({ setShowAddGroupModal }) {
 
   const { mutate: addGroup, isPending: isAddingGroup } = useAddGroup({
     onError: onAddError,
-    onSucces: onAddSuccess,
+    onSuccess: onAddSuccess,
   });
 
   const confirmHandler = useCallback(async () => {
