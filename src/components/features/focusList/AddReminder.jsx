@@ -1,39 +1,54 @@
-import { StyleSheet, Text, View, Platform, Alert } from 'react-native';
-import React, { useState } from 'react';
-import ModalView from '../../ui/ModalView';
-import FormOperationBar from '../../ui/FormOperationBar';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import PressableButton from '../../ui/PressableButton';
-import { Colors } from '../../../utils/Colors';
-import { AntDesign } from '@expo/vector-icons';
+import { StyleSheet, Text, View, Platform, Alert } from "react-native";
+import React, { useState } from "react";
+import ModalView from "../../ui/ModalView";
+import FormOperationBar from "../../ui/FormOperationBar";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import PressableButton from "../../ui/PressableButton";
+import { Colors } from "../../../utils/Colors";
+import { AntDesign } from "@expo/vector-icons";
+import { scheduleReminder } from "../../../utils/notificationHelper";
+import * as Notifications from "expo-notifications";
+import {
+  REMINDER_MSG,
+  REMINDER_TITLE,
+  REMINDER_TYPE_DAILY,
+  REMINDER_TYPE_WEEKDAY,
+  REMINDER_TYPE_WEEKEND,
+} from "../../../utils/constants";
 
-export default function AddReminder({ isReminderVisible, setIsReminderVisible }) {
+export default function AddReminder({
+  isReminderVisible,
+  setIsReminderVisible,
+}) {
   const [reminderRepeat, setReminderRepeat] = useState("");
   const [reminderTime, setReminderTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
   const confirmReminder = () => {
     // TODO
-    console.log(reminderRepeat, reminderTime);
+    // console.log(reminderRepeat, reminderTime);
+    scheduleReminder({
+      title: REMINDER_TITLE,
+      message: REMINDER_MSG,
+      time: reminderTime,
+      reminderType: reminderRepeat,
+    });
     setIsReminderVisible(false);
-  }
-
-  const handleDeleteReminder = () => {
-    Alert.alert(
-      "Important",
-      "Are you sure you want to delete this reminder?",
-      [
-        { text: "No" },
-        { text: "Yes", onPress: () => deleteReminder() }
-      ]
-    );
   };
 
   const deleteReminder = () => {
+    Notifications.cancelAllScheduledNotificationsAsync();
     setReminderRepeat("");
     setShowPicker(false);
     setReminderTime(new Date());
     setIsReminderVisible(false);
+  };
+
+  const handleDeleteReminder = () => {
+    Alert.alert("Important", "Are you sure you want to delete this reminder?", [
+      { text: "No" },
+      { text: "Yes", onPress: () => deleteReminder() },
+    ]);
   };
 
   const showTimepicker = () => {
@@ -42,23 +57,21 @@ export default function AddReminder({ isReminderVisible, setIsReminderVisible })
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShowPicker(Platform.OS === 'ios');
+    setShowPicker(Platform.OS === "ios");
     setReminderTime(currentDate);
   };
 
   const buttonStyles = (mode) => ({
-    backgroundColor: mode === reminderRepeat ? Colors.selectedRepeat : Colors.unselectedRepeat,
+    backgroundColor:
+      mode === reminderRepeat ? Colors.selectedRepeat : Colors.unselectedRepeat,
     margin: 4,
     padding: 10,
     borderRadius: 10,
   });
 
-
   return (
     <ModalView isVisible={isReminderVisible}>
-
       <View style={styles.modalView}>
-
         <View style={styles.headerLine}>
           <View style={styles.placeholder}>
             {/* Invisible placeholder to balance the delete button and center the title */}
@@ -69,27 +82,26 @@ export default function AddReminder({ isReminderVisible, setIsReminderVisible })
           </PressableButton>
         </View>
 
-
         <View style={styles.selectRepeatArea}>
           <Text style={styles.repeatLabel}>Repeat Mode</Text>
           <View style={styles.buttonContainer}>
             <PressableButton
-              onPress={() => setReminderRepeat("Every Day")}
-              containerStyle={buttonStyles("Every Day")}
+              onPress={() => setReminderRepeat(REMINDER_TYPE_DAILY)}
+              containerStyle={buttonStyles(REMINDER_TYPE_DAILY)}
             >
-              <Text>Every Day</Text>
+              <Text>{REMINDER_TYPE_DAILY}</Text>
             </PressableButton>
             <PressableButton
-              onPress={() => setReminderRepeat("Every Weekday")}
-              containerStyle={buttonStyles("Every Weekday")}
+              onPress={() => setReminderRepeat(REMINDER_TYPE_WEEKDAY)}
+              containerStyle={buttonStyles(REMINDER_TYPE_WEEKDAY)}
             >
-              <Text>Every Weekday</Text>
+              <Text>{REMINDER_TYPE_WEEKDAY}</Text>
             </PressableButton>
             <PressableButton
-              onPress={() => setReminderRepeat("Every Weekend")}
-              containerStyle={buttonStyles("Every Weekend")}
+              onPress={() => setReminderRepeat(REMINDER_TYPE_WEEKEND)}
+              containerStyle={buttonStyles(REMINDER_TYPE_WEEKEND)}
             >
-              <Text>Every Weekday</Text>
+              <Text>{REMINDER_TYPE_WEEKEND}</Text>
             </PressableButton>
           </View>
         </View>
@@ -105,7 +117,7 @@ export default function AddReminder({ isReminderVisible, setIsReminderVisible })
             <DateTimePicker
               testID="dateTimePicker"
               value={reminderTime}
-              mode={'time'}
+              mode={"time"}
               is24Hour={true}
               display="default"
               onChange={onChange}
@@ -113,35 +125,36 @@ export default function AddReminder({ isReminderVisible, setIsReminderVisible })
           )}
         </View>
 
-
         <FormOperationBar
           confirmText="Confirm"
           confirmHandler={confirmReminder}
           cancelText="Cancel"
-          cancelHandler={() => { setIsReminderVisible(false) }}
+          cancelHandler={() => {
+            setIsReminderVisible(false);
+          }}
         />
       </View>
     </ModalView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   modalView: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 20,
-    width: '90%',
-    justifyContent: 'center',
+    width: "90%",
+    justifyContent: "center",
   },
   header: {
     fontSize: 18,
     color: Colors.modalTitle,
-    textAlign: 'center',
+    textAlign: "center",
   },
   headerLine: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   selectRepeatArea: {
     marginTop: 20,
@@ -158,13 +171,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   selectTimeArea: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
     marginBottom: 30,
   },
@@ -173,7 +186,5 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: 10,
   },
-  timeText: {
-
-  }
-})
+  timeText: {},
+});
