@@ -2,12 +2,12 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
-import { extractHourAndMinute } from "./helper";
+import { extractHourAndMinute } from "../utils/helper";
 import {
   REMINDER_TYPE_DAILY,
   REMINDER_TYPE_WEEKDAY,
   REMINDER_TYPE_WEEKEND,
-} from "./constants";
+} from "../utils/constants";
 
 export async function registerForPushNotificationsAsync() {
   let token;

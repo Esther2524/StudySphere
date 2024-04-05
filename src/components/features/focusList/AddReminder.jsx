@@ -6,7 +6,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import PressableButton from "../../ui/PressableButton";
 import { Colors } from "../../../utils/Colors";
 import { AntDesign } from "@expo/vector-icons";
-import { scheduleReminder } from "../../../utils/notificationHelper";
+import { scheduleReminder } from "../../../api/notificationHelper";
 import * as Notifications from "expo-notifications";
 import {
   REMINDER_MSG,

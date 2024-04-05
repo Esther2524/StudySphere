@@ -1,6 +1,6 @@
 import * as Notifications from "expo-notifications";
 import { useEffect, useRef, useState } from "react";
-import { registerForPushNotificationsAsync } from "../utils/notificationHelper";
+import { registerForPushNotificationsAsync } from "../api/notificationHelper";
 
 export default function useSetNotification() {
   const [expoPushToken, setExpoPushToken] = useState("");
