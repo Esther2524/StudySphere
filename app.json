@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "StudySphere",
-    "slug": "StudySphere",
+    "slug": "studysphere",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d309eb95-3752-4487-9aae-a00e7e8c6c3a"
+      }
+    },
+    "owner": "elwin_wang"
   }
 }
