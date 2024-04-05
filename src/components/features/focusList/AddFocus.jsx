@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
@@ -7,20 +7,16 @@ import PressableButton from '../../ui/PressableButton';
 import { Colors } from '../../../utils/Colors';
 import { auth, db } from '../../../api/FirestoreConfig';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
+import locateFocusHandler from './LocationHelper';
+import { mapsApiKey } from "@env";
 
-export default function AddFocus({ 
-  isAddFocusVisible, setIsAddFocusVisible, setIsMapVisible, closingForMap, setClosingForMap
+export default function AddFocus({
+  isAddFocusVisible, setIsAddFocusVisible, setIsMapVisible, closingForMap, setClosingForMap,
+  currentLocation, setCurrentLocation
 }) {
 
   const [title, setTitle] = useState("");
   const [duration, setDuration] = useState("");
-  // location is an object
-  const [location, setLocation] = useState(
-    {
-      latitude: null,
-      longitude: null,
-    }
-  );
 
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
@@ -36,7 +32,7 @@ export default function AddFocus({
     if (!isAddFocusVisible && !closingForMap) {
       setTitle("");
       setDuration("");
-      setLocation({ latitude: null, longitude: null });
+      setCurrentLocation(null);
       setDurationErrMsg("");
       setTitleErrMsg("");
     }
@@ -77,7 +73,7 @@ export default function AddFocus({
           const newTask = {
             title: title,
             duration: durationInt,
-            location: location, // optional field
+            location: currentLocation, // optional field
             lastUpdate: Timestamp.fromDate(now),
             todayBreaks: 0,
             todayTimes: 0,
@@ -99,16 +95,32 @@ export default function AddFocus({
     }
   };
 
+  // get the current position at the time when users open Map Modal
+  const openMapModal = async () => {
+    try {
+      // if the currentLocation is null, we call locateFocusHandler to locate the current position
+      // otherwise, just use the previous set position
+      if (!currentLocation) {
+        const location = await locateFocusHandler();
+        if (!location) {
+          console.log("Location access was denied or failed.");
+          return;
+        }
+        setCurrentLocation(location);  // use the newly fetched location
+      }
 
-  const openMapModal = () => {
-    // set closingForMap to true to indicate 
-    // that this time the AddFocus modal is being closed due to opening the Map Modal
-    // then useEffect will not work (data will not be cleared), even if isAddFocusVisible is false
-    setClosingForMap(true);
+      // set closingForMap to true to indicate 
+      // that this time the AddFocus modal is being closed due to opening the Map Modal
+      // then useEffect will not work (data will not be cleared), even if isAddFocusVisible is false
+      setClosingForMap(true);
+      setIsAddFocusVisible(false);
+      setIsMapVisible(true);
 
-    setIsAddFocusVisible(false);
-    setIsMapVisible(true); 
+    } catch (error) {
+      console.error("Error getting location: ", error);
+    }
   };
+
 
 
 
@@ -135,11 +147,22 @@ export default function AddFocus({
           keyboardType='numeric'
           errorMsg={DurationErrMsg}
         />
-
-        <PressableButton onPress={openMapModal}>
-          <Text>Choose Location</Text>
-        </PressableButton>
-
+        <View style={styles.locationArea}>
+          <PressableButton
+            onPress={openMapModal}
+            containerStyle={styles.buttonContainer}
+          >
+            <Text style={styles.buttonTitle}>Select Location</Text>
+          </PressableButton>
+          {currentLocation &&
+            <Image
+              style={styles.image}
+              source={{
+                uri: `https://maps.googleapis.com/maps/api/staticmap?center=${currentLocation.latitude},${currentLocation.longitude}&zoom=16&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${currentLocation.latitude},${currentLocation.longitude}&key=${mapsApiKey}`,
+              }}
+            />
+          }
+        </View>
         <FormOperationBar
           confirmText="Add"
           cancelText="Cancel"
@@ -165,7 +188,26 @@ const styles = StyleSheet.create({
     color: Colors.modalTitle,
     textAlign: 'center',
   },
-  inputLabel: {
+  locationArea: {
+    marginBottom: 20,
+  },
+  buttonTitle: {
     fontSize: 16,
-  }
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  buttonContainer: {
+    backgroundColor: Colors.timerText,
+    padding: 10,
+    borderRadius: 10,
+    width: '50%',
+    alignItems: 'center',
+    marginLeft: 10,
+    marginBottom: 5,
+  },
+  image: {
+    height: 100,
+    borderRadius: 10,
+    marginHorizontal: 10,
+  },
 })

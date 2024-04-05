@@ -30,6 +30,9 @@ export default function FocusScreen() {
   const [closingForMap, setClosingForMap] = useState(false);
 
 
+  // AddFocus Modal and Map Modal will share this currentLocation state variable
+  const [currentLocation, setCurrentLocation] = useState(null);
+
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
 
@@ -122,6 +125,8 @@ export default function FocusScreen() {
         setIsMapVisible={setIsMapVisible}
         closingForMap={closingForMap}
         setClosingForMap={setClosingForMap}
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
       />
       <EditFocus
         isEditFocusVisible={isEditFocusVisible}
@@ -135,6 +140,8 @@ export default function FocusScreen() {
         setIsMapVisible={setIsMapVisible}
         setIsAddFocusVisible={setIsAddFocusVisible}
         setClosingForMap={setClosingForMap}
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
       />
 
       <AddReminder
