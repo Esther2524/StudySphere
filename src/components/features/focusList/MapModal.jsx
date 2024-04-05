@@ -9,8 +9,11 @@ export default function MapModal({
   currentLocation, setCurrentLocation
 }) {
 
+  // make sure the new location is set only when the user clicks the "Confirm" button
+  const [tempLocation, setTempLocation] = useState(null);
 
   const closeMapModal = () => {
+    setTempLocation(null); // discard temporary location after leaving Map modal
     setIsMapVisible(false);
     setIsAddFocusVisible(true);
     // make sure next time AddFocus modal is closed (for reasons other than navigating to the MapModal), 
@@ -18,8 +21,12 @@ export default function MapModal({
     setClosingForMap(false);
   };
 
-
-
+  const confirmLocation = () => {
+    if (tempLocation) {
+      setCurrentLocation(tempLocation); // Confirm and update the location
+    }
+    closeMapModal(); // Close the modal
+  };
 
 
   return (
@@ -38,14 +45,14 @@ export default function MapModal({
             scrollEnabled={true}
             // user's moving the marker is based on the onPress event of the MapView
             onPress={(e) => {
-              setCurrentLocation({
+              setTempLocation({
                 latitude: e.nativeEvent.coordinate.latitude,
                 longitude: e.nativeEvent.coordinate.longitude,
               })
             }}
           >
             <Marker
-              coordinate={currentLocation}
+              coordinate={tempLocation || currentLocation}
             />
           </MapView>
         }
@@ -54,7 +61,7 @@ export default function MapModal({
         <FormOperationBar
           confirmText="Confirm"
           cancelText="Cancel"
-          confirmHandler={closeMapModal}
+          confirmHandler={confirmLocation}
           cancelHandler={closeMapModal}
         />
 
