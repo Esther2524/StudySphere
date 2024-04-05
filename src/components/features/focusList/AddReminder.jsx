@@ -1,14 +1,17 @@
 import { StyleSheet, Text, View, Platform, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalView from "../../ui/ModalView";
 import FormOperationBar from "../../ui/FormOperationBar";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import PressableButton from "../../ui/PressableButton";
 import { Colors } from "../../../utils/Colors";
 import { Ionicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import { scheduleReminder } from "../../../api/notificationHelper";
+import {
+  reminderLengthToType,
+  scheduleReminder,
+} from "../../../api/notificationHelper";
 import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 import {
   REMINDER_MSG,
   REMINDER_TITLE,
@@ -25,7 +28,8 @@ export default function AddReminder({
   const [reminderTime, setReminderTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
-  const confirmReminder = () => {
+  const confirmReminder = async () => {
+    await Notifications.cancelAllScheduledNotificationsAsync();
     scheduleReminder({
       title: REMINDER_TITLE,
       message: REMINDER_MSG,
@@ -67,6 +71,28 @@ export default function AddReminder({
     padding: 10,
     borderRadius: 10,
   });
+
+  useEffect(() => {
+    async function showLocalNotif() {
+      if (!Device.isDevice) {
+        return;
+      }
+      const currentNotif =
+        await Notifications.getAllScheduledNotificationsAsync();
+      const { dateComponents } = currentNotif[0].trigger;
+      const currentNotifTime = new Date();
+      currentNotifTime.setHours(
+        dateComponents.hour,
+        dateComponents.minute,
+        0,
+        0
+      );
+      setReminderTime(currentNotifTime);
+      showTimepicker();
+      setReminderRepeat(reminderLengthToType[currentNotif.length]);
+    }
+    showLocalNotif();
+  }, []);
 
   return (
     <ModalView isVisible={isReminderVisible}>
