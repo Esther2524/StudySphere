@@ -10,7 +10,7 @@ import { AntDesign, Octicons } from "@expo/vector-icons";
 import PressableButton from "../ui/PressableButton";
 import EditFocus from "../features/focusList/EditFocus";
 import AddReminder from "../features/focusList/AddReminder";
-import { STANDBY_SCREEN_NAME } from "../../utils/constants";
+import MapModal from "../features/focusList/MapModal";
 
 export default function FocusScreen() {
   const [focusTasks, setFocusTasks] = useState([]);
@@ -22,9 +22,27 @@ export default function FocusScreen() {
   const [isEditFocusVisible, setIsEditFocusVisible] = useState(false);
   const [focusTitle, setFocusTitle] = useState("");
   const [focusDuration, setFocusDurarion] = useState("");
+  const [focusLocation, setFocusLocation] = useState(null);
+  const [isFromEdit, setIsFromEdit] = useState(false);
+
+  // for Map Modal
+  const [isMapVisible, setIsMapVisible] = useState(false);
+  // closingForMap is used to track whether the modal is being closed to navigate to the Map modal 
+  // or if it's being closed after adding a task or cancelling the operation
+  const [closingForMap, setClosingForMap] = useState(false);
+
+
+  // AddFocus Modal and Map Modal will share this currentLocation state variable
+  const [currentLocation, setCurrentLocation] = useState(null);
 
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
+
+  // reset location whenever AddFocus is to be shown
+  const showAddFocusModal = () => {
+    setCurrentLocation(null); 
+    setIsAddFocusVisible(true);
+  };
 
   // use useLayoutEffect to set the navigation options and include the button in the header
   useLayoutEffect(() => {
@@ -39,7 +57,7 @@ export default function FocusScreen() {
           </PressableButton>
 
           <PressableButton
-            onPress={() => setIsAddFocusVisible(true)}
+            onPress={showAddFocusModal}
             containerStyle={{ marginRight: 20 }}
           >
             <AntDesign
@@ -78,9 +96,16 @@ export default function FocusScreen() {
     }
   }, []);
 
+
+
   const onStartPress = (focusID, duration) => {
     navigation.navigate(STANDBY_SCREEN_NAME, { focusID, duration });
   };
+
+
+
+
+
 
   return (
     <View style={styles.container}>
@@ -99,6 +124,7 @@ export default function FocusScreen() {
               // pass the focus data to the EditFocus Modal
               setFocusTitle(item.title);
               setFocusDurarion(item.duration);
+              setFocusLocation(item.location);
               setSelectedFocusID(item.id);
             }}
           />
@@ -107,13 +133,35 @@ export default function FocusScreen() {
       <AddFocus
         isAddFocusVisible={isAddFocusVisible}
         setIsAddFocusVisible={setIsAddFocusVisible}
+        setIsMapVisible={setIsMapVisible}
+        closingForMap={closingForMap}
+        setClosingForMap={setClosingForMap}
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
       />
       <EditFocus
         isEditFocusVisible={isEditFocusVisible}
         setIsEditFocusVisible={setIsEditFocusVisible}
+        setIsFromEdit={setIsFromEdit}
         focusTitle={focusTitle}
         focusDuration={focusDuration}
+        focusLocation={focusLocation}
         focusID={selectedFocusID}
+        setFocusLocation={setFocusLocation}
+        setIsMapVisible={setIsMapVisible}
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
+      />
+      <MapModal
+        isMapVisible={isMapVisible}
+        setIsMapVisible={setIsMapVisible}
+        setIsAddFocusVisible={setIsAddFocusVisible}
+        setIsEditFocusVisible={setIsEditFocusVisible}
+        isFromEdit={isFromEdit}
+        setIsFromEdit={setIsFromEdit}
+        setClosingForMap={setClosingForMap}
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
       />
 
       <AddReminder

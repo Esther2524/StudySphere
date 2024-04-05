@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
@@ -6,26 +6,36 @@ import FormOperationBar from '../../ui/FormOperationBar';
 import { Colors } from '../../../utils/Colors';
 import { auth, db } from '../../../api/FirestoreConfig';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
+import locateFocusHandler from './LocationHelper';
+import DisplayLocation from './DisplayLocation';
 
-export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
+export default function AddFocus({
+  isAddFocusVisible, setIsAddFocusVisible, setIsMapVisible, closingForMap, setClosingForMap,
+  currentLocation, setCurrentLocation
+}) {
 
   const [title, setTitle] = useState("");
   const [duration, setDuration] = useState("");
-  const [location, setLocation] = useState(null);
-
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
 
-  // use useEffect to reset the form when modal is closed
+
+  /* 
+   * use useEffect to reset the form when modal is closed:
+   * 1. clear the form if the users intend to create a new focus task
+   * 2. don't clear the form if users go to the Map modal
+   * thats why we need closingForMap here
+   */
   useEffect(() => {
-    if (!isAddFocusVisible) {
+    // only reset these states when the modal is closed for reasons other than opening the map
+    if (!isAddFocusVisible && !closingForMap) {
       setTitle("");
       setDuration("");
-      setLocation(null);
+      setCurrentLocation(null);
       setDurationErrMsg("");
       setTitleErrMsg("");
     }
-  }, [isAddFocusVisible]);
+  }, [isAddFocusVisible, closingForMap]);
 
 
 
@@ -61,7 +71,7 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
           const newTask = {
             title: title,
             duration: durationInt,
-            location: location, // optional field
+            location: currentLocation, // optional field
             lastUpdate: Timestamp.fromDate(now),
             todayBreaks: 0,
             todayTimes: 0,
@@ -82,6 +92,37 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
       }
     }
   };
+
+  // get the current position at the time when users open Map Modal
+  const openMapModal = async () => {
+    try {
+      // if the currentLocation is null, we call locateFocusHandler to locate the current position
+      // otherwise, just use the previous set position
+      if (!currentLocation) {
+        const location = await locateFocusHandler();
+        if (!location) {
+          console.log("Location access was denied or failed.");
+          return;
+        }
+        setCurrentLocation(location);  // use the newly fetched location
+      }
+
+      // set closingForMap to true to indicate 
+      // that this time the AddFocus modal is being closed due to opening the Map Modal
+      // then useEffect will not work (data will not be cleared), even if isAddFocusVisible is false
+      setClosingForMap(true);
+      setIsAddFocusVisible(false);
+      setIsMapVisible(true);
+
+    } catch (error) {
+      console.error("Error getting location: ", error);
+    }
+  };
+
+  const clearLocation = () => {
+    setCurrentLocation(null);
+  }
+
 
 
 
@@ -108,6 +149,11 @@ export default function AddFocus({ isAddFocusVisible, setIsAddFocusVisible }) {
           keyboardType='numeric'
           errorMsg={DurationErrMsg}
         />
+        <DisplayLocation
+          currentLocation={currentLocation}
+          openMapModal={openMapModal}
+          clearLocation={clearLocation}
+        />
         <FormOperationBar
           confirmText="Add"
           cancelText="Cancel"
@@ -133,7 +179,5 @@ const styles = StyleSheet.create({
     color: Colors.modalTitle,
     textAlign: 'center',
   },
-  inputLabel: {
-    fontSize: 16,
-  }
+
 })
