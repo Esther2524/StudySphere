@@ -3,13 +3,11 @@ import React, { useState, useEffect } from 'react';
 import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
 import FormOperationBar from '../../ui/FormOperationBar';
-import PressableButton from '../../ui/PressableButton';
 import { Colors } from '../../../utils/Colors';
 import { auth, db } from '../../../api/FirestoreConfig';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import locateFocusHandler from './LocationHelper';
-import { mapsApiKey } from "@env";
-import { AntDesign } from "@expo/vector-icons";
+import DisplayLocation from './DisplayLocation';
 
 export default function AddFocus({
   isAddFocusVisible, setIsAddFocusVisible, setIsMapVisible, closingForMap, setClosingForMap,
@@ -18,9 +16,9 @@ export default function AddFocus({
 
   const [title, setTitle] = useState("");
   const [duration, setDuration] = useState("");
-
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
+
 
   /* 
    * use useEffect to reset the form when modal is closed:
@@ -37,7 +35,6 @@ export default function AddFocus({
       setDurationErrMsg("");
       setTitleErrMsg("");
     }
-
   }, [isAddFocusVisible, closingForMap]);
 
 
@@ -152,32 +149,11 @@ export default function AddFocus({
           keyboardType='numeric'
           errorMsg={DurationErrMsg}
         />
-
-        <View style={styles.locationArea}>
-          <PressableButton
-            onPress={openMapModal}
-            containerStyle={styles.buttonContainer}
-          >
-            <Text style={styles.buttonTitle}>Select Location</Text>
-            <AntDesign name="arrowright" size={20} color={Colors.addFocusButton} />
-            {currentLocation
-              && <PressableButton onPress={clearLocation}>
-                <AntDesign name="closecircleo" size={20} color={Colors.addFocusButton} />
-              </PressableButton>
-            }
-          </PressableButton>
-          {currentLocation &&
-            <Image
-              style={styles.image}
-              source={{
-                uri: `https://maps.googleapis.com/maps/api/staticmap?center=${currentLocation.latitude},${currentLocation.longitude}&zoom=16&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${currentLocation.latitude},${currentLocation.longitude}&key=${mapsApiKey}`,
-              }}
-            />
-          }
-
-        </View>
-
-
+        <DisplayLocation
+          currentLocation={currentLocation}
+          openMapModal={openMapModal}
+          clearLocation={clearLocation}
+        />
         <FormOperationBar
           confirmText="Add"
           cancelText="Cancel"
@@ -203,27 +179,5 @@ const styles = StyleSheet.create({
     color: Colors.modalTitle,
     textAlign: 'center',
   },
-  locationArea: {
-    marginBottom: 20,
-  },
-  buttonTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    backgroundColor: Colors.timerText,
-    padding: 10,
-    borderRadius: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: 10,
-    marginBottom: 10,
-  },
-  image: {
-    height: 100,
-    borderRadius: 10,
-    marginHorizontal: 10,
-  },
+
 })

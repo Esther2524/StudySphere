@@ -5,8 +5,9 @@ import FormOperationBar from '../../ui/FormOperationBar';
 import MapView, { Marker } from 'react-native-maps';
 
 export default function MapModal({
-  isMapVisible, setIsMapVisible, setIsAddFocusVisible, setClosingForMap,
-  currentLocation, setCurrentLocation
+  isMapVisible, setIsMapVisible, setIsAddFocusVisible, setIsEditFocusVisible, 
+  isFromEdit, setIsFromEdit,
+  setClosingForMap, currentLocation, setCurrentLocation
 }) {
 
   // make sure the new location is set only when the user clicks the "Confirm" button
@@ -15,7 +16,16 @@ export default function MapModal({
   const closeMapModal = () => {
     setTempLocation(null); // discard temporary location after leaving Map modal
     setIsMapVisible(false);
-    setIsAddFocusVisible(true);
+ 
+    if (isFromEdit) {
+      setIsEditFocusVisible(true) ; 
+      setIsAddFocusVisible(false);
+    } else {
+      setIsEditFocusVisible(false) ; 
+      setIsAddFocusVisible(true);
+    }
+    setIsFromEdit(false);
+
     // make sure next time AddFocus modal is closed (for reasons other than navigating to the MapModal), 
     // the input fields will be cleared as intended
     setClosingForMap(false);

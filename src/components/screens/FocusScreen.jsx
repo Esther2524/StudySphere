@@ -22,6 +22,8 @@ export default function FocusScreen() {
   const [isEditFocusVisible, setIsEditFocusVisible] = useState(false);
   const [focusTitle, setFocusTitle] = useState("");
   const [focusDuration, setFocusDurarion] = useState("");
+  const [focusLocation, setFocusLocation] = useState(null);
+  const [isFromEdit, setIsFromEdit] = useState(false);
 
   // for Map Modal
   const [isMapVisible, setIsMapVisible] = useState(false);
@@ -36,6 +38,12 @@ export default function FocusScreen() {
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
 
+  // reset location whenever AddFocus is to be shown
+  const showAddFocusModal = () => {
+    setCurrentLocation(null); 
+    setIsAddFocusVisible(true);
+  };
+
   // use useLayoutEffect to set the navigation options and include the button in the header
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -49,7 +57,7 @@ export default function FocusScreen() {
           </PressableButton>
 
           <PressableButton
-            onPress={() => setIsAddFocusVisible(true)}
+            onPress={showAddFocusModal}
             containerStyle={{ marginRight: 20 }}
           >
             <AntDesign
@@ -97,6 +105,8 @@ export default function FocusScreen() {
 
 
 
+
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -114,6 +124,7 @@ export default function FocusScreen() {
               // pass the focus data to the EditFocus Modal
               setFocusTitle(item.title);
               setFocusDurarion(item.duration);
+              setFocusLocation(item.location);
               setSelectedFocusID(item.id);
             }}
           />
@@ -131,14 +142,22 @@ export default function FocusScreen() {
       <EditFocus
         isEditFocusVisible={isEditFocusVisible}
         setIsEditFocusVisible={setIsEditFocusVisible}
+        setIsFromEdit={setIsFromEdit}
         focusTitle={focusTitle}
         focusDuration={focusDuration}
+        focusLocation={focusLocation}
         focusID={selectedFocusID}
+        setIsMapVisible={setIsMapVisible}
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
       />
       <MapModal
         isMapVisible={isMapVisible}
         setIsMapVisible={setIsMapVisible}
         setIsAddFocusVisible={setIsAddFocusVisible}
+        setIsEditFocusVisible={setIsEditFocusVisible}
+        isFromEdit={isFromEdit}
+        setIsFromEdit={setIsFromEdit}
         setClosingForMap={setClosingForMap}
         currentLocation={currentLocation}
         setCurrentLocation={setCurrentLocation}
