@@ -4,6 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { Colors } from '../../../utils/Colors';
 import PressableButton from '../../ui/PressableButton';
 
+
 export default function DisplayFocusMap({
   focusTasksLocations, mapRegion, isMapShown, setIsMapShown
 }) {
@@ -13,7 +14,7 @@ export default function DisplayFocusMap({
       <PressableButton
         onPress={() => setIsMapShown(!isMapShown)}
         containerStyle={styles.showMapButton}>
-        <Text style={styles.showMapButtonText}>{isMapShown ? "Hide All Focus" : "Show All Focus"}</Text>
+        <Text style={styles.showMapButtonText}>{isMapShown ? "Hide Map" : "Show Map"}</Text>
       </PressableButton>
 
       {isMapShown
@@ -44,17 +45,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   mapStyle: {
-    width: '85%',
-    height: '70%',
-    borderRadius: 20,
+    width: '83%',
+    height: '78%',
+    borderRadius: 30,
     marginTop: 20,
   },
   showMapButton: {
     marginTop: 30,
     backgroundColor: Colors.showMapButtonBg,
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 10,
-    width: 150,
+    width: 120,
     height: 40,
     alignItems: 'center',
   },

@@ -138,7 +138,7 @@ export default function AvatarManager({ userData }) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 30,
     marginBottom: 20,
   },
 })
