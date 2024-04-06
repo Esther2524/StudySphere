@@ -19,7 +19,7 @@ export const Colors = {
   likeIconColor: "#FF6B6B",
   shallowTextColor: "#ffffff",
   focusText: "#ffffff",
-  logOutButtonBg: "#ffffff",
+  showMapButtonBg: "#ffffff",
   profileText: "#ffffff",
   modalTitle: "#12162e",
   addFocusButton: "#ffffff",

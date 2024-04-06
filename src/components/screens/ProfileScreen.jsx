@@ -6,8 +6,8 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from '../../api/FirestoreConfig';
 import { getDoc, doc, updateDoc, query, collection, getDocs, onSnapshot } from 'firebase/firestore';
 import EditNameModal from '../features/userProfile/EditNameModal';
-import MapView, { Marker } from 'react-native-maps';
 import locateFocusHandler from '../features/focusList/LocationHelper';
+import DisplayFocusMap from '../features/userProfile/DisplayFocusMap';
 
 
 const defaultAvatar = require('../../../assets/defaultAvatar.jpg');
@@ -36,7 +36,8 @@ export default function ProfileScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-  
+  const [isMapShown, setIsMapShown] = useState(false);
+
 
 
   useEffect(() => {
@@ -77,9 +78,9 @@ export default function ProfileScreen() {
           setCurrLocation(location);
         };
         fetchLocation().catch(console.error);
-   
+
       });
-  
+
       return () => unsubscribe();
     }
   }, []);
@@ -96,7 +97,7 @@ export default function ProfileScreen() {
       });
     }
   }, [currLocation]);
-  
+
 
   const handleSignOut = async () => {
     try {
@@ -125,32 +126,31 @@ export default function ProfileScreen() {
       />
       <View style={styles.nameContainer}>
         <Text style={styles.usernameText}>Username: {userData.userName}</Text>
-        <PressableButton onPress={() => { setEditModal(true) }} containerStyle={styles.editButton}>
+        <PressableButton
+          onPress={() => { setEditModal(true) }}
+          containerStyle={styles.editButton}>
           <Text>Edit</Text>
         </PressableButton>
       </View>
 
       <Text style={styles.text}>Email: {userData.userEmail}</Text>
 
+      <PressableButton
+        onPress={() => setIsMapShown(!isMapShown)}
+        containerStyle={styles.showMapButton}>
+        <Text style={styles.showMapButtonText}>{isMapShown ? "Hide All Focus" : "Show All Focus"}</Text>
+      </PressableButton>
+
+      {isMapShown &&
+        <DisplayFocusMap
+          focusTasksLocations={focusTasksLocations}
+          mapRegion={mapRegion}
+        />}
+
+
       <PressableButton onPress={handleSignOut} containerStyle={styles.logoutButton}>
         <Text style={styles.logoutButtonText}> Log Out</Text>
       </PressableButton>
-
-      <MapView
-        provider='google'
-        style={styles.mapStyle}
-        region={mapRegion}
-      >
-        {focusTasksLocations.map(loc => (
-          <Marker
-            key={loc.key}
-            coordinate={{
-              latitude: loc.latitude,
-              longitude: loc.longitude
-            }}
-          />
-        ))}
-      </MapView>
 
       <EditNameModal
         editModal={editModal}
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   editButton: {
-    backgroundColor: Colors.logOutButtonBg,
+    backgroundColor: Colors.showMapButtonBg,
     borderRadius: 8,
     padding: 5,
     width: 40,
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginTop: 50,
-    backgroundColor: Colors.logOutButtonBg,
+    backgroundColor: Colors.showMapButtonBg,
     borderRadius: 10,
     padding: 10,
     width: 120,
@@ -217,13 +217,16 @@ const styles = StyleSheet.create({
     color: Colors.mainText,
     textAlign: 'center',
   },
-  image: {
-    width: '80%', // Adjust as necessary
-    height: 400,
-    borderRadius: 20,
+  showMapButton: {
+    marginTop: 50,
+    backgroundColor: Colors.showMapButtonBg,
+    borderRadius: 10,
+    padding: 10,
+    width: 150,
+    height: 40,
+    alignItems: 'center',
   },
-  mapStyle: {
-    width: 400,
-    height: 400,
+  showMapButtonText: {
+    fontSize: 16,
   }
 })
