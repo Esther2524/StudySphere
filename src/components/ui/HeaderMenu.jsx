@@ -27,7 +27,6 @@ export default function HeaderMenu({ menuOptions, toggleMenu }) {
         styles.menuContainer,
         {
           top: headerHeight - Number(StatusBar.currentHeight),
-          height: menuOptions.length * 60,
         },
       ]}
       onBackdropPress={toggleMenu}
@@ -43,8 +42,8 @@ const styles = StyleSheet.create({
   menuBackdrop: { backgroundColor: "transparent" },
   menuContainer: {
     width: 180,
-    height: 60,
-    justifyContent: "center",
+    height: "auto",
+    justifyContent: "space-evenly",
     top: 100,
     right: 10,
     borderRadius: 10,
@@ -54,7 +53,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -20, height: 10 },
     shadowOpacity: 0.2,
   },
-  menuItemContainer: { flexDirection: "row", alignItems: "center" },
+  menuItemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    height: 50,
+  },
   menuIcon: { marginHorizontal: 10 },
   menuLabel: { fontSize: 16 },
 });
