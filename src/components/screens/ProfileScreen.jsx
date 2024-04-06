@@ -2,15 +2,19 @@ import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Colors } from '../../utils/Colors';
 import PressableButton from '../ui/PressableButton';
-import ModalView from '../ui/ModalView';
-import FormOperationBar from '../ui/FormOperationBar';
-import InputWithLabel from '../ui/InputWithLabel';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from '../../api/FirestoreConfig';
-import { getDoc, doc, updateDoc } from 'firebase/firestore';
+import { getDoc, doc, updateDoc, query, collection, getDocs, onSnapshot } from 'firebase/firestore';
+import EditNameModal from '../features/userProfile/EditNameModal';
+import locateFocusHandler from '../features/focusList/LocationHelper';
+import DisplayFocusMap from '../features/userProfile/DisplayFocusMap';
 
 
 const defaultAvatar = require('../../../assets/defaultAvatar.jpg');
+const DEFAULT_CENTER = {
+  latitude: 49.22199308411145,
+  longitude: -122.95789036911256,
+}
 
 export default function ProfileScreen() {
 
@@ -22,6 +26,18 @@ export default function ProfileScreen() {
   });
   const [editModal, setEditModal] = useState(false);
   const [newUserName, setNewUserName] = useState('');
+
+  // for display locations
+  const [focusTasksLocations, setFocusTasksLocations] = useState([]);
+  const [currLocation, setCurrLocation] = useState([]);
+  const [mapRegion, setMapRegion] = useState({
+    latitude: DEFAULT_CENTER.latitude,
+    longitude: DEFAULT_CENTER.longitude,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+  const [isMapShown, setIsMapShown] = useState(false);
+
 
 
   useEffect(() => {
@@ -37,10 +53,50 @@ export default function ProfileScreen() {
         }
       }
     });
-
     return () => unsubscribe(); // cleanup subscription on unmount
   }, []);
 
+
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (user) {
+      const tasksQuery = query(collection(db, "users", user.uid, "focus"));
+      // use onSnapshot here to listen for realtime updates from Firestore for the focus tasks
+      // then any change in the focus tasks collection for the user triggers an automatic update in this component
+      // if I edit/add a focus, the map should be updated right away
+      const unsubscribe = onSnapshot(tasksQuery, (querySnapshot) => {
+        const tasksLocations = querySnapshot.docs
+          .filter(doc => doc.data().location)
+          .map(doc => ({
+            ...doc.data().location,
+            key: doc.id,
+          }));
+        setFocusTasksLocations(tasksLocations);
+
+        const fetchLocation = async () => {
+          const location = await locateFocusHandler();
+          setCurrLocation(location);
+        };
+        fetchLocation().catch(console.error);
+
+      });
+
+      return () => unsubscribe();
+    }
+  }, []);
+
+
+  // update mapRegion (passed to MapView to be the center) 
+  // only when currLocation changes (when database changes and then fetching the device's current location)
+  useEffect(() => {
+    if (currLocation) {
+      setMapRegion({
+        ...mapRegion,
+        latitude: currLocation.latitude,
+        longitude: currLocation.longitude,
+      });
+    }
+  }, [currLocation]);
 
 
   const handleSignOut = async () => {
@@ -70,35 +126,40 @@ export default function ProfileScreen() {
       />
       <View style={styles.nameContainer}>
         <Text style={styles.usernameText}>Username: {userData.userName}</Text>
-        <PressableButton onPress={() => { setEditModal(true) }} containerStyle={styles.editButton}>
+        <PressableButton
+          onPress={() => { setEditModal(true) }}
+          containerStyle={styles.editButton}>
           <Text>Edit</Text>
         </PressableButton>
       </View>
 
       <Text style={styles.text}>Email: {userData.userEmail}</Text>
 
+      <PressableButton
+        onPress={() => setIsMapShown(!isMapShown)}
+        containerStyle={styles.showMapButton}>
+        <Text style={styles.showMapButtonText}>{isMapShown ? "Hide All Focus" : "Show All Focus"}</Text>
+      </PressableButton>
+
+      {isMapShown &&
+        <DisplayFocusMap
+          focusTasksLocations={focusTasksLocations}
+          mapRegion={mapRegion}
+        />}
+
+
       <PressableButton onPress={handleSignOut} containerStyle={styles.logoutButton}>
         <Text style={styles.logoutButtonText}> Log Out</Text>
       </PressableButton>
 
-      <ModalView isVisible={editModal}>
-        <View style={styles.modalView}>
-          <Text style={styles.title}>Edit Username</Text>
-          <InputWithLabel
-            content={newUserName}
-            setContent={setNewUserName}
-            placeholder="Enter your new username"
-            containerStyle={{ width: '100%', marginTop: 20 }}
-          />
-          <FormOperationBar
-            confirmText="Save"
-            cancelText="Cancel"
-            confirmHandler={handleEditUserName}
-            cancelHandler={() => { setEditModal(false) }}
-          />
-        </View>
+      <EditNameModal
+        editModal={editModal}
+        setEditModal={setEditModal}
+        newUserName={newUserName}
+        setNewUserName={setNewUserName}
+        handleEditUserName={handleEditUserName}
+      />
 
-      </ModalView>
     </View>
   )
 }
@@ -132,7 +193,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   editButton: {
-    backgroundColor: Colors.logOutButtonBg,
+    backgroundColor: Colors.showMapButtonBg,
     borderRadius: 8,
     padding: 5,
     width: 40,
@@ -146,7 +207,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginTop: 50,
-    backgroundColor: Colors.logOutButtonBg,
+    backgroundColor: Colors.showMapButtonBg,
     borderRadius: 10,
     padding: 10,
     width: 120,
@@ -156,10 +217,16 @@ const styles = StyleSheet.create({
     color: Colors.mainText,
     textAlign: 'center',
   },
-  modalView: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 20,
-    width: '80%',
+  showMapButton: {
+    marginTop: 50,
+    backgroundColor: Colors.showMapButtonBg,
+    borderRadius: 10,
+    padding: 10,
+    width: 150,
+    height: 40,
+    alignItems: 'center',
   },
+  showMapButtonText: {
+    fontSize: 16,
+  }
 })
