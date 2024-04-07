@@ -52,17 +52,23 @@ export default function AddGroupModal({ setShowAddGroupModal }) {
       isValid = false;
     }
     if (!isNaN(groupTarget) && groupTarget) {
-      if (Number(groupTarget) > 24 || Number(groupTarget) < 0) {
+      if (Number(groupTarget) <= 0) {
         setErrMsg((pre) => ({
           ...pre,
-          targetErr: "Target must be between 0 and 24!",
+          targetErr: "Target must be greater than 0!",
+        }));
+        isValid = false;
+      } else if (Number(groupTarget) > 24) {
+        setErrMsg((pre) => ({
+          ...pre,
+          targetErr: "Target can't exceed 24!",
         }));
         isValid = false;
       }
     }
 
     if (!isValid) return;
-    addGroup(groupName, Number(groupTarget));
+    addGroup({ groupName, groupTarget: Number(groupTarget) });
   }, [groupName, addGroup, groupTarget]);
 
   const setNameHandler = useCallback((newText) => {
