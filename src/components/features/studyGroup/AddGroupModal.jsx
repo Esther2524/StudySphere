@@ -62,7 +62,7 @@ export default function AddGroupModal({ setShowAddGroupModal }) {
     }
 
     if (!isValid) return;
-    addGroup(groupName);
+    addGroup(groupName, Number(groupTarget));
   }, [groupName, addGroup, groupTarget]);
 
   const setNameHandler = useCallback((newText) => {

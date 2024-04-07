@@ -4,7 +4,7 @@ import { addGroupApi } from "./studyGroupHelper";
 export default function useAddGroup({ onSuccess, onError }) {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
-    mutationFn: (groupName) => addGroupApi(groupName),
+    mutationFn: (groupName, groupTarget) => addGroupApi(groupName, groupTarget),
     onSuccess: (data) => {
       const { groupName, groupId, groupOwnerId } = data;
       queryClient.setQueryData(["groups"], (cache) => {

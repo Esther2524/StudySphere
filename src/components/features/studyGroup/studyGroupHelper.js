@@ -56,7 +56,7 @@ export async function getGroupInfo(groupId) {
   return res.data();
 }
 
-export async function addGroupApi(groupName) {
+export async function addGroupApi(groupName, groupTarget) {
   const userRef = getUserRef();
   const groupRef = collection(db, "groups");
 
@@ -64,6 +64,7 @@ export async function addGroupApi(groupName) {
   const newGroupData = createGroupData({
     groupOwnerId: userRef.id,
     groupName,
+    groupTarget,
   });
 
   // Add new group to group collection
