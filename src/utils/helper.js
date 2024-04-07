@@ -44,13 +44,7 @@ export function getDayOfWeek(timeInput) {
   }
 
   // 0 for Monday, 1 for Tuesday, ..., 6 for Sunday
-  const dayOfWeek =
-    Number(
-      new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Vancouver",
-        day: "numeric",
-      }).format(date)
-    ) - 1;
+  const dayOfWeek = (date.getDay() + 6) % 7;
 
   return dayOfWeek;
 }
