@@ -68,9 +68,16 @@ export default function GroupDetailHeaderMenu({
   };
 
   const menuOptions = [
-    { label: "Edit Group", onPress: onEdit, icon: <EditIcon /> },
     { label: "Quit Group", onPress: onQuit, icon: <QuitIcon /> },
   ];
+
+  if (isOwner) {
+    menuOptions.unshift({
+      label: "Edit Group",
+      onPress: onEdit,
+      icon: <EditIcon />,
+    });
+  }
 
   return (
     <>
