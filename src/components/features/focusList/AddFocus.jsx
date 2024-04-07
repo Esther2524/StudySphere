@@ -4,10 +4,12 @@ import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
 import FormOperationBar from '../../ui/FormOperationBar';
 import { Colors } from '../../../utils/Colors';
-import { auth, db } from '../../../api/FirestoreConfig';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { auth, storage, db } from '../../../api/FirestoreConfig';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import locateFocusHandler from './LocationHelper';
 import DisplayLocation from './DisplayLocation';
+import ImageManager from './ImageManager';
 
 export default function AddFocus({
   isAddFocusVisible, setIsAddFocusVisible, setIsMapVisible, closingForMap, setClosingForMap,
@@ -18,6 +20,9 @@ export default function AddFocus({
   const [duration, setDuration] = useState("");
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
+
+  // this is the local uri of the image
+  const [imageUri, setImageUri] = useState("");
 
 
   /* 
@@ -32,7 +37,8 @@ export default function AddFocus({
       setTitle("");
       setDuration("");
       setCurrentLocation(null);
-      setDurationErrMsg("");
+      setImageUri(""),
+        setDurationErrMsg("");
       setTitleErrMsg("");
     }
   }, [isAddFocusVisible, closingForMap]);
@@ -62,6 +68,20 @@ export default function AddFocus({
   // we don't need to calculate todayStudyTime here
   const addFocusTask = async () => {
     const user = auth.currentUser;
+
+    let downloadImageUrl = ""; // this url is the actual url of the image in Firestore, not the local one
+    if (imageUri) {
+      try {
+        // wait for the uploadImage function to complete and get the actual download URL
+        // because uploadImage returns a Promise
+        downloadImageUrl = await uploadImage(imageUri);
+        console.log(downloadImageUrl); 
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
+
     if (user && validateInput()) {
       if (user) {
         try {
@@ -77,6 +97,8 @@ export default function AddFocus({
             todayTimes: 0,
             weeklyStudyTime: new Array(7).fill(0), // 7 days in a week
             monthlyStudyTime: new Array(12).fill(0), // 12 months in a year
+            quote: "",
+            imageUri: downloadImageUrl,
           };
 
           await addDoc(collection(db, "users", user.uid, "focus"), newTask);
@@ -123,6 +145,22 @@ export default function AddFocus({
     setCurrentLocation(null);
   }
 
+  // upload the image file to Firebase Storage and get the URL of the uploaded image
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const fileName = `images/${new Date().getTime()}-focus-background.jpg`;
+    const storageRef = ref(storage, fileName);
+    await uploadBytes(storageRef, blob);
+    const downloadUrl = await getDownloadURL(storageRef);
+    // console.log(downloadUrl);
+    return downloadUrl;
+  };
+
+
+
+
+
 
 
 
@@ -153,6 +191,10 @@ export default function AddFocus({
           currentLocation={currentLocation}
           openMapModal={openMapModal}
           clearLocation={clearLocation}
+        />
+        <ImageManager
+          imageUri={imageUri}
+          setImageUri={setImageUri}
         />
         <FormOperationBar
           confirmText="Add"
