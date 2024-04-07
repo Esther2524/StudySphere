@@ -29,7 +29,7 @@ export default function TaskBreakdown() {
 
   useEffect(() => {
     if (!isLoading) setPieData(parsePieData(data));
-  }, [isLoading]);
+  }, [isLoading, data]);
 
   let total = 0;
   if (data)
