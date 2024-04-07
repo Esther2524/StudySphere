@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Alert, ImageBackground } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 import { Colors } from '../../utils/Colors';
@@ -12,7 +12,7 @@ import { isSameDay, isSameWeek, isSameYear } from '../../utils/helper';
 export default function StandbyScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { focusID, duration } = route.params;
+  const { focusID, title, duration, imageUri } = route.params;
   const [isPlaying, setIsPlaying] = useState(true);
 
   const handleEndCountdown = () => {
@@ -110,33 +110,45 @@ export default function StandbyScreen() {
 
   return (
     <SafeAreaView style={styles.fullScreen}>
-      <View style={styles.container}>
-        <Text style={styles.header}>Stay Focus</Text>
-        <CountdownCircleTimer
-          isPlaying={isPlaying}
-          size={200}
-          strokeWidth={20}
-          duration={duration * 60}
-          colors={[Colors.timerPrimary]}
-          onComplete={onComplete}
-        >
-          {({ remainingTime }) => {
-            // Convert remaining time into minutes and seconds
-            const minutes = Math.floor(remainingTime / 60);
-            const seconds = remainingTime % 60;
-            // Format time as MM:SS
-            const formattedTime = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            return <Text style={styles.timerText}>{formattedTime}</Text>;
-          }}
-        </CountdownCircleTimer>
+      <ImageBackground
+        source={imageUri ? { uri: imageUri } : require('../../../assets/standby-background.jpg')}
+        style={styles.standby}
+        imageStyle={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <View style={styles.container}>
 
-        <PressableButton
-          onPress={handleEndCountdown}
-          containerStyle={styles.buttonContainer}>
-          <Text style={styles.buttonText}>End</Text>
-        </PressableButton>
+          <View style={styles.headerContainer}>
+            <Text style={styles.header}>Stay Focus</Text>
+            <Text style={styles.subheading}>{title}</Text>
+          </View>
 
-      </View>
+          <CountdownCircleTimer
+            isPlaying={isPlaying}
+            size={200}
+            strokeWidth={20}
+            duration={duration * 60}
+            colors={[Colors.timerPrimary]}
+            onComplete={onComplete}
+          >
+            {({ remainingTime }) => {
+              // Convert remaining time into minutes and seconds
+              const minutes = Math.floor(remainingTime / 60);
+              const seconds = remainingTime % 60;
+              // Format time as MM:SS
+              const formattedTime = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+              return <Text style={styles.timerText}>{formattedTime}</Text>;
+            }}
+          </CountdownCircleTimer>
+
+          <PressableButton
+            onPress={handleEndCountdown}
+            containerStyle={styles.buttonContainer}>
+            <Text style={styles.buttonText}>End</Text>
+          </PressableButton>
+
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -148,20 +160,38 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
+  standby: {
+    flex: 1,
+    justifyContent: "center",
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headerContainer: {
+    backgroundColor: Colors.timerText, // Semi-transparent background
+    padding: 15,
+    marginBottom: 30,
+    alignItems: 'center', 
+    borderRadius: 20,
+  },
   header: {
     fontSize: 25,
     fontWeight: '700',
     color: Colors.timerLabelText,
-    marginVertical: 50,
+    marginBottom: 20,
+    color: 'white',
+  },
+  subheading: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: Colors.timerLabelText,
+    color: 'white',
   },
   timerText: {
     fontSize: 40,
-    color: Colors.timerText,
+    color: Colors.timerPrimary,
     fontWeight: '700',
   },
   buttonText: {

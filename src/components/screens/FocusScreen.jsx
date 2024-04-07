@@ -24,6 +24,7 @@ export default function FocusScreen() {
   const [focusTitle, setFocusTitle] = useState("");
   const [focusDuration, setFocusDurarion] = useState("");
   const [focusLocation, setFocusLocation] = useState(null);
+  const [focusImageUri, setFocusImageUri] = useState("");
   const [isFromEdit, setIsFromEdit] = useState(false);
 
   // for Map Modal
@@ -99,11 +100,9 @@ export default function FocusScreen() {
 
 
 
-  const onStartPress = (focusID, duration) => {
-    navigation.navigate(STANDBY_SCREEN_NAME, { focusID, duration });
+  const onStartPress = (focusID, title, duration, imageUri) => {
+    navigation.navigate(STANDBY_SCREEN_NAME, { focusID, title, duration, imageUri });
   };
-
-
 
 
 
@@ -119,13 +118,16 @@ export default function FocusScreen() {
             title={item.title}
             duration={item.duration}
             todayTimes={item.todayTimes}
-            onStartPress={() => onStartPress(item.id, item.duration)} // Pass the duration to onStartPress
+            onStartPress={() => onStartPress(
+              item.id, item.title, item.duration, item.imageUri
+              )} // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
               // pass the focus data to the EditFocus Modal
               setFocusTitle(item.title);
               setFocusDurarion(item.duration);
               setFocusLocation(item.location);
+              setFocusImageUri(item.imageUri);
               setSelectedFocusID(item.id);
             }}
           />
@@ -147,8 +149,10 @@ export default function FocusScreen() {
         focusTitle={focusTitle}
         focusDuration={focusDuration}
         focusLocation={focusLocation}
+        focusImageUri={focusImageUri}
         focusID={selectedFocusID}
         setFocusLocation={setFocusLocation}
+        setFocusImageUri={setFocusImageUri}
         setIsMapVisible={setIsMapVisible}
         currentLocation={currentLocation}
         setCurrentLocation={setCurrentLocation}

@@ -10,12 +10,13 @@ import { AntDesign } from '@expo/vector-icons';
 import PressableButton from '../../ui/PressableButton';
 import DisplayLocation from './DisplayLocation';
 import locateFocusHandler from './LocationHelper';
+import ImageManager from './ImageManager';
 
 
 export default function EditFocus({
   isEditFocusVisible, setIsEditFocusVisible, setIsFromEdit,
-  focusTitle, focusDuration, focusLocation, focusID, setFocusLocation,
-  setIsMapVisible, currentLocation, setCurrentLocation
+  focusTitle, focusDuration, focusLocation, focusImageUri, focusID,
+  setFocusLocation, setFocusImageUri, setIsMapVisible, currentLocation, setCurrentLocation
 }) {
 
   const user = auth.currentUser;
@@ -23,7 +24,6 @@ export default function EditFocus({
   const [duration, setDuration] = useState(focusDuration.toString());
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
-
 
   // ensure input fields are always populated with the most current data passed to the EditFocus component
   useEffect(() => {
@@ -33,10 +33,6 @@ export default function EditFocus({
     setDurationErrMsg("");
     setTitleErrMsg("");
   }, [focusTitle, focusDuration, focusLocation]);
-
-  // console.log("currentLocation", currentLocation);
-  // console.log("focus location", focusLocation);
-
 
 
   // check the title and the durarion are valid
@@ -67,6 +63,7 @@ export default function EditFocus({
         title: title,
         duration: parseInt(duration, 10),
         location: currentLocation,
+        imageUri: focusImageUri,
       })
       console.log("Focus task updated!");
       setIsEditFocusVisible(false);
@@ -132,7 +129,6 @@ export default function EditFocus({
 
 
 
-
   return (
     <ModalView isVisible={isEditFocusVisible}>
       <View style={styles.modalView}>
@@ -170,6 +166,10 @@ export default function EditFocus({
           currentLocation={currentLocation || focusLocation}
           openMapModal={openMapModal}
           clearLocation={clearLocation}
+        />
+        <ImageManager
+          imageUri={focusImageUri}
+          setImageUri={setFocusImageUri}
         />
 
         <FormOperationBar
