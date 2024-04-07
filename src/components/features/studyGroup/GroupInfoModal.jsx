@@ -3,37 +3,36 @@ import React, { useCallback, useState } from "react";
 import ModalView from "../../ui/ModalView";
 import FormOperationBar from "../../ui/FormOperationBar";
 import InputWithLabel from "../../ui/InputWithLabel";
-import { useNavigation } from "@react-navigation/native";
 import useAddGroup from "./useAddGroup";
-import { GROUP_DETAIL_SCREEN_TITLE } from "../../../utils/constants";
+import useEditGroup from "./useEditGroup";
 
-export default function AddGroupModal({ setShowAddGroupModal }) {
-  const [groupName, setGroupName] = useState("");
-  const [groupTarget, setGroupTarget] = useState("");
+export default function GroupInfoModal({
+  setShowModal,
+  groupId,
+  preName,
+  preTarget,
+  onMutateSuccess,
+  isCreating,
+}) {
+  const [groupName, setGroupName] = useState(preName || "");
+  const [groupTarget, setGroupTarget] = useState(preTarget || "");
   const [errMsg, setErrMsg] = useState({
     nameErr: "",
     targetErr: "",
   });
-  const navigation = useNavigation();
 
-  const cancelHandler = () => setShowAddGroupModal(false);
+  const cancelHandler = () => setShowModal(false);
 
-  const onAddSuccess = useCallback(({ groupName, groupId }) => {
-    setShowAddGroupModal(false);
-    navigation.navigate(GROUP_DETAIL_SCREEN_TITLE, {
-      groupName,
-      groupId,
-    });
-  }, []);
-
-  const onAddError = useCallback((e) => {
+  const onMutateError = useCallback((e) => {
     Alert.alert("Failed", e.message);
   }, []);
 
-  const { mutate: addGroup, isPending: isAddingGroup } = useAddGroup({
-    onError: onAddError,
-    onSuccess: onAddSuccess,
-  });
+  const { mutate, isPending } = isCreating
+    ? useAddGroup({
+        onError: onMutateError,
+        onSuccess: onMutateSuccess,
+      })
+    : useEditGroup({ onSuccess: onMutateSuccess, onError: onMutateError });
 
   const confirmHandler = useCallback(async () => {
     let isValid = true;
@@ -68,8 +67,9 @@ export default function AddGroupModal({ setShowAddGroupModal }) {
     }
 
     if (!isValid) return;
-    addGroup({ groupName, groupTarget: Number(groupTarget) });
-  }, [groupName, addGroup, groupTarget]);
+    if (isCreating) mutate({ groupName, groupTarget: Number(groupTarget) });
+    else mutate({ groupId, groupName, groupTarget: Number(groupTarget) });
+  }, [groupName, mutate, groupTarget, groupId]);
 
   const setNameHandler = useCallback((newText) => {
     setErrMsg((pre) => ({ ...pre, nameErr: "" }));
@@ -82,9 +82,11 @@ export default function AddGroupModal({ setShowAddGroupModal }) {
   }, []);
 
   return (
-    <ModalView isVisible>
+    <ModalView isVisible={true}>
       <View style={styles.modalView}>
-        <Text style={styles.title}>Create New Group</Text>
+        <Text style={styles.title}>
+          {isCreating ? "Create New Group" : "Edit Group"}
+        </Text>
         <View style={{ alignItems: "center" }}>
           <InputWithLabel
             label="Group Name *"
@@ -110,7 +112,7 @@ export default function AddGroupModal({ setShowAddGroupModal }) {
             confirmText="Confirm"
             confirmHandler={confirmHandler}
             cancelHandler={cancelHandler}
-            isSubmittingOuter={isAddingGroup}
+            isSubmittingOuter={isPending}
           />
         </View>
       </View>
