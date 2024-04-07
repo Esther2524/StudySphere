@@ -90,7 +90,7 @@ export async function getTodayFocusTimeByUserId(userId) {
     const lastUpdate = focusData.lastUpdate;
 
     if (isSameWeek(lastUpdate)) {
-      totalCompletedTime += focusData.weeklyStudyTime[getDayOfWeek(lastUpdate)];
+      totalCompletedTime += focusData.weeklyStudyTime[getDayOfWeek(new Date())];
     }
   });
 
