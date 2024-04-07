@@ -4,7 +4,7 @@ import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
 import FormOperationBar from '../../ui/FormOperationBar';
 import { Colors } from '../../../utils/Colors';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { auth, storage, db } from '../../../api/FirestoreConfig';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import locateFocusHandler from './LocationHelper';
@@ -149,9 +149,9 @@ export default function AddFocus({
   const uploadImage = async (uri) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    const fileName = `images/${new Date().getTime()}-focus-background.jpg`;
+    const fileName = `images/${new Date().getTime()}-${auth.currentUser.uid}-focus-background.jpg`;
     const storageRef = ref(storage, fileName);
-    await uploadBytes(storageRef, blob);
+    await uploadBytesResumable(storageRef, blob);
     const downloadUrl = await getDownloadURL(storageRef);
     // console.log(downloadUrl);
     return downloadUrl;

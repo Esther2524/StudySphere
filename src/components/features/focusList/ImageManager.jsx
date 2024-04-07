@@ -71,8 +71,7 @@ export default function ImageManager({ imageUri, setImageUri }) {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      quality: 1,
-      aspect: [3, 2],
+      quality: 0.5,
     });
     handleImagePicked(result);
   };

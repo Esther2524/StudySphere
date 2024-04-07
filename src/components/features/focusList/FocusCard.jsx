@@ -5,14 +5,16 @@ import PressableButton from '../../ui/PressableButton';
 import { limitStrLen } from '../../../utils/helper';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function FocusCard({ title, duration, todayTimes, onStartPress, onEditPress }) {
+export default function FocusCard({
+  title, duration,
+  todayTimes, onStartPress, onEditPress
+}) {
 
-  
   return (
     <PressableButton
       onPress={onEditPress}
     >
-      <View style={styles.card}>
+      <View style={styles.cardContent}>
         <View style={styles.cardText}>
           <Text style={styles.title}>{limitStrLen(title, 20)}</Text>
           <View style={styles.secondLine}>
@@ -27,21 +29,23 @@ export default function FocusCard({ title, duration, todayTimes, onStartPress, o
                 <AntDesign style={styles.icon} name="checkcircleo" size={24} color={Colors.deleteButton} />
               )
             }
-
           </View>
-
         </View>
-        <PressableButton onPress={onStartPress} containerStyle={styles.startButton}>
+        <PressableButton
+          onPress={onStartPress}
+          containerStyle={styles.startButton}
+        >
           <Text style={styles.startText}>Start</Text>
         </PressableButton>
       </View>
     </PressableButton >
 
+
   )
 }
 
 const styles = StyleSheet.create({
-  card: {
+  cardContent: {
     backgroundColor: "white",
     borderRadius: 10,
     padding: 16,
@@ -55,6 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+
   cardText: {
     marginRight: 20,
   },
@@ -95,6 +100,7 @@ const styles = StyleSheet.create({
     marginTop: 9,
     marginLeft: 3,
     color: Colors.greyIconColor,
-  }
+  },
+
 
 })
