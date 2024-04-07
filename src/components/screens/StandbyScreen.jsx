@@ -8,7 +8,8 @@ import { auth, db } from '../../api/FirestoreConfig';
 import { isSameDay, isSameWeek, isSameYear } from '../../utils/helper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Timer from '../features/focusList/Timer';
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { changeRandomPicture } from '../../api/RandomImage';
 
 export default function StandbyScreen() {
   const navigation = useNavigation();
@@ -19,6 +20,9 @@ export default function StandbyScreen() {
     content: '',
     author: ''
   });
+
+  const [randomImage, setRandomImage] = useState(null);
+
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -126,18 +130,39 @@ export default function StandbyScreen() {
     return [false, 0]; // Don't repeat the timer
   };
 
+  const handlePressChangePicture = async () => {
+    try {
+      const newImageUri = await changeRandomPicture();
+      if (newImageUri) {
+        setRandomImage(newImageUri);
+      }
+    } catch (error) {
+      console.error("Failed to change picture:", error);
+    }
+  };
+
+
+
+
 
 
 
   return (
     <SafeAreaView style={styles.fullScreen}>
       <ImageBackground
-        source={imageUri ? { uri: imageUri } : require('../../../assets/standby-background.jpg')}
+        source={randomImage ? { uri: randomImage } : imageUri ? { uri: imageUri } : require('../../../assets/standby-background.jpg')}
         style={styles.standby}
         imageStyle={styles.backgroundImage}
         resizeMode="cover"
       >
         <View style={styles.container}>
+
+          <PressableButton
+            onPress={handlePressChangePicture}
+            containerStyle={styles.changePictureButton}
+          >
+            <FontAwesome name='refresh' size={24} color={Colors.addFocusButton} />
+          </PressableButton>
 
           <LinearGradient
             colors={[Colors.startColor, Colors.endColor]}
@@ -154,7 +179,7 @@ export default function StandbyScreen() {
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
           >
-            <Text style={styles.subheading}>{title}Now...</Text>
+            <Text style={styles.subheading}>{title} Now...</Text>
           </LinearGradient>
 
           <Timer
@@ -177,7 +202,7 @@ export default function StandbyScreen() {
           <PressableButton
             onPress={handleEndCountdown}
             containerStyle={styles.buttonContainer}>
-              <AntDesign name='closecircleo' size={23} color={Colors.addFocusButton}/>
+            <AntDesign name='closecircleo' size={23} color={Colors.addFocusButton} />
             <Text style={styles.buttonText}>End</Text>
           </PressableButton>
 
@@ -193,6 +218,7 @@ const styles = StyleSheet.create({
   fullScreen: {
     flex: 1,
     backgroundColor: Colors.background,
+    height: '95%'
   },
   standby: {
     flex: 1,
@@ -200,8 +226,17 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 50,
+  },
+  changePictureButton: {
+    backgroundColor: Colors.endColor,
+    padding: 8,
+    position: 'absolute',
+    top: 30,
+    right: 25,
+    zIndex: 10,
+    borderRadius: 50,
   },
   headerContainer: {
     padding: 15,
