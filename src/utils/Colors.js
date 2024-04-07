@@ -35,6 +35,13 @@ export const Colors = {
   tabFocusColor: "#01575c",
   areaChartStart: "#8fb5b7",
   areaChartEnd: "#ffffff",
+  startColor: "#8fb5b7",
+  endColor: "#192f6a",
+  timerBgStartColor: "#c09da7",
+  timerBgEndColor: "#3a85a6",
+  timerInnerText: "white",
+  endButtonBg: "#7b4d65",
+
 
   // undefined
   lighterThanBg: "#8fb5b7",
