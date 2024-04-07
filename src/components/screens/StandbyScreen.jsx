@@ -1,13 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Alert, ImageBackground } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Colors } from '../../utils/Colors';
-import PressableButton from '../ui/PressableButton';
-import { doc, updateDoc, increment, getDoc, Timestamp } from 'firebase/firestore';
-import { auth, db } from '../../api/FirestoreConfig';
-import { isSameDay, isSameWeek, isSameYear } from '../../utils/helper';
-import { LinearGradient } from 'expo-linear-gradient';
-import Timer from '../features/focusList/Timer';
+import React, { useEffect, useState } from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  ImageBackground,
+} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Colors } from "../../utils/Colors";
+import PressableButton from "../ui/PressableButton";
+import {
+  doc,
+  updateDoc,
+  increment,
+  getDoc,
+  Timestamp,
+} from "firebase/firestore";
+import { auth, db } from "../../api/FirestoreConfig";
+import {
+  getDayOfWeek,
+  isSameDay,
+  isSameWeek,
+  isSameYear,
+} from "../../utils/helper";
+import { LinearGradient } from "expo-linear-gradient";
+import Timer from "../features/focusList/Timer";
 import { AntDesign } from "@expo/vector-icons";
 
 export default function StandbyScreen() {
@@ -16,34 +34,30 @@ export default function StandbyScreen() {
   const { focusID, title, duration, imageUri } = route.params;
   const [isPlaying, setIsPlaying] = useState(true);
   const [quote, setQuote] = useState({
-    content: '',
-    author: ''
+    content: "",
+    author: "",
   });
 
   useEffect(() => {
     const fetchQuote = async () => {
       try {
-        const response = await fetch('https://api.quotable.io/random');
+        const response = await fetch("https://api.quotable.io/random");
         const data = await response.json();
         if (data && data.content && data.author) {
           setQuote({ content: data.content, author: data.author });
         }
       } catch (error) {
-        console.error('Error fetching quote:', error);
+        console.error("Error fetching quote:", error);
       }
     };
     fetchQuote();
   }, []);
 
-
   const handleEndCountdown = () => {
     Alert.alert(
       "Important",
       "Are you sure you want to end this focus? This session will not be counted.",
-      [
-        { text: "No" },
-        { text: "Yes", onPress: () => incrementBreak() }
-      ]
+      [{ text: "No" }, { text: "Yes", onPress: () => incrementBreak() }]
     );
   };
 
@@ -71,7 +85,6 @@ export default function StandbyScreen() {
     navigation.goBack(); // quit the countdown
   };
 
-
   const onComplete = async () => {
     const completionTime = new Date(); // Get the current time as the completion time
 
@@ -86,15 +99,12 @@ export default function StandbyScreen() {
         const sameYear = isSameYear(focusData.lastUpdate);
 
         // Determine the indexes for updating weekly and monthly study time
-        // const dayIndex = completionTime.getDay(); // 0 (Sunday) to 6 (Saturday)
-        const dayOfWeek = completionTime.getDay();
-        const dayIndex = (dayOfWeek + 6) % 7;
+        const dayIndex = getDayOfWeek(completionTime);
         const monthIndex = completionTime.getMonth(); // 0 (January) to 11 (December)
 
         // Update weeklyStudyTime and monthlyStudyTime
         let updatedWeeklyStudyTime = [...focusData.weeklyStudyTime];
         let updatedMonthlyStudyTime = [...focusData.monthlyStudyTime];
-
 
         if (!sameYear) {
           updatedMonthlyStudyTime = new Array(12).fill(0);
@@ -126,19 +136,19 @@ export default function StandbyScreen() {
     return [false, 0]; // Don't repeat the timer
   };
 
-
-
-
   return (
     <SafeAreaView style={styles.fullScreen}>
       <ImageBackground
-        source={imageUri ? { uri: imageUri } : require('../../../assets/standby-background.jpg')}
+        source={
+          imageUri
+            ? { uri: imageUri }
+            : require("../../../assets/standby-background.jpg")
+        }
         style={styles.standby}
         imageStyle={styles.backgroundImage}
         resizeMode="cover"
       >
         <View style={styles.container}>
-
           <LinearGradient
             colors={[Colors.startColor, Colors.endColor]}
             style={styles.headerContainer}
@@ -163,7 +173,6 @@ export default function StandbyScreen() {
             onComplete={onComplete}
           />
 
-
           <LinearGradient
             colors={[Colors.startColor, Colors.endColor]}
             style={styles.quoteContainer}
@@ -176,18 +185,20 @@ export default function StandbyScreen() {
 
           <PressableButton
             onPress={handleEndCountdown}
-            containerStyle={styles.buttonContainer}>
-              <AntDesign name='closecircleo' size={23} color={Colors.addFocusButton}/>
+            containerStyle={styles.buttonContainer}
+          >
+            <AntDesign
+              name="closecircleo"
+              size={23}
+              color={Colors.addFocusButton}
+            />
             <Text style={styles.buttonText}>End</Text>
           </PressableButton>
-
         </View>
       </ImageBackground>
     </SafeAreaView>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   fullScreen: {
@@ -200,57 +211,57 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerContainer: {
     padding: 15,
     marginBottom: 30,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 15,
   },
   header: {
     fontSize: 25,
-    fontWeight: '700',
+    fontWeight: "700",
     color: Colors.timerLabelText,
-    color: 'white',
+    color: "white",
   },
   subheadingContainer: {
     padding: 15,
     marginBottom: 30,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 30,
   },
   subheading: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.timerLabelText,
-    color: 'white',
+    color: "white",
   },
   quoteContainer: {
     padding: 15,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: Colors.timerText,
     borderRadius: 20,
     marginTop: 30,
     marginBottom: 30,
-    width: '90%',
+    width: "90%",
   },
   quoteText: {
-    fontStyle: 'italic',
-    textAlign: 'center',
+    fontStyle: "italic",
+    textAlign: "center",
     fontSize: 16,
-    color: 'white',
+    color: "white",
   },
   buttonText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
     marginLeft: 10,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 5,
     marginTop: 30,
     backgroundColor: Colors.endButtonBg,
