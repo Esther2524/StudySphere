@@ -21,6 +21,9 @@ export default function FocusTrend() {
             data={data}
             width={240}
             height={150}
+            // focusEnabled
+            // showStripOnFocus
+            showValuesAsDataPointsText
             curved
             noOfSections={5}
             isAnimated

@@ -103,7 +103,9 @@ export async function getWeeklyFocusInfo() {
           (pre, cur) => pre + cur.focusTime,
           0
         );
-        dailyFocusInfo[dayOfWeek].value += totalFocusTimeForDay;
+        dailyFocusInfo[dayOfWeek].value += Number(
+          totalFocusTimeForDay.toFixed(1)
+        );
       })
     );
     currentDate.setDate(currentDate.getDate() + 1);
