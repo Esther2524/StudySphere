@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, Alter } from 'react-native';
 import React, { useState } from 'react';
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from 'react-native';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { auth, storage, db } from '../../../api/FirestoreConfig';
 import { doc, updateDoc } from 'firebase/firestore';
 import { Avatar } from '@rneui/themed';
@@ -33,11 +33,11 @@ export default function AvatarManager({ userData }) {
     const blob = await response.blob();
 
     // a unique file name for the image
-    const fileName = `images/${new Date().getTime()}-profile.jpg`;
+    const fileName = `images/${new Date().getTime()}-${auth.currentUser.uid}-profile.jpg`;
     const storageRef = ref(storage, fileName);
 
     // upload the blob to Firebase Storage
-    await uploadBytes(storageRef, blob);
+    await uploadBytesResumable(storageRef, blob);
 
     // get the download URL of the uploaded image
     const downloadUrl = await getDownloadURL(storageRef);
@@ -52,7 +52,6 @@ export default function AvatarManager({ userData }) {
       avatar: downloadUrl,
     });
   };
-
 
 
   const takeImageOrChooseFromAlbum = async () => {
@@ -90,18 +89,15 @@ export default function AvatarManager({ userData }) {
       allowsEditing: true,
     });
     handleImagePicked(result);
-
-
   };
 
   const handleChooseFromAlbum = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      quality: 1,
+      quality: 0.5,
     });
     handleImagePicked(result);
-
   };
 
   // pickerResult is from either taking a photo or choosing from album
