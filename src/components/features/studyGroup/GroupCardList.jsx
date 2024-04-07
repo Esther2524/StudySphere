@@ -32,13 +32,14 @@ export default function groupCardList() {
             />
           }
           renderItem={({
-            item: { groupName, groupSize, groupId, groupOwnerId },
+            item: { groupName, groupSize, groupId, groupOwnerId, groupTarget },
           }) => (
             <GroupCardItem
               groupName={groupName}
               groupSize={groupSize}
               groupId={groupId}
               groupOwnerId={groupOwnerId}
+              groupTarget={groupTarget}
             />
           )}
         />
