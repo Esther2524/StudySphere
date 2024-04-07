@@ -75,7 +75,7 @@ export default function AddFocus({
         // wait for the uploadImage function to complete and get the actual download URL
         // because uploadImage returns a Promise
         downloadImageUrl = await uploadImage(imageUri);
-        console.log(downloadImageUrl); 
+        // console.log(downloadImageUrl); 
       } catch (error) {
         console.error("Error uploading image:", error);
         return;

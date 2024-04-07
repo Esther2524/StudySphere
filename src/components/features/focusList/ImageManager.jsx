@@ -25,12 +25,7 @@ export default function ImageManager({ imageUri, setImageUri }) {
   };
 
 
-  const updateFocusBgImage = async (downloadUrl) => {
-    const focusRef = doc(db, "users", auth.currentUser.uid, "focus", focusID);
-    await updateDoc(focusRef, {
-      imageUri: downloadUrl,
-    });
-  };
+
 
   const takeImageOrChooseFromAlbum = async () => {
     const havePermission = await verifyPermission();
