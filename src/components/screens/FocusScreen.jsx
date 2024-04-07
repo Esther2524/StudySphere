@@ -24,6 +24,7 @@ export default function FocusScreen() {
   const [focusTitle, setFocusTitle] = useState("");
   const [focusDuration, setFocusDurarion] = useState("");
   const [focusLocation, setFocusLocation] = useState(null);
+  const [focusImageUri, setFocusImageUri] = useState("");
   const [isFromEdit, setIsFromEdit] = useState(false);
 
   // for Map Modal
@@ -126,6 +127,7 @@ export default function FocusScreen() {
               setFocusTitle(item.title);
               setFocusDurarion(item.duration);
               setFocusLocation(item.location);
+              setFocusImageUri(item.imageUri);
               setSelectedFocusID(item.id);
             }}
           />
@@ -147,8 +149,10 @@ export default function FocusScreen() {
         focusTitle={focusTitle}
         focusDuration={focusDuration}
         focusLocation={focusLocation}
+        focusImageUri={focusImageUri}
         focusID={selectedFocusID}
         setFocusLocation={setFocusLocation}
+        setFocusImageUri={setFocusImageUri}
         setIsMapVisible={setIsMapVisible}
         currentLocation={currentLocation}
         setCurrentLocation={setCurrentLocation}
