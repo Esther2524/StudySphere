@@ -99,11 +99,9 @@ export default function FocusScreen() {
 
 
 
-  const onStartPress = (focusID, duration) => {
-    navigation.navigate(STANDBY_SCREEN_NAME, { focusID, duration });
+  const onStartPress = (focusID, title, duration, imageUri) => {
+    navigation.navigate(STANDBY_SCREEN_NAME, { focusID, title, duration, imageUri });
   };
-
-
 
 
 
@@ -119,7 +117,9 @@ export default function FocusScreen() {
             title={item.title}
             duration={item.duration}
             todayTimes={item.todayTimes}
-            onStartPress={() => onStartPress(item.id, item.duration)} // Pass the duration to onStartPress
+            onStartPress={() => onStartPress(
+              item.id, item.title, item.duration, item.imageUri
+              )} // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
               // pass the focus data to the EditFocus Modal
