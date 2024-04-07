@@ -103,7 +103,7 @@ export async function getTodayFocusTimeByUserId(userId) {
 
 export async function getGroupDetail(groupId) {
   const groupData = await getGroupInfo(groupId);
-  const { groupMembers, groupTarget } = groupData;
+  const { groupMembers, groupTarget, groupName } = groupData;
 
   if (groupMembers.length === 0) return [];
 
@@ -122,7 +122,6 @@ export async function getGroupDetail(groupId) {
       userId,
       name: userInfo.userName,
       avatar: userInfo.avatar,
-      groupTarget: groupTarget || DEFAULT_GROUP_TARGET,
     };
   });
 
@@ -140,7 +139,11 @@ export async function getGroupDetail(groupId) {
     studyTime: studyTimes[index],
   }));
 
-  return userData;
+  return {
+    userData,
+    groupName,
+    groupTarget: groupTarget || DEFAULT_GROUP_TARGET,
+  };
 }
 
 export async function removeGroupFromUserGroups({ groupId, userId }) {
@@ -178,4 +181,14 @@ export async function quitGroup(groupId) {
   const userId = userRef.id;
   await removeGroupFromUserGroups({ groupId, userId });
   await removeUserFromGroupMembers({ groupId, userId });
+}
+
+export async function updateGroup({ groupId, groupName, groupTarget }) {
+  const groupRef = doc(db, "groups", groupId);
+  await updateDoc(groupRef, {
+    groupName,
+    groupTarget,
+  });
+
+  return { groupId, groupName, groupTarget };
 }
