@@ -11,7 +11,7 @@ export const Colors = {
   returnButtonBgColor: "#348085",
   headerTitleColor: "#ffffff",
   dangerTextColor: "#ef4444",
-  inputLabelColor: "#ffffff",
+  inputLabelColor: "#707f89",
   confirmBtnBg: "#01575c",
   confirmBtnText: "#ffffff",
   cancelBtnBg: "#a3a3a3",
@@ -41,7 +41,6 @@ export const Colors = {
   timerBgEndColor: "#3a85a6",
   timerInnerText: "white",
   endButtonBg: "#7b4d65",
-
 
   // undefined
   lighterThanBg: "#8fb5b7",
