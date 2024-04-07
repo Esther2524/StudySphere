@@ -12,12 +12,14 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../api/FirestoreConfig";
 import { getDayOfWeek, getUserRef, isSameWeek } from "../../../utils/helper";
+import { DEFAULT_GROUP_TARGET } from "../../../utils/constants";
 
-function createGroupData({ groupOwnerId, groupName }) {
+function createGroupData({ groupOwnerId, groupName, groupTarget }) {
   return {
     groupOwnerId,
     groupName,
     groupMembers: [{ userId: groupOwnerId, approved: true }],
+    groupTarget,
   };
 }
 
@@ -45,6 +47,7 @@ export async function getAllGroupsByUser() {
       groupSize: doc.data().groupMembers.length,
       groupName: doc.data().groupName,
       groupOwnerId: doc.data().groupOwnerId,
+      groupTarget: doc.data().groupTarget || DEFAULT_GROUP_TARGET,
     });
   });
   return data;
@@ -100,7 +103,7 @@ export async function getTodayFocusTimeByUserId(userId) {
 
 export async function getGroupDetail(groupId) {
   const groupData = await getGroupInfo(groupId);
-  const { groupMembers } = groupData;
+  const { groupMembers, groupTarget } = groupData;
 
   if (groupMembers.length === 0) return [];
 
@@ -119,6 +122,7 @@ export async function getGroupDetail(groupId) {
       userId,
       name: userInfo.userName,
       avatar: userInfo.avatar,
+      groupTarget: groupTarget || DEFAULT_GROUP_TARGET,
     };
   });
 
