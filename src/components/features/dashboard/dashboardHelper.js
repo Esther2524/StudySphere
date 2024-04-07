@@ -96,7 +96,7 @@ export async function getWeeklyFocusInfo() {
   ];
 
   while (currentDate <= today) {
-    const dayOfWeek = (currentDate.getDay() + 6) % 7;
+    const dayOfWeek = getDayOfWeek(currentDate);
     focusPromises.push(
       getDailyFocusInfo(new Date(currentDate)).then((dailyInfo) => {
         const totalFocusTimeForDay = dailyInfo.reduce(
