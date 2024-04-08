@@ -71,13 +71,9 @@ export function isSameDay(firebaseTimestamp) {
 }
 
 export function getStartOfWeek(date) {
-  const dayOfWeek = date.getUTCDay();
+  const dayOfWeek = date.getDay();
   const diff = (dayOfWeek + 6) % 7;
-  return new Date(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate() - diff
-  );
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() - diff);
 }
 
 export function isSameWeek(firebaseTimestamp) {
