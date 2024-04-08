@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-  ImageBackground,
-} from "react-native";
+import { View, Text, StyleSheet, Alert, ImageBackground } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Colors } from "../../utils/Colors";
 import PressableButton from "../ui/PressableButton";
@@ -29,6 +22,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import Timer from "../features/focusList/Timer";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { changeRandomPicture } from "../../api/RandomImage";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  QUERY_KEY_TODAY_DATA,
+  QUERY_KEY_TREND_DATA,
+} from "../../utils/constants";
 
 export default function StandbyScreen() {
   const navigation = useNavigation();
@@ -39,8 +37,14 @@ export default function StandbyScreen() {
     content: "",
     author: "",
   });
+  const queryClient = useQueryClient();
 
   const [randomImage, setRandomImage] = useState(null);
+
+  const refreshDashboard = () => {
+    queryClient.invalidateQueries([QUERY_KEY_TREND_DATA]);
+    queryClient.invalidateQueries([QUERY_KEY_TODAY_DATA]);
+  };
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -83,9 +87,16 @@ export default function StandbyScreen() {
           todayBreaks: sameDay ? increment(1) : 1,
           // Reset todayTimes if not the same day
           todayTimes: sameDay ? focusData.todayTimes : 0,
+          weeklyStudyTime: isSameWeek(focusData.lastUpdate)
+            ? focusData.weeklyStudyTime
+            : new Array(7).fill(0),
+          monthlyStudyTime: isSameYear(focusData.lastUpdate)
+            ? focusData.monthlyStudyTime
+            : new Array(12).fill(0),
         });
       }
     }
+    refreshDashboard();
     navigation.goBack(); // quit the countdown
   };
 
@@ -136,6 +147,7 @@ export default function StandbyScreen() {
         });
       }
     }
+    refreshDashboard();
     navigation.goBack();
     return [false, 0]; // Don't repeat the timer
   };
