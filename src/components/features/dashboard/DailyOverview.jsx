@@ -30,7 +30,7 @@ export default function DailyOverview() {
         <View style={styles.infoColumn}>
           <Text style={styles.infoTitle}>Total Hours</Text>
           {!isLoading && (
-            <Text style={styles.infoText}>{Number(focusTime.toFixed(1))}</Text>
+            <Text style={styles.infoText}>{Number(focusTime.toFixed(2))}</Text>
           )}
           {isLoading && (
             <Skeleton width={25} height={15} style={styles.infoSkeleton} />

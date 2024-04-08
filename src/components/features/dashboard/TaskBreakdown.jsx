@@ -33,7 +33,7 @@ export default function TaskBreakdown() {
 
   let total = 0;
   if (data)
-    total = data.reduce((pre, cur) => pre + cur.focusTime, 0).toFixed(1);
+    total = data.reduce((pre, cur) => pre + cur.focusTime, 0).toFixed(2);
 
   const focusHandler = (obj, curInd) => {
     setFocusedItem({ total, ...obj });

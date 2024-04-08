@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-  ImageBackground,
-} from "react-native";
+import { View, Text, StyleSheet, Alert, ImageBackground } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Colors } from "../../utils/Colors";
 import PressableButton from "../ui/PressableButton";
@@ -20,6 +13,7 @@ import {
 import { auth, db } from "../../api/FirestoreConfig";
 import {
   getDayOfWeek,
+  getMonth,
   isSameDay,
   isSameWeek,
   isSameYear,
@@ -27,7 +21,12 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import Timer from "../features/focusList/Timer";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { changeRandomPicture } from '../../api/RandomImage';
+import { changeRandomPicture } from "../../api/RandomImage";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  QUERY_KEY_TODAY_DATA,
+  QUERY_KEY_TREND_DATA,
+} from "../../utils/constants";
 
 export default function StandbyScreen() {
   const navigation = useNavigation();
@@ -38,9 +37,14 @@ export default function StandbyScreen() {
     content: "",
     author: "",
   });
+  const queryClient = useQueryClient();
 
   const [randomImage, setRandomImage] = useState(null);
 
+  const refreshDashboard = () => {
+    queryClient.invalidateQueries([QUERY_KEY_TREND_DATA]);
+    queryClient.invalidateQueries([QUERY_KEY_TODAY_DATA]);
+  };
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -83,9 +87,16 @@ export default function StandbyScreen() {
           todayBreaks: sameDay ? increment(1) : 1,
           // Reset todayTimes if not the same day
           todayTimes: sameDay ? focusData.todayTimes : 0,
+          weeklyStudyTime: isSameWeek(focusData.lastUpdate)
+            ? focusData.weeklyStudyTime
+            : new Array(7).fill(0),
+          monthlyStudyTime: isSameYear(focusData.lastUpdate)
+            ? focusData.monthlyStudyTime
+            : new Array(12).fill(0),
         });
       }
     }
+    refreshDashboard();
     navigation.goBack(); // quit the countdown
   };
 
@@ -104,7 +115,7 @@ export default function StandbyScreen() {
 
         // Determine the indexes for updating weekly and monthly study time
         const dayIndex = getDayOfWeek(completionTime);
-        const monthIndex = completionTime.getMonth(); // 0 (January) to 11 (December)
+        const monthIndex = getMonth(completionTime); // 0 (January) to 11 (December)
 
         // Update weeklyStudyTime and monthlyStudyTime
         let updatedWeeklyStudyTime = [...focusData.weeklyStudyTime];
@@ -136,6 +147,7 @@ export default function StandbyScreen() {
         });
       }
     }
+    refreshDashboard();
     navigation.goBack();
     return [false, 0]; // Don't repeat the timer
   };
@@ -151,26 +163,25 @@ export default function StandbyScreen() {
     }
   };
 
-
-
-
-
-
-
   return (
     <ImageBackground
-      source={randomImage ? { uri: randomImage } : imageUri ? { uri: imageUri } : require('../../../assets/standby-background.jpg')}
+      source={
+        randomImage
+          ? { uri: randomImage }
+          : imageUri
+          ? { uri: imageUri }
+          : require("../../../assets/standby-background.jpg")
+      }
       style={styles.standby}
       imageStyle={styles.backgroundImage}
       resizeMode="cover"
     >
       <View style={styles.container}>
-
         <PressableButton
           onPress={handlePressChangePicture}
           containerStyle={styles.changePictureButton}
         >
-          <FontAwesome name='refresh' size={24} color={Colors.addFocusButton} />
+          <FontAwesome name="refresh" size={24} color={Colors.addFocusButton} />
         </PressableButton>
 
         <LinearGradient
@@ -209,13 +220,17 @@ export default function StandbyScreen() {
 
         <PressableButton
           onPress={handleEndCountdown}
-          containerStyle={styles.buttonContainer}>
-          <AntDesign name='closecircleo' size={23} color={Colors.addFocusButton} />
+          containerStyle={styles.buttonContainer}
+        >
+          <AntDesign
+            name="closecircleo"
+            size={23}
+            color={Colors.addFocusButton}
+          />
           <Text style={styles.buttonText}>End</Text>
         </PressableButton>
       </View>
     </ImageBackground>
-
   );
 }
 
@@ -226,13 +241,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 50,
   },
   changePictureButton: {
     backgroundColor: Colors.endColor,
     padding: 8,
-    position: 'absolute',
+    position: "absolute",
     top: 60,
     right: 30,
     zIndex: 10,
