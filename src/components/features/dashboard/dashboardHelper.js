@@ -1,8 +1,10 @@
 import { Timestamp, collection, getDocs } from "firebase/firestore";
 import {
+  getDate,
   getDayOfWeek,
   getStartOfWeek,
   getUserRef,
+  isSameDay,
   isSameWeek,
 } from "../../../utils/helper";
 import { db } from "../../../api/FirestoreConfig";
@@ -13,18 +15,20 @@ export async function getDailyFocusInfo(dateObj) {
   const userRef = getUserRef();
   const userId = userRef.id;
   const focusSnapshot = await getDocs(collection(db, "users", userId, "focus"));
+
   const data = focusSnapshot.docs.map((doc) => {
     const focusData = doc.data();
     const lastUpdate = focusData.lastUpdate;
     const focusTime = isSameWeek(lastUpdate)
-      ? focusData.weeklyStudyTime[getDayOfWeek(Timestamp.fromDate(dateObj))]
+      ? focusData.weeklyStudyTime[getDayOfWeek(dateObj)]
       : 0;
+    const isSameDayAsInput = isSameDay(lastUpdate);
     return {
       id: doc.id,
       title: focusData.title,
-      focusTime: Number((focusTime / 60.0).toFixed(1)),
-      numOfCompletions: focusData.todayTimes,
-      numOfBreaks: focusData.todayBreaks,
+      focusTime: Number((focusTime / 60.0).toFixed(2)),
+      numOfCompletions: isSameDayAsInput ? focusData.todayTimes : 0,
+      numOfBreaks: isSameDayAsInput ? focusData.todayBreaks : 0,
     };
   });
 
@@ -81,11 +85,11 @@ export function parsePieData(rawData) {
 
 export async function getWeeklyFocusInfo() {
   const startOfWeek = getStartOfWeek(new Date());
-  let currentDate = new Date(startOfWeek);
+  let currentDate = startOfWeek;
   const today = new Date();
   const focusPromises = [];
 
-  const dailyFocusInfo = [
+  const weeklyInfo = [
     { value: 0, label: "Mon" },
     { value: 0, label: "Tue" },
     { value: 0, label: "Wed" },
@@ -101,11 +105,9 @@ export async function getWeeklyFocusInfo() {
       getDailyFocusInfo(new Date(currentDate)).then((dailyInfo) => {
         const totalFocusTimeForDay = dailyInfo.reduce(
           (pre, cur) => pre + cur.focusTime,
-          0
+          0.0
         );
-        dailyFocusInfo[dayOfWeek].value += Number(
-          totalFocusTimeForDay.toFixed(1)
-        );
+        weeklyInfo[dayOfWeek].value += Number(totalFocusTimeForDay.toFixed(2));
       })
     );
     currentDate.setDate(currentDate.getDate() + 1);
@@ -113,5 +115,5 @@ export async function getWeeklyFocusInfo() {
 
   await Promise.all(focusPromises);
 
-  return dailyFocusInfo;
+  return weeklyInfo;
 }
