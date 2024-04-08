@@ -6,12 +6,14 @@ import { Colors } from "../../../utils/Colors";
 import { AntDesign } from "@expo/vector-icons";
 import useJoinGroup from "./useJoinGroup";
 import GroupResultsItemSkeleton from "./GroupResultsItemSkeleton";
+import { limitStrLen } from "../../../utils/helper";
 
 export default function GroupResultsItem({
   groupName,
   groupSize,
   groupId,
   joined,
+  groupTarget,
   isLoading,
 }) {
   const { mutate: joinGroupHandler, isPending: isJoining } = useJoinGroup();
@@ -21,9 +23,9 @@ export default function GroupResultsItem({
       {isLoading && <GroupResultsItemSkeleton />}
       {!isLoading && (
         <>
-          <Text style={styles.title}>{groupName}</Text>
+          <Text style={styles.title}>{limitStrLen(groupName, 50)}</Text>
           <View style={styles.subLine}>
-            <GroupInfoBox groupSize={groupSize} />
+            <GroupInfoBox groupSize={groupSize} groupTarget={groupTarget} />
             <PressableButton
               containerStyle={[
                 styles.joinBtnContainer,
@@ -87,6 +89,7 @@ const styles = StyleSheet.create({
   subLine: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 15,
   },
   joinBtnContainer: {

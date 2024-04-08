@@ -29,7 +29,7 @@ export default function TaskBreakdown() {
 
   useEffect(() => {
     if (!isLoading) setPieData(parsePieData(data));
-  }, [isLoading]);
+  }, [isLoading, data]);
 
   let total = 0;
   if (data)
@@ -89,9 +89,11 @@ export default function TaskBreakdown() {
           ))}
         {!isLoading &&
           Number(total) !== 0 &&
-          pieData.map((item, ind) => (
-            <PieChartMarker key={ind} color={item.color} title={item.title} />
-          ))}
+          pieData.map((item, ind) =>
+            item.value > 0 ? (
+              <PieChartMarker key={ind} color={item.color} title={item.title} />
+            ) : null
+          )}
       </View>
     </StatsCardContainer>
   );
