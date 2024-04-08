@@ -1,13 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Alert, ImageBackground } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Colors } from '../../utils/Colors';
-import PressableButton from '../ui/PressableButton';
-import { doc, updateDoc, increment, getDoc, Timestamp } from 'firebase/firestore';
-import { auth, db } from '../../api/FirestoreConfig';
-import { isSameDay, isSameWeek, isSameYear } from '../../utils/helper';
-import { LinearGradient } from 'expo-linear-gradient';
-import Timer from '../features/focusList/Timer';
+import React, { useEffect, useState } from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  ImageBackground,
+} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Colors } from "../../utils/Colors";
+import PressableButton from "../ui/PressableButton";
+import {
+  doc,
+  updateDoc,
+  increment,
+  getDoc,
+  Timestamp,
+} from "firebase/firestore";
+import { auth, db } from "../../api/FirestoreConfig";
+import {
+  getDayOfWeek,
+  isSameDay,
+  isSameWeek,
+  isSameYear,
+} from "../../utils/helper";
+import { LinearGradient } from "expo-linear-gradient";
+import Timer from "../features/focusList/Timer";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { changeRandomPicture } from '../../api/RandomImage';
 
@@ -42,7 +60,7 @@ export default function StandbyScreen() {
   const handleEndCountdown = () => {
     Alert.alert(
       "Important",
-      "Are you sure you want to end this focus? This session will not be counted.",
+      "Are you sure you want to end this focus?🥺This session will not be counted.",
       [{ text: "No" }, { text: "Yes", onPress: () => incrementBreak() }]
     );
   };
@@ -140,74 +158,68 @@ export default function StandbyScreen() {
 
 
   return (
-    <SafeAreaView style={styles.fullScreen}>
-      <ImageBackground
-        source={randomImage ? { uri: randomImage } : imageUri ? { uri: imageUri } : require('../../../assets/standby-background.jpg')}
-        style={styles.standby}
-        imageStyle={styles.backgroundImage}
-        resizeMode="cover"
-      >
-        <View style={styles.container}>
+    <ImageBackground
+      source={randomImage ? { uri: randomImage } : imageUri ? { uri: imageUri } : require('../../../assets/standby-background.jpg')}
+      style={styles.standby}
+      imageStyle={styles.backgroundImage}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
 
-          <PressableButton
-            onPress={handlePressChangePicture}
-            containerStyle={styles.changePictureButton}
-          >
-            <FontAwesome name='refresh' size={24} color={Colors.addFocusButton} />
-          </PressableButton>
+        <PressableButton
+          onPress={handlePressChangePicture}
+          containerStyle={styles.changePictureButton}
+        >
+          <FontAwesome name='refresh' size={24} color={Colors.addFocusButton} />
+        </PressableButton>
 
-          <LinearGradient
-            colors={[Colors.startColor, Colors.endColor]}
-            style={styles.headerContainer}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Text style={styles.header}>Stay Focus</Text>
-          </LinearGradient>
+        <LinearGradient
+          colors={[Colors.startColor, Colors.endColor]}
+          style={styles.headerContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.header}>Stay Focus</Text>
+        </LinearGradient>
 
-          <LinearGradient
-            colors={[Colors.startColor, Colors.endColor]}
-            style={styles.subheadingContainer}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Text style={styles.subheading}>{title} Now...</Text>
-          </LinearGradient>
+        <LinearGradient
+          colors={[Colors.startColor, Colors.endColor]}
+          style={styles.subheadingContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.subheading}>{title} Now...</Text>
+        </LinearGradient>
 
-          <Timer
-            isPlaying={isPlaying}
-            duration={duration}
-            onComplete={onComplete}
-          />
+        <Timer
+          isPlaying={isPlaying}
+          duration={duration}
+          onComplete={onComplete}
+        />
 
-          <LinearGradient
-            colors={[Colors.startColor, Colors.endColor]}
-            style={styles.quoteContainer}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Text style={styles.quoteText}>"{quote.content}"</Text>
-            <Text style={styles.quoteText}>— {quote.author}</Text>
-          </LinearGradient>
+        <LinearGradient
+          colors={[Colors.startColor, Colors.endColor]}
+          style={styles.quoteContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.quoteText}>"{quote.content}"</Text>
+          <Text style={styles.quoteText}>— {quote.author}</Text>
+        </LinearGradient>
 
-          <PressableButton
-            onPress={handleEndCountdown}
-            containerStyle={styles.buttonContainer}>
-            <AntDesign name='closecircleo' size={23} color={Colors.addFocusButton} />
-            <Text style={styles.buttonText}>End</Text>
-          </PressableButton>
-        </View>
-      </ImageBackground>
-    </SafeAreaView>
+        <PressableButton
+          onPress={handleEndCountdown}
+          containerStyle={styles.buttonContainer}>
+          <AntDesign name='closecircleo' size={23} color={Colors.addFocusButton} />
+          <Text style={styles.buttonText}>End</Text>
+        </PressableButton>
+      </View>
+    </ImageBackground>
+
   );
 }
 
 const styles = StyleSheet.create({
-  fullScreen: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    height: '95%'
-  },
   standby: {
     flex: 1,
     justifyContent: "center",
@@ -221,13 +233,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.endColor,
     padding: 8,
     position: 'absolute',
-    top: 30,
-    right: 25,
+    top: 60,
+    right: 30,
     zIndex: 10,
     borderRadius: 50,
   },
   headerContainer: {
     padding: 15,
+    marginTop: 30,
     marginBottom: 30,
     alignItems: "center",
     borderRadius: 15,
@@ -256,7 +269,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.timerText,
     borderRadius: 20,
     marginTop: 30,
-    marginBottom: 30,
     width: "90%",
   },
   quoteText: {
@@ -275,7 +287,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 5,
-    marginTop: 30,
+    marginTop: 25,
     backgroundColor: Colors.endButtonBg,
     padding: 12,
     borderRadius: 10,

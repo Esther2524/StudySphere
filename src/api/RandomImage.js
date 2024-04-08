@@ -1,7 +1,7 @@
 import { pexelsApiKey } from "@env";
 
 export const changeRandomPicture = async () => {
-    const randomPage = Math.ceil(Math.random() * 10);
+    const randomPage = Math.ceil(Math.random() * 100);
     const perPage = 1; 
     const url = `https://api.pexels.com/v1/search?query=Nature&per_page=${perPage}&page=${randomPage}`;
     try {
