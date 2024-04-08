@@ -1,5 +1,7 @@
 import { doc } from "firebase/firestore";
 import { auth, db } from "../api/FirestoreConfig";
+import moment from "moment-timezone";
+import { TIMEZONE } from "./constants";
 
 export function limitStrLen(str, len) {
   if (str.length <= len) return str;
@@ -44,19 +46,21 @@ export function getDayOfWeek(timeInput) {
   }
 
   // 0 for Monday, 1 for Tuesday, ..., 6 for Sunday
-  const dayOfWeek = (date.getDay() + 6) % 7;
+  const dayOfWeek = (moment(date).tz(TIMEZONE).day() + 6) % 7;
 
   return dayOfWeek;
 }
 
-export function getMonth(timeInput) {
-  // Convert the Firebase Timestamp to a JavaScript Date object
-  const date = timeInput.toDate();
+export function getMonth(dateObj) {
+  return moment(dateObj).tz(TIMEZONE).month();
+}
 
-  // Get the month (0 for January, 1 for February, ..., 11 for December)
-  const month = date.getMonth();
+export function getFullYear(dateObj) {
+  return moment(dateObj).tz(TIMEZONE).year();
+}
 
-  return month;
+export function getDate(dateObj) {
+  return moment(dateObj).tz(TIMEZONE).date();
 }
 
 export function isSameDay(firebaseTimestamp) {
@@ -64,16 +68,15 @@ export function isSameDay(firebaseTimestamp) {
   const today = new Date();
 
   return (
-    date.getDate() === today.getDate() &&
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear()
+    getDate(date) === getDate(today) &&
+    getMonth(date) === getMonth(today) &&
+    getFullYear(date) === getFullYear(today)
   );
 }
 
 export function getStartOfWeek(date) {
-  const dayOfWeek = date.getDay();
-  const diff = (dayOfWeek + 6) % 7;
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate() - diff);
+  const dayOfWeek = getDayOfWeek(date);
+  return new Date(getFullYear(date), getMonth(date), getDate(date) - dayOfWeek);
 }
 
 export function isSameWeek(firebaseTimestamp) {
@@ -93,8 +96,8 @@ export function isSameMonth(firebaseTimestamp) {
   const today = new Date();
 
   return (
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear()
+    getMonth(date) === getMonth(today) &&
+    getFullYear(date) === getFullYear(today)
   );
 }
 
@@ -102,7 +105,7 @@ export function isSameYear(firebaseTimestamp) {
   const date = firebaseTimestamp.toDate();
   const today = new Date();
 
-  return date.getFullYear() === today.getFullYear();
+  return getFullYear(date) === getFullYear(today);
 }
 
 export function generateRandomInteger(min, max) {
