@@ -6,8 +6,10 @@ import FocusScreen from "../screens/FocusScreen";
 import { Colors } from "../../utils/Colors";
 import { FOCUS_SCREEN_TITLE, STANDBY_SCREEN_NAME } from "../../utils/constants";
 
-export default function FocusStackNav() {
+
+export default function FocusStackNav({ }) {
   const Stack = createNativeStackNavigator();
+
   return (
     <Stack.Navigator
       initialRouteName={FOCUS_SCREEN_TITLE}
@@ -27,8 +29,9 @@ export default function FocusStackNav() {
         name={STANDBY_SCREEN_NAME}
         component={StandbyScreen}
         options={{
-          presentation: "modal", // covers the entire previous screen, including any bottom tabs or upper areas like the navigation bar,
           headerShown: false,
+          presentation: "modal", 
+          gestureEnabled: false, // prevents swiping down to dismiss the modal
         }}
       />
     </Stack.Navigator>

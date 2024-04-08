@@ -26,7 +26,8 @@ import {
 } from "../../utils/helper";
 import { LinearGradient } from "expo-linear-gradient";
 import Timer from "../features/focusList/Timer";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { changeRandomPicture } from '../../api/RandomImage';
 
 export default function StandbyScreen() {
   const navigation = useNavigation();
@@ -37,6 +38,9 @@ export default function StandbyScreen() {
     content: "",
     author: "",
   });
+
+  const [randomImage, setRandomImage] = useState(null);
+
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -56,7 +60,7 @@ export default function StandbyScreen() {
   const handleEndCountdown = () => {
     Alert.alert(
       "Important",
-      "Are you sure you want to end this focus? This session will not be counted.",
+      "Are you sure you want to end this focus?🥺This session will not be counted.",
       [{ text: "No" }, { text: "Yes", onPress: () => incrementBreak() }]
     );
   };
@@ -136,86 +140,107 @@ export default function StandbyScreen() {
     return [false, 0]; // Don't repeat the timer
   };
 
+  const handlePressChangePicture = async () => {
+    try {
+      const newImageUri = await changeRandomPicture();
+      if (newImageUri) {
+        setRandomImage(newImageUri);
+      }
+    } catch (error) {
+      console.error("Failed to change picture:", error);
+    }
+  };
+
+
+
+
+
+
+
   return (
-    <SafeAreaView style={styles.fullScreen}>
-      <ImageBackground
-        source={
-          imageUri
-            ? { uri: imageUri }
-            : require("../../../assets/standby-background.jpg")
-        }
-        style={styles.standby}
-        imageStyle={styles.backgroundImage}
-        resizeMode="cover"
-      >
-        <View style={styles.container}>
-          <LinearGradient
-            colors={[Colors.startColor, Colors.endColor]}
-            style={styles.headerContainer}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Text style={styles.header}>Stay Focus</Text>
-          </LinearGradient>
+    <ImageBackground
+      source={randomImage ? { uri: randomImage } : imageUri ? { uri: imageUri } : require('../../../assets/standby-background.jpg')}
+      style={styles.standby}
+      imageStyle={styles.backgroundImage}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
 
-          <LinearGradient
-            colors={[Colors.startColor, Colors.endColor]}
-            style={styles.subheadingContainer}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Text style={styles.subheading}>{title}Now...</Text>
-          </LinearGradient>
+        <PressableButton
+          onPress={handlePressChangePicture}
+          containerStyle={styles.changePictureButton}
+        >
+          <FontAwesome name='refresh' size={24} color={Colors.addFocusButton} />
+        </PressableButton>
 
-          <Timer
-            isPlaying={isPlaying}
-            duration={duration}
-            onComplete={onComplete}
-          />
+        <LinearGradient
+          colors={[Colors.startColor, Colors.endColor]}
+          style={styles.headerContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.header}>Stay Focus</Text>
+        </LinearGradient>
 
-          <LinearGradient
-            colors={[Colors.startColor, Colors.endColor]}
-            style={styles.quoteContainer}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Text style={styles.quoteText}>"{quote.content}"</Text>
-            <Text style={styles.quoteText}>— {quote.author}</Text>
-          </LinearGradient>
+        <LinearGradient
+          colors={[Colors.startColor, Colors.endColor]}
+          style={styles.subheadingContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.subheading}>{title} Now...</Text>
+        </LinearGradient>
 
-          <PressableButton
-            onPress={handleEndCountdown}
-            containerStyle={styles.buttonContainer}
-          >
-            <AntDesign
-              name="closecircleo"
-              size={23}
-              color={Colors.addFocusButton}
-            />
-            <Text style={styles.buttonText}>End</Text>
-          </PressableButton>
-        </View>
-      </ImageBackground>
-    </SafeAreaView>
+        <Timer
+          isPlaying={isPlaying}
+          duration={duration}
+          onComplete={onComplete}
+        />
+
+        <LinearGradient
+          colors={[Colors.startColor, Colors.endColor]}
+          style={styles.quoteContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.quoteText}>"{quote.content}"</Text>
+          <Text style={styles.quoteText}>— {quote.author}</Text>
+        </LinearGradient>
+
+        <PressableButton
+          onPress={handleEndCountdown}
+          containerStyle={styles.buttonContainer}>
+          <AntDesign name='closecircleo' size={23} color={Colors.addFocusButton} />
+          <Text style={styles.buttonText}>End</Text>
+        </PressableButton>
+      </View>
+    </ImageBackground>
+
   );
 }
 
 const styles = StyleSheet.create({
-  fullScreen: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   standby: {
     flex: 1,
     justifyContent: "center",
   },
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    alignItems: 'center',
+    paddingTop: 50,
+  },
+  changePictureButton: {
+    backgroundColor: Colors.endColor,
+    padding: 8,
+    position: 'absolute',
+    top: 60,
+    right: 30,
+    zIndex: 10,
+    borderRadius: 50,
   },
   headerContainer: {
     padding: 15,
+    marginTop: 30,
     marginBottom: 30,
     alignItems: "center",
     borderRadius: 15,
@@ -244,7 +269,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.timerText,
     borderRadius: 20,
     marginTop: 30,
-    marginBottom: 30,
     width: "90%",
   },
   quoteText: {
@@ -263,7 +287,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 5,
-    marginTop: 30,
+    marginTop: 25,
     backgroundColor: Colors.endButtonBg,
     padding: 12,
     borderRadius: 10,
