@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import GroupInfoBox from "./GroupInfoBox";
 import GroupCardItemSkeleton from "./GroupCardItemSkeleton";
 import { GROUP_DETAIL_SCREEN_TITLE } from "../../../utils/constants";
+import { limitStrLen } from "../../../utils/helper";
 
 export default function GroupCardItem({
   groupName,
@@ -13,6 +14,7 @@ export default function GroupCardItem({
   groupId,
   groupOwnerId,
   isLoading,
+  groupTarget,
 }) {
   const navigation = useNavigation();
   const handlePress = useCallback(() => {
@@ -29,8 +31,8 @@ export default function GroupCardItem({
         {isLoading && <GroupCardItemSkeleton />}
         {!isLoading && (
           <>
-            <Text style={styles.title}>{groupName}</Text>
-            <GroupInfoBox groupSize={groupSize} />
+            <Text style={styles.title}>{limitStrLen(groupName, 50)}</Text>
+            <GroupInfoBox groupSize={groupSize} groupTarget={groupTarget} />
           </>
         )}
       </View>
@@ -40,11 +42,9 @@ export default function GroupCardItem({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
     marginBottom: 20,
-    paddingVertical: 20,
+    paddingVertical: 15,
     paddingHorizontal: 25,
     backgroundColor: Colors.cardBgColor,
     width: 320,
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     width: 230,
     marginRight: 5,
+    marginBottom: 10,
   },
   joinBtnContainer: {
     paddingVertical: 8,

@@ -146,6 +146,7 @@ export default function AuthForm({ mode }) {
     <>
       <InputWithLabel
         label="Email"
+        labelStyle={styles.labelStyle}
         content={email}
         setContent={updateInputWithErr("email")}
         inputTextStyle={styles.inputTextStyle}
@@ -153,6 +154,7 @@ export default function AuthForm({ mode }) {
       />
       <InputWithLabel
         label="Password"
+        labelStyle={styles.labelStyle}
         content={pwd}
         setContent={updateInputWithErr("pwd")}
         secureTextEntry={true}
@@ -162,6 +164,7 @@ export default function AuthForm({ mode }) {
       {mode === "signup" && (
         <InputWithLabel
           label="Confirm Password"
+          labelStyle={styles.labelStyle}
           content={confirmPwd}
           setContent={updateInputWithErr("confirmPwd")}
           inputTextStyle={styles.inputTextStyle}
@@ -227,6 +230,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inputTextStyle: {
+    color: Colors.shallowTextColor,
+  },
+  labelStyle: {
     color: Colors.shallowTextColor,
   },
 });

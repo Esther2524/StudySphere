@@ -6,19 +6,34 @@ export default function GroupCardItemSkeleton() {
   return (
     <View style={styles.container}>
       <Skeleton width={220} height={25} style={styles.titleSkeleton} />
-      <Skeleton circle width={30} height={30} />
+      <View style={styles.subLine}>
+        {Array.from({ length: 2 }).map((_, ind) => (
+          <Skeleton
+            width={40}
+            height={20}
+            style={styles.infoSkeleton}
+            key={ind}
+          />
+        ))}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
   },
   titleSkeleton: {
-    borderRadius: 5,
+    borderRadius: 20,
     marginRight: 30,
+  },
+  infoSkeleton: {
+    borderRadius: 20,
+  },
+  subLine: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 10,
   },
 });

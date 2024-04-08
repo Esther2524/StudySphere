@@ -26,19 +26,32 @@ export function getUserRef() {
   return doc(db, "users", uid);
 }
 
-export function getDayOfWeek(firebaseTimestamp) {
-  // Convert the Firebase Timestamp to a JavaScript Date object
-  const date = firebaseTimestamp.toDate();
+export function getDayOfWeek(timeInput) {
+  let date;
 
-  // Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
-  const dayOfWeek = date.getDay();
+  // Check if the input is a Firebase Timestamp
+  if (timeInput instanceof Date) {
+    // It's already a JavaScript Date object
+    date = timeInput;
+  } else if (timeInput && typeof timeInput.toDate === "function") {
+    // It's a Firebase Timestamp, so convert it to a Date object
+    date = timeInput.toDate();
+  } else {
+    // Invalid timeInput
+    throw new Error(
+      "Invalid timeInput: Expected a Date object or a Firebase Timestamp"
+    );
+  }
+
+  // 0 for Monday, 1 for Tuesday, ..., 6 for Sunday
+  const dayOfWeek = (date.getDay() + 6) % 7;
 
   return dayOfWeek;
 }
 
-export function getMonth(firebaseTimestamp) {
+export function getMonth(timeInput) {
   // Convert the Firebase Timestamp to a JavaScript Date object
-  const date = firebaseTimestamp.toDate();
+  const date = timeInput.toDate();
 
   // Get the month (0 for January, 1 for February, ..., 11 for December)
   const month = date.getMonth();

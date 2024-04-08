@@ -8,6 +8,10 @@ import useQuitGroup from "./useQuitGroup";
 import { useNavigation } from "@react-navigation/native";
 import PressableButton from "../../ui/PressableButton";
 import HeaderMenu from "../../ui/HeaderMenu";
+import { Feather } from "@expo/vector-icons";
+import useEditGroup from "./useEditGroup";
+import GroupInfoModal from "./GroupInfoModal";
+import useGetGroupDetail from "./useGetGroupDetail";
 
 function QuitIcon() {
   return (
@@ -20,13 +24,28 @@ function QuitIcon() {
   );
 }
 
-export default function GroupDetailHeaderMenu({ groupId, groupOwnerId }) {
+function EditIcon() {
+  return (
+    <Feather name="edit" size={24} color="black" style={styles.menuIcon} />
+  );
+}
+
+export default function GroupDetailHeaderMenu({
+  groupId,
+  groupOwnerId,
+  setShowModal,
+}) {
   const navigation = useNavigation();
   const [showMenu, setShowMenu] = useState(false);
   const userRef = getUserRef();
   const curUserId = userRef.id;
   const isOwner = curUserId === groupOwnerId;
   const { mutate: quitGroup, isPending: isQuitting } = useQuitGroup(isOwner);
+
+  const onEdit = () => {
+    setShowMenu(false);
+    setShowModal(true);
+  };
 
   const quitHandler = () => {
     quitGroup(groupId);
@@ -49,8 +68,16 @@ export default function GroupDetailHeaderMenu({ groupId, groupOwnerId }) {
   };
 
   const menuOptions = [
-    { label: "Quit Group", onPress: onQuit, icon: QuitIcon() },
+    { label: "Quit Group", onPress: onQuit, icon: <QuitIcon /> },
   ];
+
+  if (isOwner) {
+    menuOptions.unshift({
+      label: "Edit Group",
+      onPress: onEdit,
+      icon: <EditIcon />,
+    });
+  }
 
   return (
     <>
