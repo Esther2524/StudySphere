@@ -8,3 +8,4 @@ export const FOCUS_STACK_NAME = "Focus List";
 export const GROUP_DETAIL_SCREEN_TITLE = "Group Detail";
 export const STANDBY_SCREEN_NAME = "Standby";
 export const DEFAULT_GROUP_TARGET = 8;
+export const TIMEZONE = "America/Vancouver";
