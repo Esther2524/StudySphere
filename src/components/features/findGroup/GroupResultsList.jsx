@@ -40,6 +40,7 @@ export default function GroupResultsList({ keyword }) {
               groupName={item.groupName}
               groupSize={item.groupSize}
               joined={item.joined}
+              groupTarget={item.groupTarget}
             />
           )}
           style={{ marginBottom: 100 }}

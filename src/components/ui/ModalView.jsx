@@ -1,10 +1,11 @@
-import { View, Modal } from "react-native";
+import { View, Modal, KeyboardAvoidingView, Platform } from "react-native";
 import React from "react";
 
 export default function ModalView({ isVisible, children }) {
   return (
     <Modal visible={isVisible} transparent>
-      <View
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{
           flex: 1,
           alignItems: "center",
@@ -13,7 +14,7 @@ export default function ModalView({ isVisible, children }) {
         }}
       >
         {children}
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

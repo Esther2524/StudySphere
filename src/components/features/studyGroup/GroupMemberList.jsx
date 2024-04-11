@@ -20,12 +20,13 @@ export default function GroupMemberList({ groupId }) {
         ))}
       {!isLoadingGroupDetail && (
         <FlatList
-          data={groupDetailData}
+          data={groupDetailData.userData}
           renderItem={({ item: { name, avatar, studyTime } }) => (
             <GroupMemberItem
               avatar={avatar}
               name={name}
               studyTime={studyTime}
+              groupTarget={groupDetailData.groupTarget}
             />
           )}
         />

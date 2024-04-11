@@ -11,6 +11,8 @@ import PressableButton from "../ui/PressableButton";
 import EditFocus from "../features/focusList/EditFocus";
 import AddReminder from "../features/focusList/AddReminder";
 import MapModal from "../features/focusList/MapModal";
+import { STANDBY_SCREEN_NAME } from "../../utils/constants";
+import { isSameDay } from "../../utils/helper";
 
 export default function FocusScreen() {
   const [focusTasks, setFocusTasks] = useState([]);
@@ -23,14 +25,14 @@ export default function FocusScreen() {
   const [focusTitle, setFocusTitle] = useState("");
   const [focusDuration, setFocusDurarion] = useState("");
   const [focusLocation, setFocusLocation] = useState(null);
+  const [focusImageUri, setFocusImageUri] = useState("");
   const [isFromEdit, setIsFromEdit] = useState(false);
 
   // for Map Modal
   const [isMapVisible, setIsMapVisible] = useState(false);
-  // closingForMap is used to track whether the modal is being closed to navigate to the Map modal 
+  // closingForMap is used to track whether the modal is being closed to navigate to the Map modal
   // or if it's being closed after adding a task or cancelling the operation
   const [closingForMap, setClosingForMap] = useState(false);
-
 
   // AddFocus Modal and Map Modal will share this currentLocation state variable
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -40,7 +42,7 @@ export default function FocusScreen() {
 
   // reset location whenever AddFocus is to be shown
   const showAddFocusModal = () => {
-    setCurrentLocation(null); 
+    setCurrentLocation(null);
     setIsAddFocusVisible(true);
   };
 
@@ -80,10 +82,16 @@ export default function FocusScreen() {
       const unsubscribe = onSnapshot(
         q,
         (querySnapshot) => {
-          const tasks = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
+          const tasks = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            const isSameDayAsToday = isSameDay(data.lastUpdate);
+            return {
+              id: doc.id,
+              ...data,
+              todayTimes: isSameDayAsToday ? data.todayTimes : 0,
+              todayBreaks: isSameDayAsToday ? data.todayBreaks : 0,
+            };
+          });
           setFocusTasks(tasks);
         },
         (error) => {
@@ -96,16 +104,14 @@ export default function FocusScreen() {
     }
   }, []);
 
-
-
-  const onStartPress = (focusID, duration) => {
-    navigation.navigate(STANDBY_SCREEN_NAME, { focusID, duration });
+  const onStartPress = (focusID, title, duration, imageUri) => {
+    navigation.navigate(STANDBY_SCREEN_NAME, {
+      focusID,
+      title,
+      duration,
+      imageUri,
+    });
   };
-
-
-
-
-
 
   return (
     <View style={styles.container}>
@@ -118,13 +124,16 @@ export default function FocusScreen() {
             title={item.title}
             duration={item.duration}
             todayTimes={item.todayTimes}
-            onStartPress={() => onStartPress(item.id, item.duration)} // Pass the duration to onStartPress
+            onStartPress={() =>
+              onStartPress(item.id, item.title, item.duration, item.imageUri)
+            } // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
               // pass the focus data to the EditFocus Modal
               setFocusTitle(item.title);
               setFocusDurarion(item.duration);
               setFocusLocation(item.location);
+              setFocusImageUri(item.imageUri);
               setSelectedFocusID(item.id);
             }}
           />
@@ -146,8 +155,10 @@ export default function FocusScreen() {
         focusTitle={focusTitle}
         focusDuration={focusDuration}
         focusLocation={focusLocation}
+        focusImageUri={focusImageUri}
         focusID={selectedFocusID}
         setFocusLocation={setFocusLocation}
+        setFocusImageUri={setFocusImageUri}
         setIsMapVisible={setIsMapVisible}
         currentLocation={currentLocation}
         setCurrentLocation={setCurrentLocation}

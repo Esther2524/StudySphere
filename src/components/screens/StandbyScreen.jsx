@@ -1,30 +1,72 @@
-import React, { useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Alert } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
-import { Colors } from '../../utils/Colors';
-import PressableButton from '../ui/PressableButton';
-import { doc, updateDoc, increment, getDoc, Timestamp } from 'firebase/firestore';
-import { auth, db } from '../../api/FirestoreConfig';
-import { isSameDay, isSameWeek, isSameYear } from '../../utils/helper';
-
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Alert, ImageBackground } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Colors } from "../../utils/Colors";
+import PressableButton from "../ui/PressableButton";
+import {
+  doc,
+  updateDoc,
+  increment,
+  getDoc,
+  Timestamp,
+} from "firebase/firestore";
+import { auth, db } from "../../api/FirestoreConfig";
+import {
+  getDayOfWeek,
+  getMonth,
+  isSameDay,
+  isSameWeek,
+  isSameYear,
+} from "../../utils/helper";
+import { LinearGradient } from "expo-linear-gradient";
+import Timer from "../features/focusList/Timer";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { changeRandomPicture } from "../../api/RandomImage";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  QUERY_KEY_TODAY_DATA,
+  QUERY_KEY_TREND_DATA,
+} from "../../utils/constants";
 
 export default function StandbyScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { focusID, duration } = route.params;
+  const { focusID, title, duration, imageUri } = route.params;
   const [isPlaying, setIsPlaying] = useState(true);
+  const [quote, setQuote] = useState({
+    content: "",
+    author: "",
+  });
+  const queryClient = useQueryClient();
+
+  const [randomImage, setRandomImage] = useState(null);
+
+  const refreshDashboard = () => {
+    queryClient.invalidateQueries([QUERY_KEY_TREND_DATA]);
+    queryClient.invalidateQueries([QUERY_KEY_TODAY_DATA]);
+  };
+
+  useEffect(() => {
+    const fetchQuote = async () => {
+      try {
+        const response = await fetch("https://api.quotable.io/random");
+        const data = await response.json();
+        if (data && data.content && data.author) {
+          setQuote({ content: data.content, author: data.author });
+        }
+      } catch (error) {
+        console.error("Error fetching quote:", error);
+      }
+    };
+    fetchQuote();
+  }, []);
 
   const handleEndCountdown = () => {
     Alert.alert(
       "Important",
-      "Are you sure you want to end this focus? This session will not be counted.",
-      [
-        { text: "No" },
-        { text: "Yes", onPress: () => incrementBreak() }
-      ]
+      "Are you sure you want to end this focus?🥺This session will not be counted.",
+      [{ text: "No" }, { text: "Yes", onPress: () => incrementBreak() }]
     );
-
   };
 
   const incrementBreak = async () => {
@@ -45,12 +87,18 @@ export default function StandbyScreen() {
           todayBreaks: sameDay ? increment(1) : 1,
           // Reset todayTimes if not the same day
           todayTimes: sameDay ? focusData.todayTimes : 0,
+          weeklyStudyTime: isSameWeek(focusData.lastUpdate)
+            ? focusData.weeklyStudyTime
+            : new Array(7).fill(0),
+          monthlyStudyTime: isSameYear(focusData.lastUpdate)
+            ? focusData.monthlyStudyTime
+            : new Array(12).fill(0),
         });
       }
     }
+    refreshDashboard();
     navigation.goBack(); // quit the countdown
   };
-
 
   const onComplete = async () => {
     const completionTime = new Date(); // Get the current time as the completion time
@@ -66,15 +114,12 @@ export default function StandbyScreen() {
         const sameYear = isSameYear(focusData.lastUpdate);
 
         // Determine the indexes for updating weekly and monthly study time
-        // const dayIndex = completionTime.getDay(); // 0 (Sunday) to 6 (Saturday)
-        const dayOfWeek = completionTime.getDay();
-        const dayIndex = (dayOfWeek + 6) % 7;
-        const monthIndex = completionTime.getMonth(); // 0 (January) to 11 (December)
+        const dayIndex = getDayOfWeek(completionTime);
+        const monthIndex = getMonth(completionTime); // 0 (January) to 11 (December)
 
         // Update weeklyStudyTime and monthlyStudyTime
         let updatedWeeklyStudyTime = [...focusData.weeklyStudyTime];
         let updatedMonthlyStudyTime = [...focusData.monthlyStudyTime];
-
 
         if (!sameYear) {
           updatedMonthlyStudyTime = new Array(12).fill(0);
@@ -102,76 +147,163 @@ export default function StandbyScreen() {
         });
       }
     }
+    refreshDashboard();
     navigation.goBack();
     return [false, 0]; // Don't repeat the timer
   };
 
-
+  const handlePressChangePicture = async () => {
+    try {
+      const newImageUri = await changeRandomPicture();
+      if (newImageUri) {
+        setRandomImage(newImageUri);
+      }
+    } catch (error) {
+      console.error("Failed to change picture:", error);
+    }
+  };
 
   return (
-    <SafeAreaView style={styles.fullScreen}>
+    <ImageBackground
+      source={
+        randomImage
+          ? { uri: randomImage }
+          : imageUri
+          ? { uri: imageUri }
+          : require("../../../assets/standby-background.jpg")
+      }
+      style={styles.standby}
+      imageStyle={styles.backgroundImage}
+      resizeMode="cover"
+    >
       <View style={styles.container}>
-        <Text style={styles.header}>Stay Focus</Text>
-        <CountdownCircleTimer
-          isPlaying={isPlaying}
-          size={200}
-          strokeWidth={20}
-          duration={duration * 60}
-          colors={[Colors.timerPrimary]}
-          onComplete={onComplete}
+        <PressableButton
+          onPress={handlePressChangePicture}
+          containerStyle={styles.changePictureButton}
         >
-          {({ remainingTime }) => {
-            // Convert remaining time into minutes and seconds
-            const minutes = Math.floor(remainingTime / 60);
-            const seconds = remainingTime % 60;
-            // Format time as MM:SS
-            const formattedTime = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            return <Text style={styles.timerText}>{formattedTime}</Text>;
-          }}
-        </CountdownCircleTimer>
+          <FontAwesome name="refresh" size={24} color={Colors.addFocusButton} />
+        </PressableButton>
+
+        <LinearGradient
+          colors={[Colors.startColor, Colors.endColor]}
+          style={styles.headerContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.header}>Stay Focus</Text>
+        </LinearGradient>
+
+        <LinearGradient
+          colors={[Colors.startColor, Colors.endColor]}
+          style={styles.subheadingContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.subheading}>{title} Now...</Text>
+        </LinearGradient>
+
+        <Timer
+          isPlaying={isPlaying}
+          duration={duration}
+          onComplete={onComplete}
+        />
+
+        <LinearGradient
+          colors={[Colors.startColor, Colors.endColor]}
+          style={styles.quoteContainer}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.quoteText}>"{quote.content}"</Text>
+          <Text style={styles.quoteText}>— {quote.author}</Text>
+        </LinearGradient>
 
         <PressableButton
           onPress={handleEndCountdown}
-          containerStyle={styles.buttonContainer}>
+          containerStyle={styles.buttonContainer}
+        >
+          <AntDesign
+            name="closecircleo"
+            size={23}
+            color={Colors.addFocusButton}
+          />
           <Text style={styles.buttonText}>End</Text>
         </PressableButton>
-
       </View>
-    </SafeAreaView>
+    </ImageBackground>
   );
 }
 
-
-
 const styles = StyleSheet.create({
-  fullScreen: {
+  standby: {
     flex: 1,
-    backgroundColor: Colors.background,
+    justifyContent: "center",
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: "center",
+    paddingTop: 50,
+  },
+  changePictureButton: {
+    backgroundColor: Colors.endColor,
+    padding: 8,
+    position: "absolute",
+    top: 60,
+    right: 30,
+    zIndex: 10,
+    borderRadius: 50,
+  },
+  headerContainer: {
+    padding: 15,
+    marginTop: 30,
+    marginBottom: 30,
+    alignItems: "center",
+    borderRadius: 15,
   },
   header: {
     fontSize: 25,
-    fontWeight: '700',
+    fontWeight: "700",
     color: Colors.timerLabelText,
-    marginVertical: 50,
+    color: "white",
   },
-  timerText: {
-    fontSize: 40,
-    color: Colors.timerText,
-    fontWeight: '700',
+  subheadingContainer: {
+    padding: 15,
+    marginBottom: 30,
+    alignItems: "center",
+    borderRadius: 30,
+  },
+  subheading: {
+    fontSize: 20,
+    fontWeight: "500",
+    color: Colors.timerLabelText,
+    color: "white",
+  },
+  quoteContainer: {
+    padding: 15,
+    alignItems: "center",
+    backgroundColor: Colors.timerText,
+    borderRadius: 20,
+    marginTop: 30,
+    width: "90%",
+  },
+  quoteText: {
+    fontStyle: "italic",
+    textAlign: "center",
+    fontSize: 16,
+    color: "white",
   },
   buttonText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
+    marginLeft: 10,
   },
   buttonContainer: {
-    marginTop: 30,
-    backgroundColor: Colors.timerText,
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 5,
+    marginTop: 25,
+    backgroundColor: Colors.endButtonBg,
     padding: 12,
     borderRadius: 10,
   },

@@ -29,11 +29,11 @@ export default function TaskBreakdown() {
 
   useEffect(() => {
     if (!isLoading) setPieData(parsePieData(data));
-  }, [isLoading]);
+  }, [isLoading, data]);
 
   let total = 0;
   if (data)
-    total = data.reduce((pre, cur) => pre + cur.focusTime, 0).toFixed(1);
+    total = data.reduce((pre, cur) => pre + cur.focusTime, 0).toFixed(2);
 
   const focusHandler = (obj, curInd) => {
     setFocusedItem({ total, ...obj });
@@ -89,9 +89,11 @@ export default function TaskBreakdown() {
           ))}
         {!isLoading &&
           Number(total) !== 0 &&
-          pieData.map((item, ind) => (
-            <PieChartMarker key={ind} color={item.color} title={item.title} />
-          ))}
+          pieData.map((item, ind) =>
+            item.value > 0 ? (
+              <PieChartMarker key={ind} color={item.color} title={item.title} />
+            ) : null
+          )}
       </View>
     </StatsCardContainer>
   );
