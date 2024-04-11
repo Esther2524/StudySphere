@@ -15,34 +15,46 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
   - [App Description](#app-description)
   - [Table of Contents](#table-of-contents)
   - [Current State](#current-state)
+    - [Iteration 2 (April 11, 2024)](#iteration-2-april-11-2024)
     - [Iteration 1 (March 28, 2024)](#iteration-1-march-28-2024)
   - [Member Contribution](#member-contribution)
+  - [Firebase Rules](#firebase-rules)
+  - [External APIs](#external-apis)
   - [User Guide](#user-guide)
 
 ## Current State
-### Iteration 1 (March 28, 2024)
+### Iteration 2 (April 11, 2024)
+* Summary of Iteration 2
+  1. Interactive Map and Multiple Locations Display
+  2. External APIs for Random Quotes and Pictures
+  3. Firebase Rules for Authentication
+  4. Camera Usage to Obtain Background Pictures
 * Functionality Implementation
   * **Focus Tasks**: 
-     * **Addition**: Users can add a new personalized focus task. All focus tasks are displayed on the main screen for easy access.
-     * **Modification**: By tapping the left part of each focus task card, users can edit or delete the task as needed.
-     * **Start a Focus Session**: The "Start" button on the right initiates a distraction-free study session (Pomodoro) with a countdown timer.
+     * **Creation and Display**: Users can create personalized focus tasks, specifying title, duration, and background picture for the standby screen. All focus tasks are displayed on the main screen for easy access.
+     * **Interactive Map**: Users can specify the location for each focus task using an interactive map interface, and this location will then be displayed on a static map. Setting a focus task's location is optional, and users can edit or delete it.
+     * **Camera Usage for Background Pictures**: Users can take a picture, choose from their photo album, or select a random one as the background picture for the study session. Setting a background picture is optional, and users can edit or delete it when adding a new focus task, or access the standby screen to select a random one.
+     * **Modification**: Users can edit or delete a focus task by tapping the left part of its card.
+     * **Start a Focus Session**: The "Start" button on the right initiates a distraction-free study session (Pomodoro) with a countdown timer. Random quotes will be displayed on the standby screen. Users can set a custom background picture, use the default one, or refresh to get a random background picture by pressing the "refresh" button in the top right corner.
      * **Session Completion**: Users can choose to leave the session before the countdown ends or let it finish automatically.
-     * **Reminders**: Users can create or delete a reminder. (Note: Currently, notifications for reminders are not supported)
-     * **Completion Tracking**: Each focus task displays the number of times it has been completed without interruption.
+     * **Reminders**: Users can create or delete reminders. (Note: Notification functionality has not been implemented yet.)
+     * **Completion Tracking**: Each focus task displays the number of times it has been completed without interruption today.
   * **Groups**:
-     * **Study Group Creation**: Users can create a new study group.
-     * **Study Group Discovery**: Users can search for and join study groups. 
-     * **Membership**: Users can leave a previously joined study group.
-     * **Study Time Display**: Display the user's study time for the day alongside the study times of other group members.
-     * **Member Interaction**: Users can acknowledge other members' achievements with a "like" feature.
+     * **Creation and Display**: Users can create a new study group and set the target study hours for all members in the group. Groups will be diplayed as a card, with the name of the group, number of group members, and target study hours.
+     * **Modification**: The group owner is the one who creates the group. Only the group owner can edit the group's name and target study time for all group members. If the group owner leaves the group, it will be dismissed.
+     * **Membership**: Group members can leave a previously joined study group.
+     * **Discovery**: Users can search for and join study groups. 
+     * **Study Time Display**: Users can view detailed information about each group by tapping on it. This includes the names and the avatars of group members and study time of all group members.
+     * **Member Interaction**: Group memebers can acknowledge other members' achievements with a "like" feature.
   * **Dashboard**:
     * **Daily Overview**: Provide a summary of the user’s daily study activities, including total study hours, the number of breaks taken, and the number of sessions completed without interruptions.
-    * **Focus Task Time Distribution**: Display the proportion of study time dedicated to each focus task on a pie chart.
-    * **Weekly Study Time Distribution**: Display the distribution of the user's study time over the week on a bar chart.
+    * **Daily Task Breakdown**: Display the daily proportion of study time dedicated to each focus task on a pie chart.
+    * **Weekly Study Time Distribution**: Display the distribution of the user's study time over the week on a bar chart to show to the study trend.
   * **Profile**: 
-    * **Personal Information Display**: Users can view their name, email, and avatar. (Note: Avatar switching is currently not available)
-    * **Username Modification**: Users can  edit their username for personalization.
-
+    * **Personal Information Display**: Users can view their name, email, and avatar.
+    * **Map Display**: Users can view all their own focus tasks' locations on a static map.
+    * **Modification**: Users can edit their username and avatar for personalization. They can take a picture or choose from their photo album to set as their avatar.
+    * **Log out**: Users can log out.
 
 * Navigation Implementation and CRUD operations to Firestore
    * Auth Stack Navigator
@@ -71,15 +83,18 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
     * title: String
     * duration: Integer (Expected duration to complete the task, in minutes)
     * location(Optional): An array of objects
+    * imageUri: String (URL to the focus's background picture)
     * lastUpdate: Timestamp(when the focus was completed last time)
     * todayBreaks: Integer (Number of breaks today)
     * todayTimes: Integer (Number of completion times today)
     * weeklyStudyTime: An array of length 7
     * monthlyStudyTime: An array of length 12
+ 
   * **Groups Collection**
     * groupName: String (name of the study group)
     * groupMembers: Array of Objects (each object contains user details and join status)
     * groupOwnerId: String (Document ID of the group owner, referencing a User document)
+    * groupTarget: Integer (Target Study Time for This Group)
 
 * CRUD Operations on Collections
    * User Collection
@@ -88,18 +103,62 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
      * **Update**: Users can edit their username, which updates the userName field in the Users collection. If a user sets or modifies reminders, this would update the reminder field. Joining or leaving groups would update the groups field.
      * **Delete**: Deleting a reminder would remove that specific entry from the reminder field in the Users collection. If a user decides to leave a group, that group's information would be removed from the groups field.
    *  Focus Collection (A Sub-collection of the User collection)
-      * **Create**: When a user adds a new focus task, a new document is created in the Focus sub-collection with details such as title, duration, optional location, lastUpdate, todayBreaks, todayTimes, weeklyStudyTime, and monthlyStudyTime.
-      * **Read**: The app reads the Focus sub-collection to display all focus tasks on the main screen, including details like title and duration, and to show completion tracking such as breaks and completions.
-      * **Update**: Editing a focus task (title or duration) updates the respective document in the Focus sub-collection. Starting a focus session and either completing it or taking a break updates lastUpdate, todayBreaks, todayTimes, and potentially weeklyStudyTime and monthlyStudyTime fields.
+      * **Create**: When a user adds a new focus task, a new document is created in the Focus sub-collection with details such as title, duration, optional location, optional imageUri, lastUpdate, todayBreaks, todayTimes, weeklyStudyTime, and monthlyStudyTime.
+      * **Read**: The app reads the Focus sub-collection to display all focus tasks on the main screen, including details such as title, duration, location, imageUri, and to track completion, including breaks and completions.
+      * **Update**: Editing a focus task (title, duration, location, or imageUri) updates the respective document in the Focus sub-collection. Starting a focus session and either completing it or taking a break updates lastUpdate, todayBreaks, todayTimes, and potentially weeklyStudyTime and monthlyStudyTime fields.
       * **Delete**: When a user deletes a focus task, that specific document is removed from the Focus sub-collection.
     * Groups Collection
-      * **Create**: Creating a new study group involves creating a new document in the Groups collection with details like groupName, groupMembers, and groupOwnerId.
+      * **Create**: Creating a new study group involves creating a new document in the Groups collection with details like groupName, groupMembers, groupTarget, and groupOwnerId.
       * **Read**: The app reads from the Groups collection to display available study groups for users to join, to show the user's study time alongside other group members, and to allow users to see the details of groups they have joined or are exploring.
       * **Update**: Joining a study group would add a user's details to the groupMembers array of a specific group document. Leaving a group would involve updating the groupMembers field to remove the user.
-      * **Delete**: When the owner of a group decides to leave the group, the entire group document is deleted from the Groups collection.
+      * **Delete**: When the owner of a group decides to leave the group, the entire group document is deleted from the Groups collection. If a member (not the group owner) leaves the group, then their useId will be deleted from the group document's groupMembers field.
+  
+### Iteration 1 (March 28, 2024)
+* Summary of Iteration 1
+  1. Implemented basic CRUD operations for foucus tasks and study groups.
+  2. Designed five bottom tabs for easy navigation.
+  3. Developed login and sign-up screens for user authentication.
+
 ## Member Contribution
-* Haoning: mainly handled the code related to **study groups** and **dashboard**, including implementing Signup Screen, Login Screen, Study Groups Screen, Group Details Screen, Find Group Screen, Dashboard Screen and so on. Also wrote some common functions and components that could be reused by other team members.
-* Zhixiao: mainly handled the code related to **focus tasks** and **user profile**, including implementing Focus Tasks Screen, Standby Screen, Profile Screen and so on. Also wrote some documents like README file, and made the drafts of the app's design.
+* Haoning: 
+  * Mainly handled the code related to **study groups** and **dashboard**, including implementing Signup Screen, Login Screen, Study Groups Screen, Group Details Screen, Find Group Screen, Dashboard Screen and so on. 
+  * Implemented authentication and notification functionality.
+  * Wrote some common functions and components that could be reused by other team members. Improved the user experience of the application.
+* Zhixiao: 
+  * Mainly handled the code related to **focus tasks** and **user profile**, including implementing Focus Tasks Screen, Standby Screen, Profile Screen and so on. 
+  * Implemented camera usage, location services, and integration with external APIs.
+  * Wrote documents such as the README file and created drafts of the app's design.
+
+## Firebase Rules
+```
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+     allow create: if true;
+      allow read, update: if request.auth != null;
+      allow delete: if request.auth != null && request.auth.uid == resource.id;
+      match /focus/{focusId} {
+       allow read: if request.auth != null;
+       allow write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    match /groups/{groupId} {
+     allow create, read, update: if request.auth != null;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.groupOwnerId;
+    }
+  }
+}
+```
+
+## External APIs
+1. Random quotes (no API key): https://api.quotable.io/random
+2. Random Pictures: Please add this api key to your `.env` file.
+```
+pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
+```
+
 
 ## User Guide
 * The home screen (Focus Tasks Screen) displays all the focus tasks. Note: the number next to the tick icon represents how many times this focus task has been completed.
