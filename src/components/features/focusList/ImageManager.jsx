@@ -2,8 +2,6 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from 'react-native';
-import { auth, db } from '../../../api/FirestoreConfig';
-import { doc, updateDoc } from 'firebase/firestore';
 import { AntDesign } from "@expo/vector-icons";
 import PressableButton from '../../ui/PressableButton';
 import { Colors } from '../../../utils/Colors';
@@ -34,7 +32,7 @@ export default function ImageManager({ imageUri, setImageUri }) {
       return null;
     }
     Alert.alert(
-      'Select Avatar',
+      'Select Background Picture',
       'Would you like to take a new photo or choose an existing one?',
       [
         {

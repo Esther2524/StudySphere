@@ -4,13 +4,14 @@ import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
 import FormOperationBar from '../../ui/FormOperationBar';
 import { Colors } from '../../../utils/Colors';
-import { auth, db } from '../../../api/FirestoreConfig';
+import { auth, storage, db } from '../../../api/FirestoreConfig';
 import { updateDoc, deleteDoc, doc, Timestamp, getDoc } from 'firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
 import PressableButton from '../../ui/PressableButton';
 import DisplayLocation from './DisplayLocation';
 import locateFocusHandler from './LocationHelper';
 import ImageManager from './ImageManager';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 
 export default function EditFocus({
@@ -24,6 +25,8 @@ export default function EditFocus({
   const [duration, setDuration] = useState(focusDuration.toString());
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
+  const [selectedImageUri, setSelectedImageUri] = useState(focusImageUri);
+
 
   // ensure input fields are always populated with the most current data passed to the EditFocus component
   useEffect(() => {
@@ -55,15 +58,36 @@ export default function EditFocus({
 
 
   const editFocusTask = async () => {
-    if (!validateInput(title, duration)) return;
+    if (!validateInput()) return;
 
-    const focusRef = doc(db, "users", user.uid, "focus", focusID);
+    let finalImageUri = focusImageUri;
+
+    if (selectedImageUri !== focusImageUri) {
+      if (selectedImageUri) {
+        try {
+          finalImageUri = await uploadImage(selectedImageUri);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          Alert.alert("Upload Failed", "Failed to upload image.");
+          return;
+        }
+      } else {
+        finalImageUri = ""; // set to empty string if selectedImageUri is cleared
+      }
+    }
+
+    // update the focusImageUri (from FocusScreen), we will use it on Standby screen
+    setFocusImageUri(finalImageUri); 
+
+
     try {
+      const focusRef = doc(db, "users", user.uid, "focus", focusID);
+      // console.log(finalImageUri);
       await updateDoc(focusRef, {
         title: title,
         duration: parseInt(duration, 10),
         location: currentLocation,
-        imageUri: focusImageUri,
+        imageUri: finalImageUri,
       })
       console.log("Focus task updated!");
       setIsEditFocusVisible(false);
@@ -127,6 +151,17 @@ export default function EditFocus({
     setFocusLocation(null);
   }
 
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const fileName = `images/${new Date().getTime()}-${user.uid}-focus-background.jpg`;
+    const storageRef = ref(storage, fileName);
+    await uploadBytesResumable(storageRef, blob);
+    const downloadUrl = await getDownloadURL(storageRef);
+    return downloadUrl;
+  };
+
+
 
 
   return (
@@ -168,8 +203,8 @@ export default function EditFocus({
           clearLocation={clearLocation}
         />
         <ImageManager
-          imageUri={focusImageUri}
-          setImageUri={setFocusImageUri}
+          imageUri={selectedImageUri}
+          setImageUri={setSelectedImageUri}
         />
 
         <FormOperationBar
