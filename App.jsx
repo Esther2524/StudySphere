@@ -6,11 +6,18 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./src/api/FirestoreConfig";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import useSetNotification from "./src/hooks/useSetNotification";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function App() {
   const [isAuthed, setIsAuthed] = useState(false);
-  useSetNotification();
   const queryClient = new QueryClient();
 
   useEffect(() => {

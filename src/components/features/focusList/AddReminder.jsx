@@ -56,7 +56,9 @@ export default function AddReminder({
       isValid = false;
     }
     if (!isValid) return;
-    if (!Device.isDevice) {
+
+    // different from official docs, IOS simulator now supports notification
+    if (!Device.isDevice && Platform.OS === "android") {
       Alert.alert("Reminder can only be set on physical device!");
       return;
     }
