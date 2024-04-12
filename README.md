@@ -163,7 +163,7 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 ## User Guide
 * The home screen (Focus Tasks Screen) displays all the focus tasks. Note: the number next to the tick icon represents how many times this focus task has been completed.
   
-  <img src="assets/screenshots/home-screen.PNG" width="300" alt="Home Screen with Focus Tasks">
+  <img src="assets/screenshots/focus-tasks-v2.PNG" width="300" alt="Home Screen with Focus Tasks">
 
 * Users can add a new focus task by tapping the add button in the top right. "Selection Location" and "Select Background Picture" are optional.
 
