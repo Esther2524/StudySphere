@@ -12,6 +12,7 @@ import {
 import { db } from "../../../api/FirestoreConfig";
 import { getCurUserGroups } from "../studyGroup/studyGroupHelper";
 import { getUserRef } from "../../../utils/helper";
+import { DEFAULT_GROUP_TARGET } from "../../../utils/constants";
 
 export async function searchGroup(keyword, abortSignal) {
   const data = [];
@@ -32,6 +33,7 @@ export async function searchGroup(keyword, abortSignal) {
       groupName: doc.data().groupName,
       groupSize: doc.data().groupMembers.length,
       groupId: doc.id,
+      groupTarget: doc.data().groupTarget || DEFAULT_GROUP_TARGET,
       joined: joinedGroupsIds.includes(doc.id),
     })
   );
@@ -49,7 +51,9 @@ export async function joinGroupById(groupId) {
   const targetGroupSnapshot = await getDoc(targetGroupRef);
   const targetGroupMembers = targetGroupSnapshot.data().groupMembers;
   targetGroupMembers.push({ userId: userRef.id, approved: true });
-  await updateDoc(targetGroupRef, { groupMembers: targetGroupMembers });
+  const result = await updateDoc(targetGroupRef, {
+    groupMembers: targetGroupMembers,
+  });
 
-  return;
+  return groupId;
 }

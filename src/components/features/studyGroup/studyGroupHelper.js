@@ -12,12 +12,14 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../api/FirestoreConfig";
 import { getDayOfWeek, getUserRef, isSameWeek } from "../../../utils/helper";
+import { DEFAULT_GROUP_TARGET } from "../../../utils/constants";
 
-function createGroupData({ groupOwnerId, groupName }) {
+function createGroupData({ groupOwnerId, groupName, groupTarget }) {
   return {
     groupOwnerId,
     groupName,
     groupMembers: [{ userId: groupOwnerId, approved: true }],
+    groupTarget,
   };
 }
 
@@ -45,6 +47,7 @@ export async function getAllGroupsByUser() {
       groupSize: doc.data().groupMembers.length,
       groupName: doc.data().groupName,
       groupOwnerId: doc.data().groupOwnerId,
+      groupTarget: doc.data().groupTarget || DEFAULT_GROUP_TARGET,
     });
   });
   return data;
@@ -56,7 +59,7 @@ export async function getGroupInfo(groupId) {
   return res.data();
 }
 
-export async function addGroupApi(groupName) {
+export async function addGroupApi(groupName, groupTarget) {
   const userRef = getUserRef();
   const groupRef = collection(db, "groups");
 
@@ -64,6 +67,7 @@ export async function addGroupApi(groupName) {
   const newGroupData = createGroupData({
     groupOwnerId: userRef.id,
     groupName,
+    groupTarget,
   });
 
   // Add new group to group collection
@@ -90,7 +94,7 @@ export async function getTodayFocusTimeByUserId(userId) {
     const lastUpdate = focusData.lastUpdate;
 
     if (isSameWeek(lastUpdate)) {
-      totalCompletedTime += focusData.weeklyStudyTime[getDayOfWeek(lastUpdate)];
+      totalCompletedTime += focusData.weeklyStudyTime[getDayOfWeek(new Date())];
     }
   });
 
@@ -99,7 +103,7 @@ export async function getTodayFocusTimeByUserId(userId) {
 
 export async function getGroupDetail(groupId) {
   const groupData = await getGroupInfo(groupId);
-  const { groupMembers } = groupData;
+  const { groupMembers, groupTarget, groupName } = groupData;
 
   if (groupMembers.length === 0) return [];
 
@@ -135,7 +139,11 @@ export async function getGroupDetail(groupId) {
     studyTime: studyTimes[index],
   }));
 
-  return userData;
+  return {
+    userData,
+    groupName,
+    groupTarget: groupTarget || DEFAULT_GROUP_TARGET,
+  };
 }
 
 export async function removeGroupFromUserGroups({ groupId, userId }) {
@@ -173,4 +181,14 @@ export async function quitGroup(groupId) {
   const userId = userRef.id;
   await removeGroupFromUserGroups({ groupId, userId });
   await removeUserFromGroupMembers({ groupId, userId });
+}
+
+export async function updateGroup({ groupId, groupName, groupTarget }) {
+  const groupRef = doc(db, "groups", groupId);
+  await updateDoc(groupRef, {
+    groupName,
+    groupTarget,
+  });
+
+  return { groupId, groupName, groupTarget };
 }

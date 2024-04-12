@@ -1,31 +1,31 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import React from "react";
 import GroupInfoBox from "../studyGroup/GroupInfoBox";
 import PressableButton from "../../ui/PressableButton";
 import { Colors } from "../../../utils/Colors";
 import { AntDesign } from "@expo/vector-icons";
 import useJoinGroup from "./useJoinGroup";
-import { Spinner } from "@gluestack-ui/themed";
 import GroupResultsItemSkeleton from "./GroupResultsItemSkeleton";
+import { limitStrLen } from "../../../utils/helper";
 
 export default function GroupResultsItem({
   groupName,
   groupSize,
   groupId,
   joined,
+  groupTarget,
   isLoading,
 }) {
-  const { mutate: joinGroupHandler, isPending: isJoining } =
-    useJoinGroup(groupId);
+  const { mutate: joinGroupHandler, isPending: isJoining } = useJoinGroup();
 
   return (
     <View style={styles.container}>
       {isLoading && <GroupResultsItemSkeleton />}
       {!isLoading && (
         <>
-          <Text style={styles.title}>{groupName}</Text>
+          <Text style={styles.title}>{limitStrLen(groupName, 50)}</Text>
           <View style={styles.subLine}>
-            <GroupInfoBox groupSize={groupSize} />
+            <GroupInfoBox groupSize={groupSize} groupTarget={groupTarget} />
             <PressableButton
               containerStyle={[
                 styles.joinBtnContainer,
@@ -39,8 +39,8 @@ export default function GroupResultsItem({
               {isJoining && (
                 <>
                   <Text style={styles.joinBtnText}>Joining...</Text>
-                  <Spinner
-                    marginLeft={5}
+                  <ActivityIndicator
+                    style={{ marginLeft: 5 }}
                     size={20}
                     color={Colors.screenBgColor}
                   />
@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
   subLine: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 15,
   },
   joinBtnContainer: {

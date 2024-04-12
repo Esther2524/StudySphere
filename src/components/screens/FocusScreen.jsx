@@ -1,19 +1,20 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
-import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { collection, query, onSnapshot } from 'firebase/firestore';
-import { Colors } from '../../utils/Colors';
-import { db, auth } from '../../api/FirestoreConfig';
-import FocusCard from '../features/focusList/FocusCard';
-import AddFocus from '../features/focusList/AddFocus';
-import { AntDesign, Octicons } from '@expo/vector-icons';
-import PressableButton from '../ui/PressableButton';
-import EditFocus from '../features/focusList/EditFocus';
-import AddReminder from '../features/focusList/AddReminder';
-
+import { StyleSheet, Text, View, FlatList } from "react-native";
+import React, { useEffect, useState, useLayoutEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { collection, query, onSnapshot } from "firebase/firestore";
+import { Colors } from "../../utils/Colors";
+import { db, auth } from "../../api/FirestoreConfig";
+import FocusCard from "../features/focusList/FocusCard";
+import AddFocus from "../features/focusList/AddFocus";
+import { AntDesign, Octicons } from "@expo/vector-icons";
+import PressableButton from "../ui/PressableButton";
+import EditFocus from "../features/focusList/EditFocus";
+import AddReminder from "../features/focusList/AddReminder";
+import MapModal from "../features/focusList/MapModal";
+import { STANDBY_SCREEN_NAME } from "../../utils/constants";
+import { isSameDay } from "../../utils/helper";
 
 export default function FocusScreen() {
-
   const [focusTasks, setFocusTasks] = useState([]);
   const [isAddFocusVisible, setIsAddFocusVisible] = useState(false);
   const [isReminderVisible, setIsReminderVisible] = useState(false);
@@ -23,11 +24,27 @@ export default function FocusScreen() {
   const [isEditFocusVisible, setIsEditFocusVisible] = useState(false);
   const [focusTitle, setFocusTitle] = useState("");
   const [focusDuration, setFocusDurarion] = useState("");
+  const [focusLocation, setFocusLocation] = useState(null);
+  const [focusImageUri, setFocusImageUri] = useState("");
+  const [isFromEdit, setIsFromEdit] = useState(false);
 
+  // for Map Modal
+  const [isMapVisible, setIsMapVisible] = useState(false);
+  // closingForMap is used to track whether the modal is being closed to navigate to the Map modal
+  // or if it's being closed after adding a task or cancelling the operation
+  const [closingForMap, setClosingForMap] = useState(false);
+
+  // AddFocus Modal and Map Modal will share this currentLocation state variable
+  const [currentLocation, setCurrentLocation] = useState(null);
 
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
 
+  // reset location whenever AddFocus is to be shown
+  const showAddFocusModal = () => {
+    setCurrentLocation(null);
+    setIsAddFocusVisible(true);
+  };
 
   // use useLayoutEffect to set the navigation options and include the button in the header
   useLayoutEffect(() => {
@@ -42,18 +59,19 @@ export default function FocusScreen() {
           </PressableButton>
 
           <PressableButton
-            onPress={() => setIsAddFocusVisible(true)}
+            onPress={showAddFocusModal}
             containerStyle={{ marginRight: 20 }}
           >
-            <AntDesign name="pluscircleo" size={24} color={Colors.addFocusButton} />
+            <AntDesign
+              name="pluscircleo"
+              size={24}
+              color={Colors.addFocusButton}
+            />
           </PressableButton>
-
         </View>
-
       ),
     });
   }, [navigation]);
-
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -61,42 +79,61 @@ export default function FocusScreen() {
       const q = query(collection(db, "users", user.uid, "focus"));
 
       // set up the real-time listener with onSnapshot
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const tasks = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setFocusTasks(tasks);
-      }, (error) => {
-        console.log("Error fetching focus tasks:", error);
-      });
+      const unsubscribe = onSnapshot(
+        q,
+        (querySnapshot) => {
+          const tasks = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            const isSameDayAsToday = isSameDay(data.lastUpdate);
+            return {
+              id: doc.id,
+              ...data,
+              todayTimes: isSameDayAsToday ? data.todayTimes : 0,
+              todayBreaks: isSameDayAsToday ? data.todayBreaks : 0,
+            };
+          });
+          setFocusTasks(tasks);
+        },
+        (error) => {
+          console.log("Error fetching focus tasks:", error);
+        }
+      );
 
       // cleanup function to unsubscribe from the listener when the component unmounts
       return () => unsubscribe();
     }
   }, []);
 
-  const onStartPress = (focusID, duration) => {
-    navigation.navigate('Standby', { focusID, duration });
+  const onStartPress = (focusID, title, duration, imageUri) => {
+    navigation.navigate(STANDBY_SCREEN_NAME, {
+      focusID,
+      title,
+      duration,
+      imageUri,
+    });
   };
-
 
   return (
     <View style={styles.container}>
       <FlatList
         data={focusTasks}
-        keyExtractor={item => item.id}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <FocusCard
             title={item.title}
             duration={item.duration}
             todayTimes={item.todayTimes}
-            onStartPress={() => onStartPress(item.id, item.duration)} // Pass the duration to onStartPress
+            onStartPress={() =>
+              onStartPress(item.id, item.title, item.duration, item.imageUri)
+            } // Pass the duration to onStartPress
             onEditPress={() => {
               setIsEditFocusVisible(true);
-               // pass the focus data to the EditFocus Modal
+              // pass the focus data to the EditFocus Modal
               setFocusTitle(item.title);
               setFocusDurarion(item.duration);
+              setFocusLocation(item.location);
+              setFocusImageUri(item.imageUri);
               setSelectedFocusID(item.id);
             }}
           />
@@ -105,13 +142,37 @@ export default function FocusScreen() {
       <AddFocus
         isAddFocusVisible={isAddFocusVisible}
         setIsAddFocusVisible={setIsAddFocusVisible}
+        setIsMapVisible={setIsMapVisible}
+        closingForMap={closingForMap}
+        setClosingForMap={setClosingForMap}
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
       />
       <EditFocus
         isEditFocusVisible={isEditFocusVisible}
         setIsEditFocusVisible={setIsEditFocusVisible}
+        setIsFromEdit={setIsFromEdit}
         focusTitle={focusTitle}
         focusDuration={focusDuration}
+        focusLocation={focusLocation}
+        focusImageUri={focusImageUri}
         focusID={selectedFocusID}
+        setFocusLocation={setFocusLocation}
+        setFocusImageUri={setFocusImageUri}
+        setIsMapVisible={setIsMapVisible}
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
+      />
+      <MapModal
+        isMapVisible={isMapVisible}
+        setIsMapVisible={setIsMapVisible}
+        setIsAddFocusVisible={setIsAddFocusVisible}
+        setIsEditFocusVisible={setIsEditFocusVisible}
+        isFromEdit={isFromEdit}
+        setIsFromEdit={setIsFromEdit}
+        setClosingForMap={setClosingForMap}
+        currentLocation={currentLocation}
+        setCurrentLocation={setCurrentLocation}
       />
 
       <AddReminder
@@ -119,7 +180,7 @@ export default function FocusScreen() {
         setIsReminderVisible={setIsReminderVisible}
       />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -132,7 +193,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
-})
+});

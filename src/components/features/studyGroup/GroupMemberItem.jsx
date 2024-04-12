@@ -5,12 +5,17 @@ import { Colors } from "../../../utils/Colors";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import PressableButton from "../../ui/PressableButton";
 
-export default function GroupMemberItem({ name, avatar, studyTime }) {
+export default function GroupMemberItem({
+  name,
+  avatar,
+  studyTime,
+  groupTarget,
+}) {
   const [isLiked, setIsLiked] = useState(false);
 
   const defaultAvatar = require("../../../../assets/defaultAvatar.jpg");
 
-  const progressValue = studyTime / 8.0;
+  const progressValue = studyTime / groupTarget;
 
   const likeHandler = useCallback(() => {
     setIsLiked((pre) => !pre);

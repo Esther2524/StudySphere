@@ -7,38 +7,28 @@ import ProfileScreen from "../screens/ProfileScreen";
 import GroupStackNav from "./GroupStackNav";
 import { Colors } from "../../utils/Colors";
 import FocusStackNav from "./FocusStackNav";
-import { Ionicons } from '@expo/vector-icons';
+import AppTabBar from "./AppTabBar";
+import {
+  DASHBOARD_SCREEN_TITLE,
+  FIND_SCREEN_TITLE,
+  FOCUS_SCREEN_TITLE,
+  FOCUS_STACK_NAME,
+  GROUP_SCREEN_TITLE,
+  GROUP_STACK_NAME,
+  PROFILE_SCREEN_TITLE,
+} from "../../utils/constants";
 
 const Tab = createBottomTabNavigator();
 
 export default function AppTabNav() {
   return (
     <Tab.Navigator
-      initialRouteName="Focus List" // Set the initial screen
+      initialRouteName={FOCUS_SCREEN_TITLE} // Set the initial screen
+      tabBar={AppTabBar}
+      sceneContainerStyle={{
+        position: "relative",
+      }}
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let IconComponent;
-          let iconName;
-
-          if (route.name === 'Group Nav') {
-            IconComponent = Ionicons;
-            iconName = focused ? 'people' : 'people-outline';
-          } else if (route.name === 'Find Group') {
-            IconComponent = Ionicons;
-            iconName = focused ? 'search' : 'search-outline';
-          } else if (route.name === 'Focus List') {
-            IconComponent = Ionicons;
-            iconName = focused ? 'duplicate' : 'duplicate-outline';
-          } else if (route.name === 'Dashboard') {
-            IconComponent = Ionicons;
-            iconName = focused ? 'bar-chart' : 'bar-chart-outline';
-          } else if (route.name === 'Profile') {
-            IconComponent = Ionicons;
-            iconName = focused ? 'person' : 'person-outline';
-          }
-          return <IconComponent name={iconName} size={28} color={color} />;
-        },
-
         tabBarActiveTintColor: Colors.tabFocusColor,
         tabBarInactiveTintColor: Colors.tabFilledColor,
 
@@ -53,25 +43,25 @@ export default function AppTabNav() {
       })}
     >
       <Tab.Screen
-        name="Group Nav"
+        name={GROUP_STACK_NAME}
         component={GroupStackNav}
         options={{
-          title: "Study Group",
+          title: { GROUP_SCREEN_TITLE },
           headerShown: false,
         }}
       />
-      <Tab.Screen name="Find Group" component={FindGroupScreen} />
+      <Tab.Screen name={FIND_SCREEN_TITLE} component={FindGroupScreen} />
       <Tab.Screen
-        name="Focus List"
+        name={FOCUS_STACK_NAME}
         component={FocusStackNav}
         options={{
-          title: "Focus Tasks",
+          title: { FOCUS_SCREEN_TITLE },
           headerShown: false,
         }}
       />
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-    </Tab.Navigator >
+      <Tab.Screen name={DASHBOARD_SCREEN_TITLE} component={DashboardScreen} />
+      <Tab.Screen name={PROFILE_SCREEN_TITLE} component={ProfileScreen} />
+    </Tab.Navigator>
   );
 }
 

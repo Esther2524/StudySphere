@@ -1,83 +1,124 @@
 import { Alert, StyleSheet } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { Colors } from "../../../utils/Colors";
-import { Button, Menu, MenuItem, MenuItemLabel } from "@gluestack-ui/themed";
 import { AntDesign } from "@expo/vector-icons";
 import { getUserRef } from "../../../utils/helper";
 import useQuitGroup from "./useQuitGroup";
 import { useNavigation } from "@react-navigation/native";
+import PressableButton from "../../ui/PressableButton";
+import HeaderMenu from "../../ui/HeaderMenu";
+import { Feather } from "@expo/vector-icons";
+import useEditGroup from "./useEditGroup";
+import GroupInfoModal from "./GroupInfoModal";
+import useGetGroupDetail from "./useGetGroupDetail";
 
-export default function GroupDetailHeaderMenu({ groupId, groupOwnerId }) {
+function QuitIcon() {
+  return (
+    <AntDesign
+      name="closecircleo"
+      size={24}
+      color="black"
+      style={styles.menuIcon}
+    />
+  );
+}
+
+function EditIcon() {
+  return (
+    <Feather name="edit" size={24} color="black" style={styles.menuIcon} />
+  );
+}
+
+export default function GroupDetailHeaderMenu({
+  groupId,
+  groupOwnerId,
+  setShowModal,
+}) {
   const navigation = useNavigation();
+  const [showMenu, setShowMenu] = useState(false);
   const userRef = getUserRef();
   const curUserId = userRef.id;
   const isOwner = curUserId === groupOwnerId;
   const { mutate: quitGroup, isPending: isQuitting } = useQuitGroup(isOwner);
+
+  const onEdit = () => {
+    setShowMenu(false);
+    setShowModal(true);
+  };
 
   const quitHandler = () => {
     quitGroup(groupId);
     navigation.goBack();
   };
 
-  const quitOption = "Quit Group";
-
-  const alertMsg = isOwner
+  const quitAlertMsg = isOwner
     ? "You are the owner of the group. Once quit, the group will be deleted. Are you sure to quit?"
     : "Are you sure to quit?";
 
-  const triggerAlert = () => {
-    Alert.alert("Confirm", alertMsg, [
+  const onQuit = () => {
+    Alert.alert("Confirm", quitAlertMsg, [
       { text: "Cancel", style: "cancel" },
       { text: "Quit", style: "destructive", onPress: quitHandler },
     ]);
   };
 
+  const toggleMenu = () => {
+    setShowMenu((show) => !show);
+  };
+
+  const menuOptions = [
+    { label: "Quit Group", onPress: onQuit, icon: <QuitIcon /> },
+  ];
+
+  if (isOwner) {
+    menuOptions.unshift({
+      label: "Edit Group",
+      onPress: onEdit,
+      icon: <EditIcon />,
+    });
+  }
+
   return (
-    <Menu
-      placement="bottom right"
-      trigger={({ ...triggerProps }) => (
-        <Button {...triggerProps} style={{ backgroundColor: "transparent" }}>
-          <Entypo
-            name="dots-three-horizontal"
-            size={24}
-            color={Colors.headerTitleColor}
-          />
-        </Button>
-      )}
-      style={styles.menu}
-      offset={5}
-    >
-      <MenuItem
-        key={quitOption}
-        textValue={quitOption}
-        style={styles.menuItemContainer}
-        onPress={triggerAlert}
-      >
-        <AntDesign
-          name="closecircleo"
+    <>
+      <PressableButton onPress={toggleMenu}>
+        <Entypo
+          name="dots-three-horizontal"
           size={24}
-          color="black"
-          style={styles.closeIcon}
+          color={Colors.headerTitleColor}
         />
-        <MenuItemLabel>{quitOption}</MenuItemLabel>
-      </MenuItem>
-    </Menu>
+      </PressableButton>
+      {showMenu && (
+        <HeaderMenu menuOptions={menuOptions} toggleMenu={toggleMenu} />
+      )}
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  menuBackdrop: {
+    backgroundColor: "transparent",
+  },
   menu: {
-    minWidth: 180,
+    width: 180,
+    height: 60,
+    justifyContent: "center",
+    top: 100,
+    right: 10,
+    borderRadius: 10,
+    position: "absolute",
     shadowColor: "black",
     shadowRadius: 30,
     shadowOffset: { width: -20, height: 10 },
     shadowOpacity: 0.2,
   },
-  menuItemContainer: {
-    width: 180,
-  },
-  closeIcon: {
+  menuIcon: {
     marginHorizontal: 10,
+  },
+  menuText: { fontSize: 16 },
+
+  menuLine: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

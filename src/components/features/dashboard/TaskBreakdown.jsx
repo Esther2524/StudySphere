@@ -1,18 +1,53 @@
-import { View, StyleSheet } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
 import StatsCardContainer from "./StatsCardContainer";
 import { PieChart } from "react-native-gifted-charts";
 import { parsePieData } from "./dashboardHelper";
 import useGetTodayData from "./useGetTodayData";
 import PieChartMarker from "./PieChartMarker";
 import { Skeleton } from "@rneui/base";
-import { generateRandomInteger } from "../../../utils/helper";
+import { generateRandomInteger, limitStrLen } from "../../../utils/helper";
+
+function PieCenter({ title, value, total, color }) {
+  if (!title) return <></>;
+  return (
+    <View style={styles.centerContainer}>
+      <Text style={[styles.centerValue, { color }]}>
+        {Math.round((value / total) * 100)}%
+      </Text>
+      <Text style={[styles.centerTitle, { color }]}>
+        {limitStrLen(title, 15)}
+      </Text>
+    </View>
+  );
+}
 
 export default function TaskBreakdown() {
   const { data, isLoading } = useGetTodayData();
+  const [focusedItem, setFocusedItem] = useState(null);
+  const [pieData, setPieData] = useState([]);
 
-  let pieData = [];
-  if (!isLoading) pieData = parsePieData(data);
+  useEffect(() => {
+    if (!isLoading) setPieData(parsePieData(data));
+  }, [isLoading, data]);
+
+  let total = 0;
+  if (data)
+    total = data.reduce((pre, cur) => pre + cur.focusTime, 0).toFixed(2);
+
+  const focusHandler = (obj, curInd) => {
+    setFocusedItem({ total, ...obj });
+    let focusedInd = 0;
+    if (obj.id) focusedInd = pieData.findIndex((item) => item.id === obj.id);
+    else focusedInd = -1;
+
+    setPieData(
+      pieData.map((item, ind) => ({
+        ...item,
+        focused: focusedInd === ind,
+      }))
+    );
+  };
 
   return (
     <StatsCardContainer title="Task Breakdown">
@@ -25,13 +60,21 @@ export default function TaskBreakdown() {
             style={styles.pieSkeleton}
           />
         )}
+        {!isLoading && Number(total) === 0 && (
+          <Text style={styles.defaultText}>
+            Looks like you haven't focused yet today. 🤔 Complete a session and
+            your progress will show up here!
+          </Text>
+        )}
         {!isLoading && (
           <PieChart
             data={pieData}
             donut
-            focusOnPress
             radius={90}
             innerRadius={60}
+            sectionAutoFocus
+            onPress={focusHandler}
+            centerLabelComponent={() => <PieCenter {...focusedItem} />}
           />
         )}
       </View>
@@ -45,9 +88,12 @@ export default function TaskBreakdown() {
             />
           ))}
         {!isLoading &&
-          pieData.map((item, ind) => (
-            <PieChartMarker key={ind} color={item.color} title={item.title} />
-          ))}
+          Number(total) !== 0 &&
+          pieData.map((item, ind) =>
+            item.value > 0 ? (
+              <PieChartMarker key={ind} color={item.color} title={item.title} />
+            ) : null
+          )}
       </View>
     </StatsCardContainer>
   );
@@ -68,5 +114,18 @@ const styles = StyleSheet.create({
   },
   pieSkeleton: {
     borderRadius: 90,
+  },
+  centerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  centerTitle: {},
+  centerValue: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  defaultText: {
+    fontSize: 16,
+    lineHeight: 22,
   },
 });

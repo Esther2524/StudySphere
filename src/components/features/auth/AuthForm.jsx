@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Alert } from "react-native";
+import { Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import React, { useCallback, useState } from "react";
 import InputWithLabel from "../../ui/InputWithLabel";
 import PressableButton from "../../ui/PressableButton";
@@ -7,7 +7,6 @@ import { Colors } from "../../../utils/Colors";
 import { getDefaultUserName, isValidEmail } from "../../../utils/helper";
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from "../../../api/FirestoreConfig";
-import { Spinner } from "@gluestack-ui/themed";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -147,6 +146,7 @@ export default function AuthForm({ mode }) {
     <>
       <InputWithLabel
         label="Email"
+        labelStyle={styles.labelStyle}
         content={email}
         setContent={updateInputWithErr("email")}
         inputTextStyle={styles.inputTextStyle}
@@ -154,6 +154,7 @@ export default function AuthForm({ mode }) {
       />
       <InputWithLabel
         label="Password"
+        labelStyle={styles.labelStyle}
         content={pwd}
         setContent={updateInputWithErr("pwd")}
         secureTextEntry={true}
@@ -163,6 +164,7 @@ export default function AuthForm({ mode }) {
       {mode === "signup" && (
         <InputWithLabel
           label="Confirm Password"
+          labelStyle={styles.labelStyle}
           content={confirmPwd}
           setContent={updateInputWithErr("confirmPwd")}
           inputTextStyle={styles.inputTextStyle}
@@ -187,7 +189,10 @@ export default function AuthForm({ mode }) {
         {isSubmitting && (
           <>
             <Text style={styles.submitBtnText}>Loading...</Text>
-            <Spinner marginLeft={10} color={Colors.lighterThanBg} />
+            <ActivityIndicator
+              style={{ marginLeft: 10 }}
+              color={Colors.lighterThanBg}
+            />
           </>
         )}
       </PressableButton>
@@ -225,6 +230,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inputTextStyle: {
+    color: Colors.shallowTextColor,
+  },
+  labelStyle: {
     color: Colors.shallowTextColor,
   },
 });

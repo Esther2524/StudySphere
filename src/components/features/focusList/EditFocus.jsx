@@ -4,29 +4,38 @@ import ModalView from '../../ui/ModalView';
 import InputWithLabel from '../../ui/InputWithLabel';
 import FormOperationBar from '../../ui/FormOperationBar';
 import { Colors } from '../../../utils/Colors';
-import { auth, db } from '../../../api/FirestoreConfig';
+import { auth, storage, db } from '../../../api/FirestoreConfig';
 import { updateDoc, deleteDoc, doc, Timestamp, getDoc } from 'firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
 import PressableButton from '../../ui/PressableButton';
+import DisplayLocation from './DisplayLocation';
+import locateFocusHandler from './LocationHelper';
+import ImageManager from './ImageManager';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+
 
 export default function EditFocus({
-  isEditFocusVisible, setIsEditFocusVisible, focusTitle, focusDuration, focusID
+  isEditFocusVisible, setIsEditFocusVisible, setIsFromEdit,
+  focusTitle, focusDuration, focusLocation, focusImageUri, focusID,
+  setFocusLocation, setFocusImageUri, setIsMapVisible, currentLocation, setCurrentLocation
 }) {
+
+  const user = auth.currentUser;
   const [title, setTitle] = useState(focusTitle);
   const [duration, setDuration] = useState(focusDuration.toString());
-  const [location, setLocation] = useState(null);
-  const user = auth.currentUser;
-
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
+  const [selectedImageUri, setSelectedImageUri] = useState(focusImageUri);
+
 
   // ensure input fields are always populated with the most current data passed to the EditFocus component
   useEffect(() => {
     setTitle(focusTitle);
     setDuration(focusDuration.toString());
+    setCurrentLocation(focusLocation); // use the focus's location to set currentLocation
     setDurationErrMsg("");
     setTitleErrMsg("");
-  }, [focusTitle, focusDuration]);
+  }, [focusTitle, focusDuration, focusLocation]);
 
 
   // check the title and the durarion are valid
@@ -48,27 +57,37 @@ export default function EditFocus({
   }
 
 
-  const handleEditFocus = () => {
-    if (!validateInput()) return;
-    Alert.alert(
-      "Important",
-      "Are you sure you want to edit this focus?",
-      [
-        { text: "No" },
-        { text: "Yes", onPress: () => editFocusTask() }
-      ]
-    );
-  }
-
-
-
-
   const editFocusTask = async () => {
-    const focusRef = doc(db, "users", user.uid, "focus", focusID);
+    if (!validateInput()) return;
+
+    let finalImageUri = focusImageUri;
+
+    if (selectedImageUri !== focusImageUri) {
+      if (selectedImageUri) {
+        try {
+          finalImageUri = await uploadImage(selectedImageUri);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          Alert.alert("Upload Failed", "Failed to upload image.");
+          return;
+        }
+      } else {
+        finalImageUri = ""; // set to empty string if selectedImageUri is cleared
+      }
+    }
+
+    // update the focusImageUri (from FocusScreen), we will use it on Standby screen
+    setFocusImageUri(finalImageUri); 
+
+
     try {
+      const focusRef = doc(db, "users", user.uid, "focus", focusID);
+      // console.log(finalImageUri);
       await updateDoc(focusRef, {
         title: title,
         duration: parseInt(duration, 10),
+        location: currentLocation,
+        imageUri: finalImageUri,
       })
       console.log("Focus task updated!");
       setIsEditFocusVisible(false);
@@ -90,18 +109,58 @@ export default function EditFocus({
     );
   }
 
+
   const deleteFocusTask = async () => {
     const focusRef = doc(db, "users", user.uid, "focus", focusID);
+    // update UI first to reflect the outcome of the deletion quickly
+    setIsEditFocusVisible(false);
+    setDurationErrMsg("");
+    setTitleErrMsg("");
     try {
       await deleteDoc(focusRef);
       console.log("Focus task deleted!");
-      setIsEditFocusVisible(false);
-      setDurationErrMsg("");
-      setTitleErrMsg("");
+      setCurrentLocation(null);
     } catch (error) {
-      console.error("Error updating focus task:", error);
+      console.error("Error deleting focus task:", error);
     }
   }
+
+
+  const openMapModal = async () => {
+    // currentLocation with null means location is cleared, so we need to get the current position
+    try {
+      if (!currentLocation) {
+        const location = await locateFocusHandler();
+        if (!location) {
+          console.log("Location access was denied or failed.");
+          return;
+        }
+        setCurrentLocation(location);  // use the newly fetched location
+      }
+      setIsFromEdit(true);
+      setIsEditFocusVisible(false);
+      setIsMapVisible(true);
+    } catch (error) {
+      console.error("Error getting location: ", error);
+    }
+  };
+
+
+  const clearLocation = () => {
+    setCurrentLocation(null);
+    setFocusLocation(null);
+  }
+
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const fileName = `images/${new Date().getTime()}-${user.uid}-focus-background.jpg`;
+    const storageRef = ref(storage, fileName);
+    await uploadBytesResumable(storageRef, blob);
+    const downloadUrl = await getDownloadURL(storageRef);
+    return downloadUrl;
+  };
+
 
 
 
@@ -113,8 +172,11 @@ export default function EditFocus({
             {/* Invisible placeholder to balance the delete button and center the title */}
           </View>
           <Text style={styles.title}>Edit a Focus</Text>
-          <PressableButton onPress={handleDeleteFocus}>
-            <AntDesign name="delete" size={24} color={Colors.deleteButton} />
+          <PressableButton
+            onPress={handleDeleteFocus}
+            containerStyle={{ marginRight: 15 }}
+          >
+            <AntDesign name="delete" size={22} color={Colors.deleteButton} />
           </PressableButton>
         </View>
 
@@ -135,10 +197,20 @@ export default function EditFocus({
           keyboardType='numeric'
           errorMsg={DurationErrMsg}
         />
+        <DisplayLocation
+          currentLocation={currentLocation || focusLocation}
+          openMapModal={openMapModal}
+          clearLocation={clearLocation}
+        />
+        <ImageManager
+          imageUri={selectedImageUri}
+          setImageUri={setSelectedImageUri}
+        />
+
         <FormOperationBar
           confirmText="Edit"
           cancelText="Cancel"
-          confirmHandler={handleEditFocus}
+          confirmHandler={editFocusTask}
           cancelHandler={() => { setIsEditFocusVisible(false) }}
         />
       </View>
