@@ -165,47 +165,74 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
   
   <img src="assets/screenshots/home-screen.PNG" width="300" alt="Home Screen with Focus Tasks">
 
-* Users can add a new focus task by tapping the add button in the top right.
+* Users can add a new focus task by tapping the add button in the top right. "Selection Location" and "Select Background Picture" are optional.
 
-  <img src="assets/screenshots/add-focus.PNG" width="300" alt="Add a New Focus">
+  <img src="assets/screenshots/add-focus-v2.PNG" width="300" alt="Add a New Focus">
+
+* Users can choose a location for each focus task. The default location is the current device location when pressing this button. Users can choose a different location by moving the marker or zooming in or out. After selecting a location, it will be displayed on the AddFocus modal when users return. Users can press the cross button to delete the location.
+  
+  <img src="assets/screenshots/select-location-2-v2.PNG" width="300" alt="Select Location">
+
+  <img src="assets/screenshots/select-location-1-v2.PNG" width="300" alt="Select Location">
+
+* Users can take a picture or choose from their photo album to set as the background picture for the study session. The tick icon indicates that the picture has been added successfully. Users can press the cross button to delete the background picture.
+  <img src="assets/screenshots/select-picture-v2.PNG" width="300" alt="Select Picture">
+
+  <img src="assets/screenshots/select-picture-success-v2.PNG" width="300" alt="Select Picture">
 
 * By tapping the left part of each focus task card, users can edit or delete the task as needed.
   
-  <img src="assets/screenshots/edit-focus.PNG" width="300" alt="Edit a Focus">
+  <img src="assets/screenshots/edit-focus-v2.PNG" width="300" alt="Edit a Focus">
 
-  <img src="assets/screenshots/delete-focus.PNG" width="300" alt="Delete a Focus">
+  <img src="assets/screenshots/delete-focus-2.PNG" width="300" alt="Delete a Focus">
 
-* The "Start" button on the right initiates a distraction-free study session (Pomodoro) with a countdown timer
+* The "Start" button on the right initiates a distraction-free study session (Pomodoro) with a countdown timer. Random quotes will be displayed on the screen. The background picture is either the default white or one selected by the users. Users can press the "refresh" button to change to a random background picture.
 
-  <img src="assets/screenshots/standby.PNG" width="300" alt="Standby Screen">
+  <img src="assets/screenshots/standby-bg-1.PNG" width="300" alt="Standby Screen">
 
-  <img src="assets/screenshots/end-standby.PNG" width="300" alt="End Standby Screen">
+  <img src="assets/screenshots/standby-bg-2.PNG" width="300" alt="End Standby Screen">
 
-* The Study Groups Screen will display all the groups you createded or joined. Users can quit a group by tapping the button in the top right.
+  <img src="assets/screenshots/standby-bg-3.PNG" width="300" alt="End Standby Screen">
 
-  <img src="assets/screenshots/study-group-screen.PNG" width="300" alt="Study Groups Screen">
+* The Study Groups Screen will display all the groups users createded or joined. Group members can quit a group by tapping the button in the top right, but only the group owner can edit the name and the target study time.
 
-  <img src="assets/screenshots/quit-group.PNG" width="300" alt="Quit a Study Group">
+  <img src="assets/screenshots/group-no-group-v2.PNG" width="300" alt="Empty Study Groups Screen">
+
+  <img src="assets/screenshots/all-groups-v2.PNG" width="300" alt="Display Study Groups">
+
+  <img src="assets/screenshots/edit-or-quit-v2.PNG" width="300" alt="Edit or Quit Menu">
+
+  <img src="assets/screenshots/edit-group-v2.PNG" width="300" alt="Edit a Study Group">
 
 * Search a Group and join it.
 
-  <img src="assets/screenshots/search-group.PNG" width="300" alt='Search a Group'>
+  <img src="assets/screenshots/empty-search-v2.PNG" width="300" alt='Search a Group'>
 
-  <img src="assets/screenshots/join-group.PNG" width="300" alt="Join a Group">
+  <img src="assets/screenshots/search-v2.PNG" width="300" alt="Join a Group">
 
-  <img src="assets/screenshots/display-new-joined-group.PNG" width="300" alt="Display the Newly Joined Group">
+  <img src="assets/screenshots/search-result-v2.PNG" width="300" alt="Display the Newly Joined Group">
 
 * In each group, users can see their own and each member's study time.
 
-  <img src="assets/screenshots/group-members.PNG" width="300" alt="Display All Group Members">
+  <img src="assets/screenshots/group-members-v2.PNG" width="300" alt="Display All Group Members">
 
 * Display data analysis on the dashboard.
 
-  <img src="assets/screenshots/dashboard.PNG" width="300" alt="Dashboard">
+  <img src="assets/screenshots/dashboard-v2.PNG" width="300" alt="Dashboard">
 
-  <img src="assets/screenshots/dashboard-2.PNG" width="300" alt="Dashboard-2">
+  <img src="assets/screenshots/dashboard-2-v2.PNG" width="300" alt="Dashboard-2">
   
 * Display user information on the Profile Screen. Users can edit their usernames.
 
-  <img src="assets/screenshots/edit-username.PNG" width="300" alt="Edit Username">
+  <img src="assets/screenshots/profile-v2.PNG" width="300" alt="Profile">
+
+  <img src="assets/screenshots/profile-map-v2.PNG" width="300" alt="Map">
+
+  <img src="assets/screenshots/profile-menu-v2.PNG" width="300" alt="Profile Menu">
+
+  <img src="assets/screenshots/profile-avatar-v2.PNG" width="300" alt="Change Avatar">
+  
+  
+  
+  
   
