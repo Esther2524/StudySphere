@@ -176,6 +176,7 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
   <img src="assets/screenshots/select-location-1-v2.PNG" width="300" alt="Select Location">
 
 * Users can take a picture or choose from their photo album to set as the background picture for the study session. The tick icon indicates that the picture has been added successfully. Users can press the cross button to delete the background picture.
+  
   <img src="assets/screenshots/select-picture-v2.PNG" width="300" alt="Select Picture">
 
   <img src="assets/screenshots/select-picture-success-v2.PNG" width="300" alt="Select Picture">
