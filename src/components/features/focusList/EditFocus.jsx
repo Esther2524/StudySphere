@@ -25,7 +25,6 @@ export default function EditFocus({
   const [duration, setDuration] = useState(focusDuration.toString());
   const [titleErrMsg, setTitleErrMsg] = useState("");
   const [DurationErrMsg, setDurationErrMsg] = useState("");
-  const [selectedImageUri, setSelectedImageUri] = useState(focusImageUri);
 
 
   // ensure input fields are always populated with the most current data passed to the EditFocus component
@@ -60,25 +59,18 @@ export default function EditFocus({
   const editFocusTask = async () => {
     if (!validateInput()) return;
 
-    let finalImageUri = focusImageUri;
+    let newDownloadUrl = "";
 
-    if (selectedImageUri !== focusImageUri) {
-      if (selectedImageUri) {
-        try {
-          finalImageUri = await uploadImage(selectedImageUri);
-        } catch (error) {
-          console.error("Error uploading image:", error);
-          Alert.alert("Upload Failed", "Failed to upload image.");
-          return;
-        }
-      } else {
-        finalImageUri = ""; // set to empty string if selectedImageUri is cleared
+    // if focusImageUri is "", then it indicates that users clear the image. no need to upload it.
+    if (focusImageUri) {
+      try {
+        newDownloadUrl = await uploadImage(focusImageUri);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        Alert.alert("Upload Failed", "Failed to upload image.");
+        return;
       }
     }
-
-    // update the focusImageUri (from FocusScreen), we will use it on Standby screen
-    setFocusImageUri(finalImageUri); 
-
 
     try {
       const focusRef = doc(db, "users", user.uid, "focus", focusID);
@@ -87,7 +79,7 @@ export default function EditFocus({
         title: title,
         duration: parseInt(duration, 10),
         location: currentLocation,
-        imageUri: finalImageUri,
+        imageUri: newDownloadUrl,
       })
       console.log("Focus task updated!");
       setIsEditFocusVisible(false);
@@ -203,8 +195,8 @@ export default function EditFocus({
           clearLocation={clearLocation}
         />
         <ImageManager
-          imageUri={selectedImageUri}
-          setImageUri={setSelectedImageUri}
+          imageUri={focusImageUri}
+          setImageUri={setFocusImageUri}
         />
 
         <FormOperationBar
