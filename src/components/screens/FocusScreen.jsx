@@ -175,10 +175,12 @@ export default function FocusScreen() {
         setCurrentLocation={setCurrentLocation}
       />
 
-      <AddReminder
-        isReminderVisible={isReminderVisible}
-        setIsReminderVisible={setIsReminderVisible}
-      />
+      {isReminderVisible && (
+        <AddReminder
+          isReminderVisible={isReminderVisible}
+          setIsReminderVisible={setIsReminderVisible}
+        />
+      )}
     </View>
   );
 }
