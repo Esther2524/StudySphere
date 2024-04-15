@@ -75,8 +75,11 @@ export function isSameDay(firebaseTimestamp) {
 }
 
 export function getStartOfWeek(date) {
-  const dayOfWeek = getDayOfWeek(date);
-  return new Date(getFullYear(date), getMonth(date), getDate(date) - dayOfWeek);
+  const localizedDate = moment(date).tz(TIMEZONE);
+
+  const startOfWeek = localizedDate.startOf("isoWeek");
+
+  return startOfWeek.toDate();
 }
 
 export function isSameWeek(firebaseTimestamp) {
