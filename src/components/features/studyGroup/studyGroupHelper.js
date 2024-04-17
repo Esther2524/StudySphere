@@ -18,7 +18,7 @@ function createGroupData({ groupOwnerId, groupName, groupTarget }) {
   return {
     groupOwnerId,
     groupName,
-    groupMembers: [{ userId: groupOwnerId, approved: true }],
+    groupMembers: [{ userId: groupOwnerId, approved: true, likesCount: 0 }],
     groupTarget,
   };
 }
@@ -117,11 +117,13 @@ export async function getGroupDetail(groupId) {
   const userDataPromises = userDocs.map(async (userDoc, index) => {
     const userInfo = userDoc.data();
     const userId = groupMembers[index].userId;
+    const likesCount = groupMembers[index].likesCount;
 
     return {
       userId,
       name: userInfo.userName,
       avatar: userInfo.avatar,
+      likesCount,
     };
   });
 
@@ -191,4 +193,17 @@ export async function updateGroup({ groupId, groupName, groupTarget }) {
   });
 
   return { groupId, groupName, groupTarget };
+}
+
+export async function likeGroupMember({ groupId, userId }) {
+  const groupRef = doc(db, "groups", groupId);
+  const snapshot = await getDoc(groupRef);
+  const groupMembers = snapshot.data().groupMembers;
+  const newMembersArr = groupMembers.map((item) => {
+    if (item.userId === userId) {
+      return { ...item, likesCount: item.likesCount + 1 };
+    }
+    return item;
+  });
+  await updateDoc(groupRef, { groupMembers: newMembersArr });
 }

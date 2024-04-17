@@ -9,7 +9,9 @@ export default function GroupMemberItem({
   name,
   avatar,
   studyTime,
+  likesCount,
   groupTarget,
+  likeHandler,
 }) {
   const [isLiked, setIsLiked] = useState(false);
 
@@ -17,8 +19,9 @@ export default function GroupMemberItem({
 
   const progressValue = studyTime / groupTarget;
 
-  const likeHandler = useCallback(() => {
-    setIsLiked((pre) => !pre);
+  const onLike = useCallback(() => {
+    likeHandler();
+    setIsLiked(true);
   }, [setIsLiked]);
 
   return (
@@ -29,22 +32,28 @@ export default function GroupMemberItem({
           style={styles.avatar}
         />
         <Text style={styles.name}>{name}</Text>
-        <PressableButton onPress={likeHandler}>
+        <PressableButton onPress={onLike}>
           {!isLiked && (
-            <AntDesign
-              name="like2"
-              size={24}
-              style={styles.likeBtn}
-              color={Colors.likeIconColor}
-            />
+            <>
+              <Text style={styles.likeCount}>{likesCount}</Text>
+              <AntDesign
+                name="like2"
+                size={24}
+                style={styles.likeBtn}
+                color={Colors.likeIconColor}
+              />
+            </>
           )}
           {isLiked && (
-            <AntDesign
-              name="like1"
-              size={24}
-              style={styles.likeBtn}
-              color={Colors.likeIconColor}
-            />
+            <>
+              <Text style={styles.likeCount}>{likesCount}</Text>
+              <AntDesign
+                name="like1"
+                size={24}
+                style={styles.likeBtn}
+                color={Colors.likeIconColor}
+              />
+            </>
           )}
         </PressableButton>
       </View>
@@ -97,5 +106,12 @@ const styles = StyleSheet.create({
   },
   likeBtn: {
     marginBottom: 3,
+  },
+  likeCount: {
+    position: "absolute",
+    fontSize: 12,
+    right: -8,
+    top: -5,
+    color: Colors.likeIconColor,
   },
 });

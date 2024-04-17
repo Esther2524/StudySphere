@@ -4,6 +4,7 @@ import { Colors } from "../../../utils/Colors";
 import GroupMemberItem from "./GroupMemberItem";
 import useGetGroupDetail from "./useGetGroupDetail";
 import GroupMemberItemSkeleton from "./GroupMemberItemSkeleton";
+import useLikeGroupMember from "./useLikeGroupMember";
 
 export default function GroupMemberList({ groupId }) {
   const {
@@ -11,6 +12,7 @@ export default function GroupMemberList({ groupId }) {
     isLoading: isLoadingGroupDetail,
     error,
   } = useGetGroupDetail(groupId);
+  const { mutate: likeMember } = useLikeGroupMember();
 
   return (
     <View style={styles.container}>
@@ -21,12 +23,16 @@ export default function GroupMemberList({ groupId }) {
       {!isLoadingGroupDetail && (
         <FlatList
           data={groupDetailData.userData}
-          renderItem={({ item: { name, avatar, studyTime } }) => (
+          renderItem={({
+            item: { name, avatar, studyTime, likesCount, userId },
+          }) => (
             <GroupMemberItem
               avatar={avatar}
               name={name}
               studyTime={studyTime}
               groupTarget={groupDetailData.groupTarget}
+              likesCount={likesCount}
+              likeHandler={() => likeMember({ groupId, userId })}
             />
           )}
         />

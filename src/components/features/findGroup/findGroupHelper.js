@@ -50,8 +50,12 @@ export async function joinGroupById(groupId) {
 
   const targetGroupSnapshot = await getDoc(targetGroupRef);
   const targetGroupMembers = targetGroupSnapshot.data().groupMembers;
-  targetGroupMembers.push({ userId: userRef.id, approved: true });
-  const result = await updateDoc(targetGroupRef, {
+  targetGroupMembers.push({
+    userId: userRef.id,
+    approved: true,
+    likesCount: 0,
+  });
+  await updateDoc(targetGroupRef, {
     groupMembers: targetGroupMembers,
   });
 
