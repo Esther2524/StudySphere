@@ -201,9 +201,13 @@ export async function likeGroupMember({ groupId, userId }) {
   const groupMembers = snapshot.data().groupMembers;
   const newMembersArr = groupMembers.map((item) => {
     if (item.userId === userId) {
-      return { ...item, likesCount: item.likesCount + 1 };
+      return {
+        ...item,
+        likesCount: (item.likesCount ? item.likesCount : 0) + 1,
+      };
     }
     return item;
   });
-  await updateDoc(groupRef, { groupMembers: newMembersArr });
+
+  updateDoc(groupRef, { groupMembers: newMembersArr });
 }

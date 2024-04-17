@@ -35,7 +35,7 @@ export default function GroupMemberItem({
         <PressableButton onPress={onLike}>
           {!isLiked && (
             <>
-              <Text style={styles.likeCount}>{likesCount}</Text>
+              <Text style={styles.likeCount}>{likesCount || 0}</Text>
               <AntDesign
                 name="like2"
                 size={24}
@@ -46,7 +46,7 @@ export default function GroupMemberItem({
           )}
           {isLiked && (
             <>
-              <Text style={styles.likeCount}>{likesCount}</Text>
+              <Text style={styles.likeCount}>{likesCount || 0}</Text>
               <AntDesign
                 name="like1"
                 size={24}

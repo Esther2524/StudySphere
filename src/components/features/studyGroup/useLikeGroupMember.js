@@ -16,7 +16,7 @@ export default function useLikeGroupMember() {
               if (member.userId === userId) {
                 return {
                   ...member,
-                  likesCount: member.likesCount + 1,
+                  likesCount: (member.likesCount ? member.likesCount : 0) + 1,
                 };
               }
               return member;
