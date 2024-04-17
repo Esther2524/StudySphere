@@ -4,10 +4,10 @@ import { Alert } from "react-native";
 import { QUERY_KEY_TODAY_DATA } from "../../../utils/constants";
 
 export default function useGetTodayData() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isRefetching } = useQuery({
     queryKey: [QUERY_KEY_TODAY_DATA],
     queryFn: () => getDailyFocusInfo(new Date()),
     throwOnError: (err) => Alert.alert(err.message),
   });
-  return { data, isLoading };
+  return { data, isLoading, isRefetching };
 }

@@ -1,4 +1,11 @@
-import { View, FlatList, StyleSheet, RefreshControl, Text } from "react-native";
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  RefreshControl,
+  Text,
+  Alert,
+} from "react-native";
 import React from "react";
 import GroupCardItem from "./GroupCardItem";
 import useGetAllGroupsByUser from "./useGetAllGroupsByUser";
@@ -8,7 +15,12 @@ import LottieView from "lottie-react-native";
 
 export default function groupCardList() {
   const queryClient = useQueryClient();
-  const { data: groupData, isLoading, error } = useGetAllGroupsByUser();
+  const {
+    data: groupData,
+    isLoading,
+    error,
+    isRefetching,
+  } = useGetAllGroupsByUser();
 
   const onRefresh = () => {
     queryClient.invalidateQueries(["groups"]);
@@ -26,7 +38,7 @@ export default function groupCardList() {
           data={groupData}
           refreshControl={
             <RefreshControl
-              refreshing={isLoading}
+              refreshing={isLoading || isRefetching}
               onRefresh={onRefresh}
               tintColor={Colors.headerTitleColor}
             />
@@ -44,7 +56,7 @@ export default function groupCardList() {
           )}
         />
       )}
-      {!isLoading && groupData.length === 0 && (
+      {!isLoading && !isRefetching && groupData.length === 0 && (
         <View style={styles.placeholderContainer}>
           <LottieView
             style={{ width: "100%", height: "100%" }}
