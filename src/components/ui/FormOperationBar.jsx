@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import PressableButton from "./PressableButton";
 import { Colors } from "../../utils/Colors";
@@ -7,6 +7,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import * as Progress from "react-native-progress";
 
 export default function FormOperationBar({
   confirmText,
@@ -15,9 +16,21 @@ export default function FormOperationBar({
   cancelHandler,
   confirmDisabled,
   isSubmittingOuter,
+  theme = "green",
+  hasCancelBtn = true,
+  extraContainerStyle,
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const confirmBtnWidth = useSharedValue(110);
+  const confirmBtnWidth = useSharedValue(100);
+
+  let themedConfirmBtnContainer;
+  let themedConfirmBtnText;
+  let progressColor = Colors.shallowTextColor;
+  if (theme === "shallow") {
+    themedConfirmBtnContainer = { backgroundColor: Colors.cardBgColor };
+    themedConfirmBtnText = { color: Colors.screenBgColor };
+    progressColor = Colors.screenBgColor;
+  }
 
   const onConfirm = useCallback(async () => {
     setIsSubmitting(true);
@@ -49,33 +62,47 @@ export default function FormOperationBar({
     confirmDisabled || isSubmittingForm ? styles.disabledBtn : null;
 
   return (
-    <View style={styles.container}>
-      <PressableButton
-        onPress={cancelHandler}
-        containerStyle={styles.cancelBtnContainer}
-      >
-        <Text style={styles.cancelBtnText}>{cancelText}</Text>
-      </PressableButton>
+    <View style={[styles.container, extraContainerStyle]}>
+      {hasCancelBtn && (
+        <PressableButton
+          onPress={cancelHandler}
+          containerStyle={styles.cancelBtnContainer}
+        >
+          <Text style={styles.cancelBtnText}>{cancelText}</Text>
+        </PressableButton>
+      )}
       <PressableButton
         onPress={onConfirm}
         disabled={isSubmittingForm}
         containerStyle={[extraConfirmBtnStyle]}
       >
         <Animated.View
-          style={[styles.confirmBtnContainer, { width: confirmBtnWidth }]}
+          style={[
+            styles.confirmBtnContainer,
+            themedConfirmBtnContainer,
+            { width: confirmBtnWidth },
+          ]}
         >
           {isSubmittingForm ? (
             <>
-              <Text numberOfLines={1} style={styles.confirmBtnText}>
+              <Text
+                numberOfLines={1}
+                style={[styles.confirmBtnText, themedConfirmBtnText]}
+              >
                 Loading...
               </Text>
-              <ActivityIndicator
+              <Progress.Circle
                 style={{ marginLeft: 5 }}
-                color={Colors.shallowTextColor}
+                borderColor={progressColor}
+                size={20}
+                indeterminate={true}
+                borderWidth={2}
               />
             </>
           ) : (
-            <Text style={styles.confirmBtnText}>{confirmText}</Text>
+            <Text style={[styles.confirmBtnText, themedConfirmBtnText]}>
+              {confirmText}
+            </Text>
           )}
         </Animated.View>
       </PressableButton>
