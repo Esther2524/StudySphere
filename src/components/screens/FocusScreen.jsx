@@ -13,7 +13,7 @@ import AddReminder from "../features/focusList/AddReminder";
 import MapModal from "../features/focusList/MapModal";
 import { STANDBY_SCREEN_NAME } from "../../utils/constants";
 import { isSameDay } from "../../utils/helper";
-import LottieDisplay from "./LottieDisplay";
+import LottieDisplay from "../features/focusList/LottieDisplay";
 
 export default function FocusScreen() {
   const [focusTasks, setFocusTasks] = useState([]);
@@ -124,7 +124,7 @@ export default function FocusScreen() {
       {isAnimationShown && <LottieDisplay />}
       <FlatList
         data={focusTasks}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 100, marginTop: 15 }}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <FocusCard
