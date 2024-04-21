@@ -2,41 +2,37 @@ import { StyleSheet, Text, View, Modal, Platform } from 'react-native';
 import React from 'react';
 import PressableButton from '../../ui/PressableButton';
 import { Entypo, Feather } from "@expo/vector-icons";
+import HeaderMenu from '../../ui/HeaderMenu';
 
 
 export default function Menu({
   isMenuVisible, setIsMenuVisible, setEditModal, handleSignOut
 }) {
+  const menuOptions = [
+    {
+      icon: <Feather name='edit' size={22} />,
+      label: 'Edit Username',
+      onPress: () => {
+        setEditModal(true);
+        setIsMenuVisible(false);
+      }
+    },
+    {
+      icon: <Entypo name='log-out' size={22} />,
+      label: 'Log Out',
+      onPress: () => {
+        handleSignOut();
+        setIsMenuVisible(false);
+      }
+    }
+  ];
+
   return (
-    <Modal
-      visible={isMenuVisible}
-      transparent={true}
-    >
-      <PressableButton
-        onPress={() => setIsMenuVisible(false)} // close menu when clicking outside
-        containerStyle={styles.modalOverlay}
-      >
-        <View style={styles.menuContainer}>
-          <PressableButton
-            onPress={() => { setEditModal(true); setIsMenuVisible(false); }}
-            containerStyle={styles.firstOption}
-          >
-            <Feather name='edit' size={22} />
-            <Text style={styles.optionText}>Edit Username</Text>
-          </PressableButton>
-
-          <PressableButton
-            onPress={() => { handleSignOut(); setIsMenuVisible(false); }}
-            containerStyle={styles.secondOption}
-          >
-            <Entypo name='log-out' size={22} />
-            <Text style={styles.optionText}>Log Out</Text>
-          </PressableButton>
-        </View>
-
-      </PressableButton>
-
-    </Modal>
+    isMenuVisible &&
+    <HeaderMenu
+      menuOptions={menuOptions}
+      toggleMenu={() => setIsMenuVisible(!isMenuVisible)}
+    />
   )
 }
 
