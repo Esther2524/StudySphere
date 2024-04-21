@@ -1,4 +1,4 @@
-import { Text, StyleSheet, StatusBar } from "react-native";
+import { Text, StyleSheet, StatusBar, View } from "react-native";
 import React from "react";
 import PressableButton from "./PressableButton";
 import { Overlay } from "@rneui/themed";
@@ -10,7 +10,7 @@ function MenuItem({ icon, label, onPress }) {
       containerStyle={styles.menuItemContainer}
       onPress={onPress}
     >
-      {icon}
+      <View style={styles.menuIcon}>{icon}</View>
       <Text style={styles.menuLabel}>{label}</Text>
     </PressableButton>
   );
