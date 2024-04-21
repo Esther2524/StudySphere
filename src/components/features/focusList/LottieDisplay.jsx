@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import LottieView from "lottie-react-native";
-import { Colors } from '../../utils/Colors';
+import { Colors } from '../../../utils/Colors';
 
 export default function LottieDisplay() {
   return (
     <View style={styles.placeholderContainer}>
         <LottieView
-          source={require("../../../assets/placeholder-FocusScreen.json")}
+          source={require("../../../../assets/placeholder-FocusScreen.json")}
           style={{ width: "80%", height: "70%" }}
           autoPlay
           loop={true}
