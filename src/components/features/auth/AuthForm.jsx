@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { Text, StyleSheet, Alert, Image } from "react-native";
 import React, { useCallback, useState } from "react";
 import InputWithLabel from "../../ui/InputWithLabel";
 import PressableButton from "../../ui/PressableButton";
@@ -27,6 +27,7 @@ export default function AuthForm({ mode }) {
     confirmPwdErr: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const iconImage = require("../../../../assets/splash.png");
 
   const isLogInMode = mode === "login";
 
@@ -146,6 +147,7 @@ export default function AuthForm({ mode }) {
 
   return (
     <>
+      <Image source={iconImage} style={styles.iconImage} />
       <InputWithLabel
         label="Email"
         labelStyle={styles.labelStyle}
@@ -225,5 +227,11 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     color: Colors.shallowTextColor,
+  },
+  iconImage: {
+    width: 250,
+    height: 250,
+    marginBottom: -80,
+    marginTop: -100,
   },
 });
