@@ -11,11 +11,11 @@ import HeaderMenu from "../../ui/HeaderMenu";
 import { Feather } from "@expo/vector-icons";
 
 function QuitIcon() {
-  return <AntDesign name="closecircleo" size={24} color="black" />;
+  return <AntDesign name="closecircleo" size={22} color="black" />;
 }
 
 function EditIcon() {
-  return <Feather name="edit" size={24} color="black" />;
+  return <Feather name="edit" size={22} color="black" />;
 }
 
 export default function GroupDetailHeaderMenu({
