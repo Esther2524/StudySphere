@@ -1,6 +1,6 @@
 # StudySphere: Focus & Friends
 
-  <img src="assets/screenshots/app-icon.jpg" width="100" alt="app icon" style="border-radius: 20px;">
+  <img src="assets/screenshots/app-icon.jpg" width="150" alt="app icon" style="border-radius: 20px;">
 
 NEU CS5520 Spring 2024
 
@@ -17,6 +17,10 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
 - [StudySphere: Focus \& Friends](#studysphere-focus--friends)
   - [App Description](#app-description)
   - [Table of Contents](#table-of-contents)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Firebase Configuration](#firebase-configuration)
+    - [Create an `.env` file](#create-an-env-file)
   - [Current State](#current-state)
     - [Iteration 3 (April 21, 2024)](#iteration-3-april-21-2024)
     - [Iteration 2 (April 11, 2024)](#iteration-2-april-11-2024)
@@ -25,6 +29,30 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
   - [Firebase Rules](#firebase-rules)
   - [External APIs](#external-apis)
   - [User Guide](#user-guide)
+
+## Getting Started
+### Prerequisites
+Prior to starting, make sure your machine has the following software installed:
+* [Node.js](https://nodejs.org/en): This installation includes npm (Node Package Manager), which is used to manage software packages.
+### Firebase Configuration
+This project uses Firebase Firestore as the backend database. To set up Firebase for your app, start by creating a project in the [Firebase console](https://console.firebase.google.com/). Once your project is created, enable Cloud Firestore through the console and then access your project settings to obtain your Firebase configuration object.
+### Create an `.env` file
+Create a new file named .env in the root folder of your project and paste the following, replacing the placeholder values with your actual Firebase credentials. You will also need API keys for both the Pexels API and Google Maps.
+
+* Pexels API key: See the official [Pexels API documentation](https://www.pexels.com/api/documentation/) for details on how to obtain your key. For now, you can use [my Pexels API](#external-apis).
+* Google Maps API Key: To use Google Maps services, you will need a Google Maps API key. You can obtain one by visiting the [Google Maps Platform](https://mapsplatform.google.com/).
+
+```
+apiKey="YOUR_API_KEY"
+authDomain="YOUR_AUTH_DOMAIN"
+projectId="YOUR_PROJECT_ID"
+storageBucket="YOUR_STORAGE_BUCKET"
+messagingSenderId="YOUR_MESSAGING_SENDER_ID"
+appId="YOUR_APP_ID"
+mapsApiKey="YOUR_GOOGLE_MAP_API_KEY"
+pexelsApiKey="YOUR_PEXELS_API_KEY"
+```
+
 
 ## Current State
 ### Iteration 3 (April 21, 2024)
@@ -38,7 +66,7 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
      * **Modification**: Users can edit or delete a focus task by tapping the left part of its card.
      * **Start a Focus Session**: The "Start" button on the right initiates a distraction-free study session (Pomodoro) with a countdown timer. Random quotes will be displayed on the standby screen. Users can set a custom background picture, use the default one, or refresh to get a random background picture by pressing the "refresh" button in the top right corner.
      * **Session Completion**: Users can choose to leave the session before the countdown ends or let it finish automatically.
-     * **Reminders**: Users can create or delete reminders. (Note: Notification functionality has not been implemented yet.)
+     * **Reminder**: Users can set a notification to remind them to use this app for a study session, based on the repeat mode they choose (Daily, Weekdays, Weekends) and the specific time they set. Users have the option to delete this notification.
      * **Completion Tracking**: Each focus task displays the number of times it has been completed without interruption today.
   * **Groups**:
      * **Creation and Display**: Users can create a new study group and set the target study hours for all members in the group. Groups will be diplayed as a card, with the name of the group, number of group members, and target study hours.
@@ -170,6 +198,7 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
 ## User Guide
 * Users can log in and sign up. On the profile screen, they have the option to log out.
+
     <img src="assets/screenshots/Login.PNG" width="300" alt="Home Screen with Focus Tasks">
 
     <img src="assets/screenshots/Signup.PNG" width="300" alt="Home Screen with Focus Tasks">
