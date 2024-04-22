@@ -17,15 +17,24 @@ export default function DisplayLocation({
         containerStyle={styles.buttonContainer}
       >
         <Text style={styles.buttonTitle}>Select Location</Text>
-        <AntDesign name="arrowright" size={20} color={Colors.addFocusButton} />
+        {!currentLocation && (
+          <AntDesign
+            name="arrowright"
+            size={20}
+            color={Colors.addFocusButton}
+          />
+        )}
         {currentLocation && (
-          <PressableButton onPress={clearLocation}>
-            <AntDesign
-              name="closecircleo"
-              size={20}
-              color={Colors.addFocusButton}
-            />
-          </PressableButton>
+          <View style={styles.iconContainer}>
+            <AntDesign name="check" size={20} color={Colors.addFocusButton} />
+            <PressableButton onPress={clearLocation}>
+              <AntDesign
+                name="closecircleo"
+                size={20}
+                color={Colors.addFocusButton}
+              />
+            </PressableButton>
+          </View>
         )}
       </PressableButton>
       {currentLocation && (
@@ -63,5 +72,11 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 10,
     marginHorizontal: 10,
+  },
+  iconContainer: {
+    flexDirection: "row",
+    width: 50,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });
