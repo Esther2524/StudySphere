@@ -35,7 +35,11 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
 Prior to starting, make sure your machine has the following software installed:
 * [Node.js](https://nodejs.org/en): This installation includes npm (Node Package Manager), which is used to manage software packages.
 ### Firebase Configuration
-This project uses Firebase Firestore as the backend database. To set up Firebase for your app, start by creating a project in the [Firebase console](https://console.firebase.google.com/). Once your project is created, enable Cloud Firestore through the console and then access your project settings to obtain your Firebase configuration object.
+This project uses Firebase Firestore as the backend database. To set up Firebase for your app:
+1. Start by creating a project in the [Firebase console](https://console.firebase.google.com/).
+2. Once your project is created, enable Cloud Firestore through the console.
+3. Access your project settings to obtain your Firebase configuration object.
+
 ### Create an `.env` file
 Create a new file named .env in the root folder of your project and paste the following, replacing the placeholder values with your actual Firebase credentials. You will also need API keys for both the Pexels API and Google Maps.
 
