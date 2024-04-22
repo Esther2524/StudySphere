@@ -1,4 +1,7 @@
 # StudySphere: Focus & Friends
+
+  <img src="assets/screenshots/app-icon.jpg" width="100" alt="app icon" style="border-radius: 20px;">
+
 NEU CS5520 Spring 2024
 
 Group Members: Haoning Wang, Zhixiao Wang
@@ -15,6 +18,7 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
   - [App Description](#app-description)
   - [Table of Contents](#table-of-contents)
   - [Current State](#current-state)
+    - [Iteration 3 (April 21, 2024)](#iteration-3-april-21-2024)
     - [Iteration 2 (April 11, 2024)](#iteration-2-april-11-2024)
     - [Iteration 1 (March 28, 2024)](#iteration-1-march-28-2024)
   - [Member Contribution](#member-contribution)
@@ -23,12 +27,9 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
   - [User Guide](#user-guide)
 
 ## Current State
-### Iteration 2 (April 11, 2024)
-* Summary of Iteration 2
-  1. Interactive Map and Multiple Locations Display
-  2. External APIs for Random Quotes and Pictures
-  3. Firebase Rules for Authentication
-  4. Camera Usage to Obtain Background Pictures
+### Iteration 3 (April 21, 2024)
+* Summary of Iteration 3
+  1. Local Notification Feature
 * Functionality Implementation
   * **Focus Tasks**: 
      * **Creation and Display**: Users can create personalized focus tasks, specifying title, duration, and background picture for the standby screen. All focus tasks are displayed on the main screen for easy access.
@@ -112,6 +113,13 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
       * **Read**: The app reads from the Groups collection to display available study groups for users to join, to show the user's study time alongside other group members, and to allow users to see the details of groups they have joined or are exploring.
       * **Update**: Joining a study group would add a user's details to the groupMembers array of a specific group document. Leaving a group would involve updating the groupMembers field to remove the user.
       * **Delete**: When the owner of a group decides to leave the group, the entire group document is deleted from the Groups collection. If a member (not the group owner) leaves the group, then their useId will be deleted from the group document's groupMembers field.
+
+### Iteration 2 (April 11, 2024)
+* Summary of Iteration 2
+  1. Interactive Map and Multiple Locations Display
+  2. External APIs for Random Quotes and Pictures
+  3. Firebase Rules for Authentication
+  4. Camera Usage to Obtain Background Pictures
   
 ### Iteration 1 (March 28, 2024)
 * Summary of Iteration 1
@@ -161,7 +169,16 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
 
 ## User Guide
-* The home screen (Focus Tasks Screen) displays all the focus tasks. Note: the number next to the tick icon represents how many times this focus task has been completed.
+* Users can log in and sign up. On the profile screen, they have the option to log out.
+    <img src="assets/screenshots/Login.PNG" width="300" alt="Home Screen with Focus Tasks">
+
+    <img src="assets/screenshots/Signup.PNG" width="300" alt="Home Screen with Focus Tasks">
+
+    <img src="assets/screenshots/Logout.PNG" width="300" alt="Home Screen with Focus Tasks">
+
+* The home screen (Focus Tasks Screen) displays all the focus tasks. Note: the number next to the tick icon represents how many times this focus task has been completed. If there is no focus task on the screen, an animation will appear to prompt users to add a focus task. 
+  
+  <img src="assets/screenshots/add-focus-idle.PNG" width="300" alt="Add a New Focus">
   
   <img src="assets/screenshots/focus-tasks-v2.PNG" width="300" alt="Home Screen with Focus Tasks">
 
@@ -169,6 +186,7 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
   <img src="assets/screenshots/add-focus-v2.PNG" width="300" alt="Add a New Focus">
 
+  
 * Users can choose a location for each focus task. The default location is the current device location when pressing this button. Users can choose a different location by moving the marker or zooming in or out. After selecting a location, it will be displayed on the AddFocus modal when users return. Users can press the cross button to delete the location.
   
   <img src="assets/screenshots/select-location-2-v2.PNG" width="300" alt="Select Location">
@@ -191,9 +209,22 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
   <img src="assets/screenshots/standby-bg-1.PNG" width="300" alt="Standby Screen">
 
-  <img src="assets/screenshots/standby-bg-2.PNG" width="300" alt="End Standby Screen">
+  <img src="assets/screenshots/standby-bg-2.PNG" width="300" alt="Standby Screen">
 
-  <img src="assets/screenshots/standby-bg-3.PNG" width="300" alt="End Standby Screen">
+  <img src="assets/screenshots/standby-bg-3.PNG" width="300" alt="Standby Screen">
+
+  <img src="assets/screenshots/standby-bg-4.PNG" width="300" alt="Standby Screen">
+
+* Users can set a notification to remind them to use this app for a study session, based on the repeat mode they choose (Daily, Weekdays, Weekends) and the specific time they set. Users have the option to delete this notification.
+
+  <img src="assets/screenshots/notification-1.jpeg" width="300" alt="Set Notification">
+
+  <img src="assets/screenshots/notification-2.jpeg" width="300" alt="Set Notification">
+
+  <img src="assets/screenshots/notification-4.PNG" width="300" alt="Set Notification">
+
+  <img src="assets/screenshots/notification-3.PNG" width="300" alt="Set Notification">
+
 
 * The Study Groups Screen will display all the groups users createded or joined. Group members can quit a group by tapping the button in the top right, but only the group owner can edit the name and the target study time.
 
@@ -201,9 +232,18 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
   <img src="assets/screenshots/all-groups-v2.PNG" width="300" alt="Display Study Groups">
 
-  <img src="assets/screenshots/edit-or-quit-v2.PNG" width="300" alt="Edit or Quit Menu">
+  <img src="assets/screenshots/edit-or-quit-v3.PNG" width="300" alt="Edit or Quit Menu">
 
-  <img src="assets/screenshots/edit-group-v2.PNG" width="300" alt="Edit a Study Group">
+  <img src="assets/screenshots/edit-group-v3.PNG" width="300" alt="Edit a Study Group">
+
+  <img src="assets/screenshots/quit-group-v3.PNG" width="300" alt="Quit a Study Group">
+
+* In each group, members can see their own study time as well as that of other members. They can also 'like' each other, and the number of likes received will be displayed.
+
+  <img src="assets/screenshots/display-members.PNG" width="300" alt="Display Group Members">
+
+  <img src="assets/screenshots/like-members.PNG" width="300" alt="Like Group Members">
+
 
 * Search a Group and join it.
 
@@ -213,9 +253,6 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
   <img src="assets/screenshots/search-result-v2.PNG" width="300" alt="Display the Newly Joined Group">
 
-* In each group, users can see their own and each member's study time.
-
-  <img src="assets/screenshots/group-members-v2.PNG" width="300" alt="Display All Group Members">
 
 * Display data analysis on the dashboard.
 
