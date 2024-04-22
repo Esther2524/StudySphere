@@ -52,7 +52,6 @@ export default function DisplayLocation({
 const styles = StyleSheet.create({
   locationArea: {
     marginBottom: 20,
-    marginTop: -10,
   },
   buttonTitle: {
     fontSize: 16,
