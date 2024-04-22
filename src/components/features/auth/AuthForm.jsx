@@ -27,7 +27,11 @@ export default function AuthForm({ mode }) {
     confirmPwdErr: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const iconImage = require("../../../../assets/splash.png");
+  const iconImage = require("../../../../assets/auth_form_bg.png");
+  let extraIconImageStyle;
+  if (mode === "login") {
+    extraIconImageStyle = { marginBottom: 0 };
+  }
 
   const isLogInMode = mode === "login";
 
@@ -147,7 +151,10 @@ export default function AuthForm({ mode }) {
 
   return (
     <>
-      <Image source={iconImage} style={styles.iconImage} />
+      <Image
+        source={iconImage}
+        style={[styles.iconImage, extraIconImageStyle]}
+      />
       <InputWithLabel
         label="Email"
         labelStyle={styles.labelStyle}
@@ -231,7 +238,7 @@ const styles = StyleSheet.create({
   iconImage: {
     width: 250,
     height: 250,
-    marginBottom: -80,
+    marginBottom: -15,
     marginTop: -100,
   },
 });
