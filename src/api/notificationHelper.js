@@ -58,6 +58,7 @@ export async function scheduleReminderHelper({
       title: title,
       body: message,
       // sound: 'default',
+      priority: Notifications.AndroidNotificationPriority.MAX,
     },
     trigger,
   });
