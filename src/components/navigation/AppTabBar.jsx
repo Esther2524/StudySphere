@@ -66,7 +66,7 @@ export default function AppTabBar({ state, descriptors, navigation }) {
             onPress={onPress}
             key={index}
           >
-            <Ionicons name={iconName} size={24} color={Colors.tabIconColor} />
+            <Ionicons name={iconName} size={28} color={Colors.tabIconColor} />
           </PressableButton>
         );
       })}

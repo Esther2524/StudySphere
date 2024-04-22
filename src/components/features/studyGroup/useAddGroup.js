@@ -17,7 +17,7 @@ export default function useAddGroup({ onSuccess, onError }) {
           groupTarget,
         });
       });
-      onSuccess({ groupName, groupId });
+      onSuccess({ groupName, groupId, groupOwnerId });
     },
     onError: onError,
   });

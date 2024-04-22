@@ -13,6 +13,7 @@ import AddReminder from "../features/focusList/AddReminder";
 import MapModal from "../features/focusList/MapModal";
 import { STANDBY_SCREEN_NAME } from "../../utils/constants";
 import { isSameDay } from "../../utils/helper";
+import LottieDisplay from "../features/focusList/LottieDisplay";
 
 export default function FocusScreen() {
   const [focusTasks, setFocusTasks] = useState([]);
@@ -39,6 +40,9 @@ export default function FocusScreen() {
 
   // use navigation dynamically set the navigation options, including adding a button to the screen's header
   const navigation = useNavigation();
+
+  // for lottie gif
+  const [isAnimationShown, setIsAnimationShown] = useState(false);
 
   // reset location whenever AddFocus is to be shown
   const showAddFocusModal = () => {
@@ -93,6 +97,8 @@ export default function FocusScreen() {
             };
           });
           setFocusTasks(tasks);
+          // determine if the animation is shown based on the length of tasks
+          setIsAnimationShown(tasks.length === 0);
         },
         (error) => {
           console.log("Error fetching focus tasks:", error);
@@ -115,9 +121,10 @@ export default function FocusScreen() {
 
   return (
     <View style={styles.container}>
+      {isAnimationShown && <LottieDisplay />}
       <FlatList
         data={focusTasks}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 100, marginTop: 15 }}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <FocusCard
@@ -139,6 +146,7 @@ export default function FocusScreen() {
           />
         )}
       />
+
       <AddFocus
         isAddFocusVisible={isAddFocusVisible}
         setIsAddFocusVisible={setIsAddFocusVisible}
@@ -175,10 +183,12 @@ export default function FocusScreen() {
         setCurrentLocation={setCurrentLocation}
       />
 
-      <AddReminder
-        isReminderVisible={isReminderVisible}
-        setIsReminderVisible={setIsReminderVisible}
-      />
+      {isReminderVisible && (
+        <AddReminder
+          isReminderVisible={isReminderVisible}
+          setIsReminderVisible={setIsReminderVisible}
+        />
+      )}
     </View>
   );
 }
@@ -196,4 +206,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+
 });

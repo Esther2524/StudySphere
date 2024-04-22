@@ -9,25 +9,13 @@ import { useNavigation } from "@react-navigation/native";
 import PressableButton from "../../ui/PressableButton";
 import HeaderMenu from "../../ui/HeaderMenu";
 import { Feather } from "@expo/vector-icons";
-import useEditGroup from "./useEditGroup";
-import GroupInfoModal from "./GroupInfoModal";
-import useGetGroupDetail from "./useGetGroupDetail";
 
 function QuitIcon() {
-  return (
-    <AntDesign
-      name="closecircleo"
-      size={24}
-      color="black"
-      style={styles.menuIcon}
-    />
-  );
+  return <AntDesign name="closecircleo" size={22} color="black" />;
 }
 
 function EditIcon() {
-  return (
-    <Feather name="edit" size={24} color="black" style={styles.menuIcon} />
-  );
+  return <Feather name="edit" size={22} color="black" />;
 }
 
 export default function GroupDetailHeaderMenu({
@@ -94,31 +82,3 @@ export default function GroupDetailHeaderMenu({
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  menuBackdrop: {
-    backgroundColor: "transparent",
-  },
-  menu: {
-    width: 180,
-    height: 60,
-    justifyContent: "center",
-    top: 100,
-    right: 10,
-    borderRadius: 10,
-    position: "absolute",
-    shadowColor: "black",
-    shadowRadius: 30,
-    shadowOffset: { width: -20, height: 10 },
-    shadowOpacity: 0.2,
-  },
-  menuIcon: {
-    marginHorizontal: 10,
-  },
-  menuText: { fontSize: 16 },
-
-  menuLine: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});

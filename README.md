@@ -1,4 +1,7 @@
 # StudySphere: Focus & Friends
+
+  <img src="assets/screenshots/app-icon.jpg" width="150" alt="app icon" style="border-radius: 20px;">
+
 NEU CS5520 Spring 2024
 
 Group Members: Haoning Wang, Zhixiao Wang
@@ -14,7 +17,12 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
 - [StudySphere: Focus \& Friends](#studysphere-focus--friends)
   - [App Description](#app-description)
   - [Table of Contents](#table-of-contents)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Firebase Configuration](#firebase-configuration)
+    - [Create an `.env` file](#create-an-env-file)
   - [Current State](#current-state)
+    - [Iteration 3 (April 21, 2024)](#iteration-3-april-21-2024)
     - [Iteration 2 (April 11, 2024)](#iteration-2-april-11-2024)
     - [Iteration 1 (March 28, 2024)](#iteration-1-march-28-2024)
   - [Member Contribution](#member-contribution)
@@ -22,13 +30,38 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
   - [External APIs](#external-apis)
   - [User Guide](#user-guide)
 
+## Getting Started
+### Prerequisites
+Prior to starting, make sure your machine has the following software installed:
+* [Node.js](https://nodejs.org/en): This installation includes npm (Node Package Manager), which is used to manage software packages.
+### Firebase Configuration
+This project uses Firebase Firestore as the backend database. To set up Firebase for your app:
+1. Start by creating a project in the [Firebase console](https://console.firebase.google.com/).
+2. Once your project is created, enable Cloud Firestore through the console.
+3. Access your project settings to obtain your Firebase configuration object.
+
+### Create an `.env` file
+Create a new file named .env in the root folder of your project and paste the following, replacing the placeholder values with your actual Firebase credentials. You will also need API keys for both the Pexels API and Google Maps.
+
+* Pexels API key: See the official [Pexels API documentation](https://www.pexels.com/api/documentation/) for details on how to obtain your key. For now, you can use [my Pexels API](#external-apis).
+* Google Maps API Key: To use Google Maps services, you will need a Google Maps API key. You can obtain one by visiting the [Google Maps Platform](https://mapsplatform.google.com/).
+
+```
+apiKey="YOUR_API_KEY"
+authDomain="YOUR_AUTH_DOMAIN"
+projectId="YOUR_PROJECT_ID"
+storageBucket="YOUR_STORAGE_BUCKET"
+messagingSenderId="YOUR_MESSAGING_SENDER_ID"
+appId="YOUR_APP_ID"
+mapsApiKey="YOUR_GOOGLE_MAP_API_KEY"
+pexelsApiKey="YOUR_PEXELS_API_KEY"
+```
+
+
 ## Current State
-### Iteration 2 (April 11, 2024)
-* Summary of Iteration 2
-  1. Interactive Map and Multiple Locations Display
-  2. External APIs for Random Quotes and Pictures
-  3. Firebase Rules for Authentication
-  4. Camera Usage to Obtain Background Pictures
+### Iteration 3 (April 21, 2024)
+* Summary of Iteration 3
+  1. Local Notification Feature
 * Functionality Implementation
   * **Focus Tasks**: 
      * **Creation and Display**: Users can create personalized focus tasks, specifying title, duration, and background picture for the standby screen. All focus tasks are displayed on the main screen for easy access.
@@ -37,7 +70,7 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
      * **Modification**: Users can edit or delete a focus task by tapping the left part of its card.
      * **Start a Focus Session**: The "Start" button on the right initiates a distraction-free study session (Pomodoro) with a countdown timer. Random quotes will be displayed on the standby screen. Users can set a custom background picture, use the default one, or refresh to get a random background picture by pressing the "refresh" button in the top right corner.
      * **Session Completion**: Users can choose to leave the session before the countdown ends or let it finish automatically.
-     * **Reminders**: Users can create or delete reminders. (Note: Notification functionality has not been implemented yet.)
+     * **Reminder**: Users can set a notification to remind them to use this app for a study session, based on the repeat mode they choose (Daily, Weekdays, Weekends) and the specific time they set. Users have the option to delete this notification.
      * **Completion Tracking**: Each focus task displays the number of times it has been completed without interruption today.
   * **Groups**:
      * **Creation and Display**: Users can create a new study group and set the target study hours for all members in the group. Groups will be diplayed as a card, with the name of the group, number of group members, and target study hours.
@@ -112,6 +145,13 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
       * **Read**: The app reads from the Groups collection to display available study groups for users to join, to show the user's study time alongside other group members, and to allow users to see the details of groups they have joined or are exploring.
       * **Update**: Joining a study group would add a user's details to the groupMembers array of a specific group document. Leaving a group would involve updating the groupMembers field to remove the user.
       * **Delete**: When the owner of a group decides to leave the group, the entire group document is deleted from the Groups collection. If a member (not the group owner) leaves the group, then their useId will be deleted from the group document's groupMembers field.
+
+### Iteration 2 (April 11, 2024)
+* Summary of Iteration 2
+  1. Interactive Map and Multiple Locations Display
+  2. External APIs for Random Quotes and Pictures
+  3. Firebase Rules for Authentication
+  4. Camera Usage to Obtain Background Pictures
   
 ### Iteration 1 (March 28, 2024)
 * Summary of Iteration 1
@@ -161,7 +201,17 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
 
 ## User Guide
-* The home screen (Focus Tasks Screen) displays all the focus tasks. Note: the number next to the tick icon represents how many times this focus task has been completed.
+* Users can log in and sign up. On the profile screen, they have the option to log out.
+
+    <img src="assets/screenshots/Login.PNG" width="300" alt="Home Screen with Focus Tasks">
+
+    <img src="assets/screenshots/Signup.PNG" width="300" alt="Home Screen with Focus Tasks">
+
+    <img src="assets/screenshots/Logout.PNG" width="300" alt="Home Screen with Focus Tasks">
+
+* The home screen (Focus Tasks Screen) displays all the focus tasks. Note: the number next to the tick icon represents how many times this focus task has been completed. If there is no focus task on the screen, an animation will appear to prompt users to add a focus task. 
+  
+  <img src="assets/screenshots/add-focus-idle.PNG" width="300" alt="Add a New Focus">
   
   <img src="assets/screenshots/focus-tasks-v2.PNG" width="300" alt="Home Screen with Focus Tasks">
 
@@ -169,6 +219,7 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
   <img src="assets/screenshots/add-focus-v2.PNG" width="300" alt="Add a New Focus">
 
+  
 * Users can choose a location for each focus task. The default location is the current device location when pressing this button. Users can choose a different location by moving the marker or zooming in or out. After selecting a location, it will be displayed on the AddFocus modal when users return. Users can press the cross button to delete the location.
   
   <img src="assets/screenshots/select-location-2-v2.PNG" width="300" alt="Select Location">
@@ -191,9 +242,22 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
   <img src="assets/screenshots/standby-bg-1.PNG" width="300" alt="Standby Screen">
 
-  <img src="assets/screenshots/standby-bg-2.PNG" width="300" alt="End Standby Screen">
+  <img src="assets/screenshots/standby-bg-2.PNG" width="300" alt="Standby Screen">
 
-  <img src="assets/screenshots/standby-bg-3.PNG" width="300" alt="End Standby Screen">
+  <img src="assets/screenshots/standby-bg-3.PNG" width="300" alt="Standby Screen">
+
+  <img src="assets/screenshots/standby-bg-4.PNG" width="300" alt="Standby Screen">
+
+* Users can set a notification to remind them to use this app for a study session, based on the repeat mode they choose (Daily, Weekdays, Weekends) and the specific time they set. Users have the option to delete this notification.
+
+  <img src="assets/screenshots/notification-1.jpeg" width="300" alt="Set Notification">
+
+  <img src="assets/screenshots/notification-2.jpeg" width="300" alt="Set Notification">
+
+  <img src="assets/screenshots/notification-4.PNG" width="300" alt="Set Notification">
+
+  <img src="assets/screenshots/notification-3.PNG" width="300" alt="Set Notification">
+
 
 * The Study Groups Screen will display all the groups users createded or joined. Group members can quit a group by tapping the button in the top right, but only the group owner can edit the name and the target study time.
 
@@ -201,9 +265,18 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
   <img src="assets/screenshots/all-groups-v2.PNG" width="300" alt="Display Study Groups">
 
-  <img src="assets/screenshots/edit-or-quit-v2.PNG" width="300" alt="Edit or Quit Menu">
+  <img src="assets/screenshots/edit-or-quit-v3.PNG" width="300" alt="Edit or Quit Menu">
 
-  <img src="assets/screenshots/edit-group-v2.PNG" width="300" alt="Edit a Study Group">
+  <img src="assets/screenshots/edit-group-v3.PNG" width="300" alt="Edit a Study Group">
+
+  <img src="assets/screenshots/quit-group-v3.PNG" width="300" alt="Quit a Study Group">
+
+* In each group, members can see their own study time as well as that of other members. They can also 'like' each other, and the number of likes received will be displayed.
+
+  <img src="assets/screenshots/display-members.PNG" width="300" alt="Display Group Members">
+
+  <img src="assets/screenshots/like-members.PNG" width="300" alt="Like Group Members">
+
 
 * Search a Group and join it.
 
@@ -213,23 +286,24 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
 
   <img src="assets/screenshots/search-result-v2.PNG" width="300" alt="Display the Newly Joined Group">
 
-* In each group, users can see their own and each member's study time.
 
-  <img src="assets/screenshots/group-members-v2.PNG" width="300" alt="Display All Group Members">
-
-* Display data analysis on the dashboard.
+* Display data analysis on the dashboard. It shows how many times you have completed study sessions fully, how many hours you have stayed focused today, and the number of breaks that have occurred. You can also click on the circle to obtain the proportion of study time spent on this focus task. The dashboard also provides information on the hours of focused study per day of the week. 
 
   <img src="assets/screenshots/dashboard-v2.PNG" width="300" alt="Dashboard">
 
   <img src="assets/screenshots/dashboard-2-v2.PNG" width="300" alt="Dashboard-2">
+
+  <img src="assets/screenshots/Dashboard-3.PNG" width="300" alt="Dashboard">
+
+  <img src="assets/screenshots/Dashboard-3.PNG" width="300" alt="Dashboard-2">
   
-* Display user information on the Profile Screen. Users can edit their usernames.
+* Display user information on the Profile Screen. Users can edit their usernames, or choose a new avatar.
 
   <img src="assets/screenshots/profile-v2.PNG" width="300" alt="Profile">
 
   <img src="assets/screenshots/profile-map-v2.PNG" width="300" alt="Map">
 
-  <img src="assets/screenshots/profile-menu-v2.PNG" width="300" alt="Profile Menu">
+  <img src="assets/screenshots/profile-menu-v3.PNG" width="300" alt="Profile Menu">
 
   <img src="assets/screenshots/profile-avatar-v2.PNG" width="300" alt="Change Avatar">
   

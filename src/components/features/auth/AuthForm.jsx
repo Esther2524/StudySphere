@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { Text, StyleSheet, Alert, Image } from "react-native";
 import React, { useCallback, useState } from "react";
 import InputWithLabel from "../../ui/InputWithLabel";
 import PressableButton from "../../ui/PressableButton";
@@ -11,6 +11,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import FormOperationBar from "../../ui/FormOperationBar";
 
 export default function AuthForm({ mode }) {
   const navigation = useNavigation();
@@ -26,6 +27,7 @@ export default function AuthForm({ mode }) {
     confirmPwdErr: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const iconImage = require("../../../../assets/splash.png");
 
   const isLogInMode = mode === "login";
 
@@ -125,6 +127,7 @@ export default function AuthForm({ mode }) {
   };
 
   const authHandler = isLogInMode ? handleLogin : handleSignup;
+  const confirmText = isLogInMode ? "Log In" : "Sign Up";
 
   const navHandler = () => {
     const target = isLogInMode ? "Sign up" : "Login";
@@ -144,6 +147,7 @@ export default function AuthForm({ mode }) {
 
   return (
     <>
+      <Image source={iconImage} style={styles.iconImage} />
       <InputWithLabel
         label="Email"
         labelStyle={styles.labelStyle}
@@ -173,35 +177,23 @@ export default function AuthForm({ mode }) {
         />
       )}
 
-      <PressableButton
-        containerStyle={[
-          styles.loginBtnContainer,
-          { width: isSubmitting ? 135 : "auto" },
-        ]}
-        onPress={authHandler}
-        disabled={isSubmitting}
-      >
-        {!isSubmitting && (
-          <Text style={styles.submitBtnText}>
-            {isLogInMode ? "Log In" : "Sign Up"}
-          </Text>
-        )}
-        {isSubmitting && (
-          <>
-            <Text style={styles.submitBtnText}>Loading...</Text>
-            <ActivityIndicator
-              style={{ marginLeft: 10 }}
-              color={Colors.lighterThanBg}
-            />
-          </>
-        )}
-      </PressableButton>
+      <FormOperationBar
+        hasCancelBtn={false}
+        confirmHandler={authHandler}
+        confirmText={confirmText}
+        theme="shallow"
+        extraContainerStyle={{ marginTop: 15 }}
+      />
       <PressableButton
         onPress={navHandler}
         containerStyle={styles.pressableTextContainer}
         disabled={isSubmitting}
       >
-        <Text style={styles.pressableText}>{pressableHint}</Text>
+        <Text
+          style={[styles.pressableText, { opacity: isSubmitting ? 0.5 : 1 }]}
+        >
+          {pressableHint}
+        </Text>
       </PressableButton>
     </>
   );
@@ -223,6 +215,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   pressableTextContainer: {
+    marginTop: 15,
     marginBottom: 60,
   },
   pressableText: {
@@ -234,5 +227,11 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     color: Colors.shallowTextColor,
+  },
+  iconImage: {
+    width: 250,
+    height: 250,
+    marginBottom: -80,
+    marginTop: -100,
   },
 });

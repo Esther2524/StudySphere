@@ -22,13 +22,17 @@ export default function StudyGroupScreen({ navigation }) {
     });
   }, []);
 
-  const onCreateSuccess = useCallback(({ groupName, groupId }) => {
-    setShowModal(false);
-    navigation.navigate(GROUP_DETAIL_SCREEN_TITLE, {
-      groupName,
-      groupId,
-    });
-  }, []);
+  const onCreateSuccess = useCallback(
+    ({ groupName, groupId, groupOwnerId }) => {
+      setShowModal(false);
+      navigation.navigate(GROUP_DETAIL_SCREEN_TITLE, {
+        groupName,
+        groupId,
+        groupOwnerId,
+      });
+    },
+    [GROUP_DETAIL_SCREEN_TITLE]
+  );
 
   return (
     <View style={styles.container}>

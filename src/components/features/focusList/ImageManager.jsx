@@ -1,13 +1,12 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
 import * as ImagePicker from "expo-image-picker";
-import { Alert } from 'react-native';
+import { Alert } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import PressableButton from '../../ui/PressableButton';
-import { Colors } from '../../../utils/Colors';
+import PressableButton from "../../ui/PressableButton";
+import { Colors } from "../../../utils/Colors";
 
 export default function ImageManager({ imageUri, setImageUri }) {
-
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
   const verifyPermission = async () => {
@@ -22,9 +21,6 @@ export default function ImageManager({ imageUri, setImageUri }) {
     }
   };
 
-
-
-
   const takeImageOrChooseFromAlbum = async () => {
     const havePermission = await verifyPermission();
     if (!havePermission) {
@@ -32,25 +28,24 @@ export default function ImageManager({ imageUri, setImageUri }) {
       return null;
     }
     Alert.alert(
-      'Select Background Picture',
-      'Would you like to take a new photo or choose an existing one?',
+      "Select Background Picture",
+      "Would you like to take a new photo or choose an existing one?",
       [
         {
-          text: 'Cancel',
-          style: 'cancel',
+          text: "Cancel",
+          style: "cancel",
         },
         {
-          text: 'Take Photo',
+          text: "Take Photo",
           onPress: () => handleTakePhoto(),
         },
         {
-          text: 'Choose from Album',
+          text: "Choose from Album",
           onPress: () => handleChooseFromAlbum(),
         },
-      ],
+      ]
     );
   };
-
 
   const handleTakePhoto = async () => {
     const result = await ImagePicker.launchCameraAsync({
@@ -58,7 +53,6 @@ export default function ImageManager({ imageUri, setImageUri }) {
     });
     handleImagePicked(result);
   };
-
 
   const handleChooseFromAlbum = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -79,7 +73,7 @@ export default function ImageManager({ imageUri, setImageUri }) {
 
   const clearImageSelection = () => {
     setImageUri("");
-  }
+  };
 
   return (
     <View style={styles.imageArea}>
@@ -88,19 +82,27 @@ export default function ImageManager({ imageUri, setImageUri }) {
         containerStyle={styles.buttonContainer}
       >
         <Text style={styles.buttonTitle}>Select Background Picture</Text>
-        {imageUri ?
-          <>
-            <AntDesign name='check' size={20} color={Colors.addFocusButton} />
+        {imageUri ? (
+          <View style={styles.iconContainer}>
+            <AntDesign name="check" size={20} color={Colors.addFocusButton} />
             <PressableButton onPress={clearImageSelection}>
-              <AntDesign name="closecircleo" size={20} color={Colors.addFocusButton} />
+              <AntDesign
+                name="closecircleo"
+                size={20}
+                color={Colors.addFocusButton}
+              />
             </PressableButton>
-          </>
-          : <AntDesign name="arrowright" size={20} color={Colors.addFocusButton} />
-        }
-
+          </View>
+        ) : (
+          <AntDesign
+            name="arrowright"
+            size={20}
+            color={Colors.addFocusButton}
+          />
+        )}
       </PressableButton>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -109,18 +111,23 @@ const styles = StyleSheet.create({
   },
   buttonTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Colors.timerText,
     padding: 10,
     borderRadius: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: "space-between",
+    alignItems: "center",
     marginHorizontal: 10,
     marginBottom: 10,
   },
-
-})
+  iconContainer: {
+    flexDirection: "row",
+    width: 50,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});

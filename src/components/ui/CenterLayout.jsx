@@ -1,10 +1,16 @@
-import { StyleSheet } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import React from "react";
 import { Colors } from "../../utils/Colors";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CenterLayout({ children }) {
-  return <SafeAreaView style={styles.container}>{children}</SafeAreaView>;
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      {children}
+    </KeyboardAvoidingView>
+  );
 }
 
 const styles = StyleSheet.create({

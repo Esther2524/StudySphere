@@ -5,18 +5,21 @@ import DailyOverview from "../features/dashboard/DailyOverview";
 import TaskBreakdown from "../features/dashboard/TaskBreakdown";
 import FocusTrend from "../features/dashboard/FocusTrend";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  QUERY_KEY_TODAY_DATA,
+  QUERY_KEY_TREND_DATA,
+} from "../../utils/constants";
+import useGetTodayData from "../features/dashboard/useGetTodayData";
+import useGetTrend from "../features/dashboard/useGetTrend";
 
 export default function DashboardScreen() {
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { isRefetching: isRefetchingTodayData } = useGetTodayData();
+  const { isRefetching: isRefetchingTrend } = useGetTrend();
   const queryClient = useQueryClient();
 
   const onRefresh = () => {
-    setIsRefreshing(true);
-    queryClient.invalidateQueries(["trend-data"]);
-    queryClient.invalidateQueries(["today-data"]);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 2000);
+    queryClient.invalidateQueries([QUERY_KEY_TREND_DATA]);
+    queryClient.invalidateQueries([QUERY_KEY_TODAY_DATA]);
   };
 
   return (
@@ -25,7 +28,7 @@ export default function DashboardScreen() {
       contentContainerStyle={styles.contentContainerStyle}
       refreshControl={
         <RefreshControl
-          refreshing={isRefreshing}
+          refreshing={isRefetchingTodayData || isRefetchingTrend}
           onRefresh={onRefresh}
           tintColor={Colors.headerTitleColor}
         />

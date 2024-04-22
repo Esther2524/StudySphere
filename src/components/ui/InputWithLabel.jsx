@@ -18,6 +18,7 @@ export default function InputWithLabel({
   inputTextStyle,
   labelStyle,
   keyboardType = "default",
+  returnKeyType = "done",
 }) {
   const optionalProps = editable
     ? { onChangeText: (newContent) => setContent(newContent) }
@@ -37,6 +38,7 @@ export default function InputWithLabel({
             inputMode={inputMode}
             secureTextEntry={secureTextEntry}
             keyboardType={keyboardType}
+            returnKeyType={returnKeyType}
           />
           <Text style={styles.error}>{errorMsg}</Text>
         </>
