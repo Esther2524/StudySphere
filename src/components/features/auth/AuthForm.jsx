@@ -236,8 +236,8 @@ const styles = StyleSheet.create({
     color: Colors.shallowTextColor,
   },
   iconImage: {
-    width: 250,
-    height: 250,
+    width: 280,
+    height: 225,
     marginBottom: -15,
     marginTop: -100,
   },
