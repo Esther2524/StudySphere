@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import LottieView from "lottie-react-native";
-import { Colors } from "../../../utils/Colors";
 
 export default function LottieDisplay() {
   return (
@@ -32,6 +31,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     width: 250,
-    paddingHorizontal: "auto",
+    paddingLeft: 8,
   },
 });
