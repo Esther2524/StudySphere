@@ -287,19 +287,23 @@ pexelsApiKey="5fPLowo3EZBFe08UAksbUafpJC1MAZN7EZ5k3IMPaS48xIlVCjE7iGpw"
   <img src="assets/screenshots/search-result-v2.PNG" width="300" alt="Display the Newly Joined Group">
 
 
-* Display data analysis on the dashboard.
+* Display data analysis on the dashboard. It shows how many times you have completed study sessions fully, how many hours you have stayed focused today, and the number of breaks that have occurred. You can also click on the circle to obtain the proportion of study time spent on this focus task. The dashboard also provides information on the hours of focused study per day of the week. 
 
   <img src="assets/screenshots/dashboard-v2.PNG" width="300" alt="Dashboard">
 
   <img src="assets/screenshots/dashboard-2-v2.PNG" width="300" alt="Dashboard-2">
+
+  <img src="assets/screenshots/Dashboard-3.PNG" width="300" alt="Dashboard">
+
+  <img src="assets/screenshots/Dashboard-3.PNG" width="300" alt="Dashboard-2">
   
-* Display user information on the Profile Screen. Users can edit their usernames.
+* Display user information on the Profile Screen. Users can edit their usernames, or choose a new avatar.
 
   <img src="assets/screenshots/profile-v2.PNG" width="300" alt="Profile">
 
   <img src="assets/screenshots/profile-map-v2.PNG" width="300" alt="Map">
 
-  <img src="assets/screenshots/profile-menu-v2.PNG" width="300" alt="Profile Menu">
+  <img src="assets/screenshots/profile-menu-v3.PNG" width="300" alt="Profile Menu">
 
   <img src="assets/screenshots/profile-avatar-v2.PNG" width="300" alt="Change Avatar">
   
