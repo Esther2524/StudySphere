@@ -17,10 +17,12 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
 - [StudySphere: Focus \& Friends](#studysphere-focus--friends)
   - [App Description](#app-description)
   - [Table of Contents](#table-of-contents)
+  - [Explore StudySphere on YouTube](#explore-studysphere-on-youtube)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Firebase Configuration](#firebase-configuration)
     - [Create an `.env` file](#create-an-env-file)
+    - [Installation and Running](#installation-and-running)
   - [Current State](#current-state)
     - [Iteration 3 (April 21, 2024)](#iteration-3-april-21-2024)
     - [Iteration 2 (April 11, 2024)](#iteration-2-april-11-2024)
@@ -29,6 +31,9 @@ StudySphere: Focus & Friends is mainly designed for students aged above 14 who a
   - [Firebase Rules](#firebase-rules)
   - [External APIs](#external-apis)
   - [User Guide](#user-guide)
+
+## Explore StudySphere on YouTube
+Click below for a full demo: [StudySphere App Demo](https://www.youtube.com/watch?v=-Obi2hcmABA)
 
 ## Getting Started
 ### Prerequisites
@@ -57,6 +62,31 @@ mapsApiKey="YOUR_GOOGLE_MAP_API_KEY"
 pexelsApiKey="YOUR_PEXELS_API_KEY"
 ```
 
+### Installation and Running
+To get StudySphere up and running on your system, follow these steps:
+
+**1. Clone the repository.**
+
+Use Git to clone the StudySphere's repository to your machine.
+```
+git clone https://github.com/Esther2524/StudySphere.git
+```
+**2. Install dependencies:**
+
+Navigate to the cloned repository's directory and install the required dependencies.
+```
+npm install
+```
+**3. Run the app:**
+
+Once the dependencies are installed, you can start the app using Expo CLI.
+```
+npx expo start
+```
+Alternatively, you can start the app with npm:
+```
+npm start
+```
 
 ## Current State
 ### Iteration 3 (April 21, 2024)
