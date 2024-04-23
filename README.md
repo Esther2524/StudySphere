@@ -64,18 +64,21 @@ pexelsApiKey="YOUR_PEXELS_API_KEY"
 
 ### Installation and Running
 To get StudySphere up and running on your system, follow these steps:
+
 **1. Clone the repository.**
+
 Use Git to clone the StudySphere's repository to your machine.
 ```
 git clone https://github.com/Esther2524/StudySphere.git
 ```
 **2. Install dependencies:**
-Navigate to the cloned repository's directory and install the required dependencies.
+
 Navigate to the cloned repository's directory and install the required dependencies.
 ```
 npm install
 ```
 **3. Run the app:**
+
 Once the dependencies are installed, you can start the app using Expo CLI.
 ```
 npx expo start
